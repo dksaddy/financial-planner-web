@@ -20,12 +20,13 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         {...register(name)}
-        className={`w-full rounded-md border px-3 py-2 outline-none transition-all
-          ${
-            error
-              ? "border-red-500 focus:border-red-500"
-              : "border-gray-300 focus:border-blue-500"
-          }`}
+        className={`w-full rounded-lg border px-4 py-2 outline-none transition
+
+        ${
+          error
+            ? "border-red-500 focus:border-red-500"
+            : "border-gray-300 focus:border-blue-500"
+        }`}
       />
 
       {error && (

@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
+import AuthLayout from "@/layouts/AuthLayout";
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 
@@ -44,7 +45,8 @@ export default function RegisterPage() {
       router.push("/login");
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Registration failed"
+        error.response?.data?.message ||
+          "Registration failed"
       );
     } finally {
       setLoading(false);
@@ -52,50 +54,44 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
-        <h1 className="mb-6 text-center text-3xl font-bold">
-          Register
-        </h1>
+    <AuthLayout title="Create Account">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-5"
+      >
+        <Input
+          label="Name"
+          name="name"
+          placeholder="Enter your name"
+          register={register}
+          error={errors.name}
+        />
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5"
+        <Input
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          register={register}
+          error={errors.email}
+        />
+
+        <Input
+          label="Password"
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          register={register}
+          error={errors.password}
+        />
+
+        <Button
+          type="submit"
+          loading={loading}
         >
-          <Input
-            label="Name"
-            name="name"
-            placeholder="Enter your name"
-            register={register}
-            error={errors.name}
-          />
-
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            register={register}
-            error={errors.email}
-          />
-
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-            register={register}
-            error={errors.password}
-          />
-
-          <Button
-            type="submit"
-            loading={loading}
-          >
-            Register
-          </Button>
-        </form>
-      </div>
-    </main>
+          Register
+        </Button>
+      </form>
+    </AuthLayout>
   );
 }
