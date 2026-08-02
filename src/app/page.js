@@ -1,9 +1,12 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <h1>Hello</h1>
-    </div>
-  );
+import { useEffect } from "react";
+import { register } from "@/services/auth.service";
+
+export default function TestPage() {
+  useEffect(() => {
+    console.log("Frontend connected");
+  }, []);
+
+  return <h1>Testing...</h1>;
 }
