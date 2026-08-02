@@ -6,16 +6,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
+import Input from "@/components/common/Input";
+import Button from "@/components/common/Button";
+
 import { registerSchema } from "@/validations/auth.validation";
 import { register as registerUser } from "@/services/auth.service";
 
 export default function RegisterPage() {
   const router = useRouter();
+
   const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -34,6 +39,8 @@ export default function RegisterPage() {
 
       toast.success(response.message);
 
+      reset();
+
       router.push("/login");
     } catch (error) {
       toast.error(
@@ -45,74 +52,50 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md space-y-5 rounded-lg border p-6 shadow"
-      >
-        <h1 className="text-2xl font-bold text-center">
+    <main className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
+        <h1 className="mb-6 text-center text-3xl font-bold">
           Register
         </h1>
 
-        {/* Name */}
-        <div>
-          <label className="block mb-1">Name</label>
-
-          <input
-            type="text"
-            {...register("name")}
-            className="w-full border rounded px-3 py-2"
-          />
-
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.name.message}
-            </p>
-          )}
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block mb-1">Email</label>
-
-          <input
-            type="email"
-            {...register("email")}
-            className="w-full border rounded px-3 py-2"
-          />
-
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        {/* Password */}
-        <div>
-          <label className="block mb-1">Password</label>
-
-          <input
-            type="password"
-            {...register("password")}
-            className="w-full border rounded px-3 py-2"
-          />
-
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded bg-blue-600 py-2 text-white disabled:opacity-50"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-5"
         >
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
+          <Input
+            label="Name"
+            name="name"
+            placeholder="Enter your name"
+            register={register}
+            error={errors.name}
+          />
+
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            register={register}
+            error={errors.email}
+          />
+
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            register={register}
+            error={errors.password}
+          />
+
+          <Button
+            type="submit"
+            loading={loading}
+          >
+            Register
+          </Button>
+        </form>
+      </div>
     </main>
   );
 }
