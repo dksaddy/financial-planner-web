@@ -8,8 +8,9 @@ import Section from "@/components/dashboard/Section";
 import NotAvailable from "@/components/dashboard/NotAvailable";
 import Spinner from "@/components/common/Spinner";
 
+import { logout as logoutApi } from "@/services/auth.service";
 import { getDashboard } from "@/services/dashboard.service";
-import { isAuthenticated, getUser, logout } from "@/lib/auth";
+import { isAuthenticated, getUser, logout as clearAuth } from "@/lib/auth";
 
 const WEEK_LABELS = {
   week1: "1 Week Ago",
@@ -50,10 +51,18 @@ export default function DashboardPage() {
     fetchDashboard();
   }, [router]);
 
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
+const handleLogout = async () => {
+    try {
+      await logoutApi();
+    } catch (error) {
+      // Even if the server call fails (e.g. network issue, token
+      // already expired), we still want to clear local state and
+      // send the user to login rather than leaving them stuck.
+    } finally {
+      clearAuth();
+      router.push("/login");
+    }
+};
 
   if (loading) {
     return (
