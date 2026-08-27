@@ -26,6 +26,12 @@ export default function LastFourWeeksExpense({
     0
   );
 
+  const activeSaved = activeItems.reduce(
+    (sum, item) =>
+      sum + (item.extraSave === null ? 0 : Number(item.extraSave)),
+    0
+  );
+
   return (
     <Section title="Last Four Weekly Expense">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -37,6 +43,15 @@ export default function LastFourWeeksExpense({
             const total = items.reduce(
               (sum, item) =>
                 sum + Number(item.total || 0),
+              0
+            );
+
+            const saved = items.reduce(
+              (sum, item) =>
+                sum +
+                (item.extraSave === null
+                  ? 0
+                  : Number(item.extraSave)),
               0
             );
 
@@ -55,8 +70,20 @@ export default function LastFourWeeksExpense({
                   {items.length} records
                 </p>
 
-                <p className="text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500">
+                  Expense
+                </p>
+
+                <p className="font-medium text-gray-800">
                   {total.toFixed(2)}
+                </p>
+
+                <p className="mt-1 text-xs text-gray-500">
+                  Saving
+                </p>
+
+                <p className="font-medium text-gray-800">
+                  {saved.toFixed(2)}
                 </p>
               </button>
             );
@@ -90,7 +117,13 @@ export default function LastFourWeeksExpense({
                   {item.typeName}
                 </span>
 
-                <span className="shrink-0 font-medium text-gray-900">
+                <span className="w-20 shrink-0 text-right text-xs text-gray-400">
+                  {item.extraSave === null
+                    ? "—"
+                    : `saved ${Number(item.extraSave).toFixed(2)}`}
+                </span>
+
+                <span className="w-20 shrink-0 text-right font-medium text-gray-900">
                   {Number(item.total).toFixed(2)}
                 </span>
               </div>
@@ -102,6 +135,8 @@ export default function LastFourWeeksExpense({
           {activeItems.length} records
           {" · "}
           total {activeTotal.toFixed(2)}
+          {" · "}
+          saved {activeSaved.toFixed(2)}
         </p>
       </Modal>
     </Section>

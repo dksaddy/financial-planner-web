@@ -16,7 +16,7 @@ import ExtraSavingCard from "@/components/dashboard/ExtraSavingCard";
 import FrequentExpense from "@/components/dashboard/FrequentExpense";
 import RunningWeeklyExpense from "@/components/dashboard/RunningWeeklyExpense";
 import LastFourWeeksExpense from "@/components/dashboard/LastFourWeeksExpense";
-import RunningSavings from "@/components/dashboard/RunningSavings";
+import Savings from "@/components/dashboard/Savings";
 import Spinner from "@/components/common/Spinner";
 
 import { logout as logoutApi } from "@/services/auth.service";
@@ -144,10 +144,7 @@ export default function DashboardPage() {
         />
 
         {/* Row 7 */}
-        <RunningSavings
-          saving={saving}
-          lastFourWeeks={expenses.lastFourWeeks}
-        />
+        <Savings />
       </div>
     </main>
   );
