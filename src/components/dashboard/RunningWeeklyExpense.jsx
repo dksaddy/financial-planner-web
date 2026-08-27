@@ -43,7 +43,7 @@ export default function RunningWeeklyExpense({
               key={record.id}
               className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 px-3 py-2 text-sm"
             >
-              <span className="text-gray-500">
+              <span className="w-24 shrink-0 text-gray-500">
                 {formatDate(record.date)}
               </span>
 
@@ -51,7 +51,13 @@ export default function RunningWeeklyExpense({
                 {record.expense_type_name}
               </span>
 
-              <span className="font-medium text-gray-900">
+              <span className="w-20 shrink-0 text-right text-xs text-gray-400">
+                {record.extraSave === null
+                  ? "—"
+                  : `saved ${Number(record.extraSave).toFixed(2)}`}
+              </span>
+
+              <span className="w-20 shrink-0 text-right font-medium text-gray-900">
                 {Number(record.total).toFixed(2)}
               </span>
             </div>
@@ -63,6 +69,8 @@ export default function RunningWeeklyExpense({
         {currentWeek.totalRecords} records
         {" · "}
         total {Number(currentWeek.totalExpense).toFixed(2)}
+        {" · "}
+        saved {Number(currentWeek.totalExtraSave).toFixed(2)}
       </p>
     </Section>
   );
@@ -77,8 +85,14 @@ function formatDate(date) {
     return date;
   }
 
-  return parsed.toLocaleDateString("en-GB", {
+  const weekday = parsed.toLocaleDateString("en-GB", {
+    weekday: "short",
+  });
+
+  const dayMonth = parsed.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
   });
+
+  return `${weekday}, ${dayMonth}`;
 }
