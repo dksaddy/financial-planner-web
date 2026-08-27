@@ -38,21 +38,21 @@ export default function DashboardPage() {
 
     setUser(getUser());
 
-    const fetchDashboard = async () => {
-      try {
-        const response = await getDashboard();
-        setDashboard(response.data);
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to load dashboard"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchDashboard();
   }, [router]);
+
+  const fetchDashboard = async () => {
+    try {
+      const response = await getDashboard();
+      setDashboard(response.data);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to load dashboard"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -135,6 +135,7 @@ export default function DashboardPage() {
         {/* Row 5 */}
         <RunningWeeklyExpense
           currentWeek={expenses.currentWeek}
+          onExpenseAdded={fetchDashboard}
         />
 
         {/* Row 6 */}

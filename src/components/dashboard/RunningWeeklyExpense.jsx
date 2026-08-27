@@ -1,12 +1,37 @@
+"use client";
+
+import { useState } from "react";
+
 import Section from "./Section";
+import AddExpenseModal from "./AddExpenseModal";
 
 export default function RunningWeeklyExpense({
   currentWeek,
+  onExpenseAdded,
 }) {
+  const [modalOpen, setModalOpen] = useState(false);
+
   const records = currentWeek?.records || [];
 
   return (
-    <Section title="Running Weekly Expense">
+    <Section
+      title="Running Weekly Expense"
+      actions={
+        <button
+          type="button"
+          onClick={() => setModalOpen(true)}
+          className="rounded-lg border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-100"
+        >
+          + Add
+        </button>
+      }
+    >
+      <AddExpenseModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={onExpenseAdded}
+      />
+
       {records.length === 0 ? (
         <p className="text-sm text-gray-400">
           No expenses recorded this week.
