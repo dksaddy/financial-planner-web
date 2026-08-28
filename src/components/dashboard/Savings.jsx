@@ -34,7 +34,7 @@ export default function RunningSavings() {
   }, []);
 
   return (
-    <Section title="Savings">
+    <Section title=" Active Savings">
       {loading ? (
         <div className="flex justify-center py-6">
           <Spinner />
