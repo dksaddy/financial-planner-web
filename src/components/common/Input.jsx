@@ -20,7 +20,7 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         {...register(name)}
-        className={`w-full rounded-lg border px-4 py-2 outline-none transition
+        className={`w-full rounded-lg border px-4 py-2 outline-none transition bg-white text-gray-900
 
         ${
           error

@@ -6,7 +6,7 @@ export default function AuthLayout({
 }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-100 p-5">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md text-gray-900">
         <Card title={title}>
           {children}
         </Card>

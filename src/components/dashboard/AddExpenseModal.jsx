@@ -110,7 +110,7 @@ export default function AddExpenseModal({
             id="expense_type_id"
             disabled={loadingTypes}
             {...register("expense_type_id")}
-            className={`w-full rounded-lg border px-4 py-2 outline-none transition disabled:cursor-not-allowed disabled:opacity-70 ${
+            className={`w-full rounded-lg border px-4 py-2 outline-none transition bg-white text-gray-900 disabled:cursor-not-allowed disabled:opacity-70 ${
               errors.expense_type_id
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 focus:border-blue-500"
@@ -124,6 +124,7 @@ export default function AddExpenseModal({
               <option
                 key={type.id}
                 value={type.id}
+                className="bg-white text-gray-900"
               >
                 {type.name} ({Number(type.total).toFixed(2)})
               </option>
@@ -149,7 +150,7 @@ export default function AddExpenseModal({
             id="date"
             type="date"
             {...register("date")}
-            className={`w-full rounded-lg border px-4 py-2 outline-none transition ${
+            className={`w-full rounded-lg border px-4 py-2 outline-none transition bg-white text-gray-900 ${
               errors.date
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 focus:border-blue-500"
