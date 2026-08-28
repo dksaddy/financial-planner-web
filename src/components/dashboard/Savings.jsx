@@ -1,62 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useState } from "react";
 
 import Section from "./Section";
-import Spinner from "@/components/common/Spinner";
+import AddSavingPlanModal from "./AddSavingPlanModal";
 
-import { getSavingPlans } from "@/services/savingPlans.service";
+export default function Savings({
+  plans,
+  onAdded,
+}) {
+  const [modalOpen, setModalOpen] = useState(false);
 
-export default function RunningSavings() {
-  const [savingPlans, setSavingPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchSavingPlans = async () => {
-      try {
-        setLoading(true);
-
-        const response = await getSavingPlans();
-
-        setSavingPlans(response.data || []);
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message ||
-            "Failed to load saving plans"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSavingPlans();
-  }, []);
+  const savingPlans = plans || [];
 
   return (
-    <Section title=" Active Savings">
-      {loading ? (
-        <div className="flex justify-center py-6">
-          <Spinner />
-        </div>
-      ) : savingPlans.length === 0 ? (
+    <Section
+      title="Savings"
+      actions={
+        <button
+          type="button"
+          onClick={() => setModalOpen(true)}
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700"
+          aria-label="Add saving plan"
+        >
+          +
+        </button>
+      }
+    >
+      <AddSavingPlanModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={onAdded}
+      />
+
+      {savingPlans.length === 0 ? (
         <p className="text-sm text-gray-400">
           No saving plans yet.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {savingPlans.map((plan) => (
             <div
               key={plan.id}
-              className="rounded-lg border border-gray-200 p-3 text-sm"
+              className="rounded-xl border border-gray-200 p-4 text-sm shadow-sm transition hover:shadow-md"
             >
-              <div className="flex items-center justify-between gap-2">
-                <p className="font-medium text-gray-800">
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2">
+                <p className="truncate font-semibold text-gray-900">
                   {plan.name}
                 </p>
 
                 <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles(
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusStyles(
                     plan.status
                   )}`}
                 >
@@ -64,58 +59,90 @@ export default function RunningSavings() {
                 </span>
               </div>
 
-              <p className="mt-2 text-xs text-gray-500">
-                Amount
-              </p>
-              <p className="font-medium text-gray-800">
-                {Number(plan.amount).toFixed(2)}
-                {" "}
-                <span className="text-xs font-normal text-gray-400">
-                  / {frequencyLabel(plan.frequency)}
+              {/* Deposit progress */}
+              <div className="mt-3">
+                <div className="flex h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                  <div
+                    className="h-full bg-blue-600"
+                    style={{ width: `${plan.percentage}%` }}
+                  />
+                </div>
+
+                <div className="mt-1.5 flex items-center justify-between text-xs text-gray-500">
+                  <span>
+                    {plan.currentlyDeposited.toFixed(2)} deposited
+                  </span>
+
+                  <span className="font-medium text-gray-700">
+                    {plan.percentage.toFixed(0)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="mt-4 grid grid-cols-2 gap-y-3 border-t border-gray-100 pt-3">
+                <Stat
+                  label="Contribution"
+                  value={`${Number(plan.amount).toFixed(2)} / ${frequencyLabel(plan.frequency)}`}
+                />
+
+                <Stat
+                  label="Duration"
+                  value={`${plan.months} month${plan.months === 1 ? "" : "s"}`}
+                />
+
+                <Stat
+                  label="Deposit Target"
+                  value={plan.depositAmount.toFixed(2)}
+                />
+
+                <Stat
+                  label="Deposit Frequency"
+                  value={`Every ${frequencyLabel(plan.depositFrequency)}`}
+                />
+
+                <Stat
+                  label="Remaining"
+                  value={plan.remaining.toFixed(2)}
+                />
+
+                <Stat
+                  label="Withdrawal"
+                  value={plan.withdrawalAmount.toFixed(2)}
+                />
+              </div>
+
+              {/* Profit footer */}
+              <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
+                <span className="text-xs text-gray-500">
+                  Projected Profit
                 </span>
-              </p>
 
-              <p className="mt-2 text-xs text-gray-500">
-                Duration
-              </p>
-              <p className="font-medium text-gray-800">
-                {plan.months} month
-                {Number(plan.months) === 1 ? "" : "s"}
-              </p>
-
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                <div>
-                  <p className="text-xs text-gray-500">
-                    Deposit
-                  </p>
-                  <p className="font-medium text-gray-800">
-                    {Number(plan.deposit_amount).toFixed(2)}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-500">
-                    Withdrawal
-                  </p>
-                  <p className="font-medium text-gray-800">
-                    {Number(plan.withdrawal_amount).toFixed(2)}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-500">
-                    Profit
-                  </p>
-                  <p className="font-medium text-gray-800">
-                    {Number(plan.withdrawal_amount - plan.deposit_amount).toFixed(2)}
-                  </p>
-                </div>
+                <span
+                  className={`text-sm font-semibold ${
+                    plan.profit >= 0
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
+                >
+                  {plan.profit >= 0 ? "+" : ""}
+                  {plan.profit.toFixed(2)}
+                </span>
               </div>
             </div>
           ))}
         </div>
       )}
     </Section>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <div>
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="font-medium text-gray-800">{value}</p>
+    </div>
   );
 }
 

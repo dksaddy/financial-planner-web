@@ -5,6 +5,11 @@ export const getSavingPlans = async () => {
   return response.data;
 };
 
+export const createSavingPlan = async (payload) => {
+  const response = await api.post("/saving-plans", payload);
+  return response.data;
+};
+
 export const depositToSavingPlan = async (id, amount) => {
   const response = await api.patch(`/saving-plans/${id}/deposit`, {
     amount,

@@ -46,7 +46,9 @@ export default function DashboardPage() {
       const response = await getDashboard();
       setDashboard(response.data);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to load dashboard");
+      toast.error(
+        error.response?.data?.message || "Failed to load dashboard"
+      );
     } finally {
       setLoading(false);
     }
@@ -83,7 +85,10 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-5">
-      <DashboardHeader user={user} onLogout={handleLogout} />
+      <DashboardHeader
+        user={user}
+        onLogout={handleLogout}
+      />
 
       <div className="space-y-5">
         {/* Row 1 */}
@@ -92,27 +97,41 @@ export default function DashboardPage() {
 
           <SavingSummary saving={saving} />
 
-          <SavingPlanOverview plans={saving.plans} onDeposit={fetchDashboard} />
+          <SavingPlanOverview
+            plans={saving.plans}
+            onAdded={fetchDashboard}
+          />
+
         </div>
 
         {/* Row 2 */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <SpendingCard spending={spending} />
 
-          <ProgressCard saving={saving} spending={spending} targets={targets} />
+          <ProgressCard
+            saving={saving}
+            spending={spending}
+            targets={targets}
+          />
 
           <SavingBreakdown saving={saving} />
         </div>
 
         {/* Row 3 */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <TargetCard targets={targets} className="md:col-span-2" />
+          <TargetCard
+            targets={targets}
+            onAdded={fetchDashboard}
+            className="md:col-span-2"
+          />
 
           <ExtraSavingCard extraSaving={extraSaving} />
         </div>
 
         {/* Row 4 */}
-        <FrequentExpense expenses={expenses.topExpenseTypes} />
+        <FrequentExpense
+          expenses={expenses.topExpenseTypes}
+        />
 
         {/* Row 5 */}
         <RunningWeeklyExpense
@@ -121,10 +140,15 @@ export default function DashboardPage() {
         />
 
         {/* Row 6 */}
-        <LastFourWeeksExpense lastFourWeeks={expenses.lastFourWeeks} />
+        <LastFourWeeksExpense
+          lastFourWeeks={expenses.lastFourWeeks}
+        />
 
         {/* Row 7 */}
-        <Savings />
+        <Savings
+          plans={saving.plans}
+          onAdded={fetchDashboard}
+        />
       </div>
     </main>
   );
