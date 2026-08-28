@@ -29,7 +29,7 @@ export default function SavingPlanOverview({
           No active saving plans yet.
         </p>
       ) : (
-        <div className="space-y-5">
+        <div className="grid grid-cols-2 gap-5">
           {activePlans.map((plan) => (
             <div key={plan.id}>
               <div className="mb-2 flex items-center justify-between gap-3">

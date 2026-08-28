@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import ProfileCard from "@/components/dashboard/ProfileCard";
 import SavingSummary from "@/components/dashboard/SavingSummary";
 import SpendingCard from "@/components/dashboard/SpendingCard";
 import ProgressCard from "@/components/dashboard/ProgressCard";
@@ -46,9 +45,7 @@ export default function DashboardPage() {
       const response = await getDashboard();
       setDashboard(response.data);
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to load dashboard"
-      );
+      toast.error(error.response?.data?.message || "Failed to load dashboard");
     } finally {
       setLoading(false);
     }
@@ -85,34 +82,21 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 p-5">
-      <DashboardHeader
-        user={user}
-        onLogout={handleLogout}
-      />
+      <DashboardHeader user={user} onLogout={handleLogout} />
 
       <div className="space-y-5">
         {/* Row 1 */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <ProfileCard user={user} />
-
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <SavingSummary saving={saving} />
 
-          <SavingPlanOverview
-            plans={saving.plans}
-            onAdded={fetchDashboard}
-          />
-
+          <SavingPlanOverview plans={saving.plans} onDeposit={fetchDashboard} />
         </div>
 
         {/* Row 2 */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <SpendingCard spending={spending} />
 
-          <ProgressCard
-            saving={saving}
-            spending={spending}
-            targets={targets}
-          />
+          <ProgressCard saving={saving} spending={spending} targets={targets} />
 
           <SavingBreakdown saving={saving} />
         </div>
@@ -129,9 +113,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Row 4 */}
-        <FrequentExpense
-          expenses={expenses.topExpenseTypes}
-        />
+        <FrequentExpense expenses={expenses.topExpenseTypes} />
 
         {/* Row 5 */}
         <RunningWeeklyExpense
@@ -140,15 +122,10 @@ export default function DashboardPage() {
         />
 
         {/* Row 6 */}
-        <LastFourWeeksExpense
-          lastFourWeeks={expenses.lastFourWeeks}
-        />
+        <LastFourWeeksExpense lastFourWeeks={expenses.lastFourWeeks} />
 
         {/* Row 7 */}
-        <Savings
-          plans={saving.plans}
-          onAdded={fetchDashboard}
-        />
+        <Savings plans={saving.plans} onAdded={fetchDashboard} />
       </div>
     </main>
   );
