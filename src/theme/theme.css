@@ -1,0 +1,239 @@
+/* =========================================================================
+   Theme tokens — the single source of truth for every colour in the app.
+   Components never hardcode a palette value; they use the Tailwind
+   utilities generated from the `@theme inline` block at the bottom.
+
+   Light is the default (thermal-receipt paper). Dark is opted into by the
+   `data-theme="dark"` attribute the boot script writes onto <html> before
+   first paint, so switching a theme is one attribute flip.
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* --- Chrome ---------------------------------------------------------- */
+  --app: #efece3;
+  --panel: #fbf9f3;
+  --surface: rgba(23, 27, 33, 0.028);
+  --surface-hover: rgba(23, 27, 33, 0.055);
+  --inset: rgba(23, 27, 33, 0.022);
+  --inset-hover: rgba(23, 27, 33, 0.05);
+  --line: rgba(23, 27, 33, 0.13);
+  --line-soft: rgba(23, 27, 33, 0.08);
+  --line-strong: rgba(23, 27, 33, 0.24);
+  --scrim: rgba(60, 55, 45, 0.35);
+
+  /* --- Ink ------------------------------------------------------------- */
+  --ink: #191d24;
+  --ink-muted: #5a6270;
+  --ink-faint: #8b93a1;
+
+  /* --- Backdrop -------------------------------------------------------- */
+  --aurora-1: rgba(99, 102, 241, 0.12);
+  --aurora-2: rgba(168, 85, 247, 0.1);
+  --aurora-3: rgba(16, 185, 129, 0.09);
+  --paper-top: #f4f1e8;
+  --paper-mid: #eeeade;
+  --paper-bottom: #e7e2d5;
+  --grid-line: rgba(23, 27, 33, 0.045);
+  --grid-opacity: 0.5;
+
+  /* --- Shadows --------------------------------------------------------- */
+  --shadow-card: 0 10px 30px -18px rgba(30, 27, 20, 0.45);
+  --shadow-panel: 0 30px 70px -24px rgba(30, 27, 20, 0.4);
+
+  /* --- Accent hues ----------------------------------------------------- */
+  /* Each hue carries four roles: readable text (fg), a tinted fill (soft),
+     a hairline (line) and a solid marker (dot). */
+  --slate-fg: #4b5563;
+  --slate-soft: rgba(100, 116, 139, 0.1);
+  --slate-line: rgba(100, 116, 139, 0.28);
+  --slate-dot: #64748b;
+
+  --indigo-fg: #4338ca;
+  --indigo-soft: rgba(99, 102, 241, 0.1);
+  --indigo-line: rgba(99, 102, 241, 0.3);
+  --indigo-dot: #6366f1;
+
+  --emerald-fg: #047857;
+  --emerald-soft: rgba(16, 185, 129, 0.12);
+  --emerald-line: rgba(16, 185, 129, 0.32);
+  --emerald-dot: #10b981;
+
+  --amber-fg: #a16207;
+  --amber-soft: rgba(245, 158, 11, 0.14);
+  --amber-line: rgba(245, 158, 11, 0.34);
+  --amber-dot: #f59e0b;
+
+  --sky-fg: #0369a1;
+  --sky-soft: rgba(14, 165, 233, 0.12);
+  --sky-line: rgba(14, 165, 233, 0.32);
+  --sky-dot: #0ea5e9;
+
+  --cyan-fg: #0e7490;
+  --cyan-soft: rgba(6, 182, 212, 0.12);
+  --cyan-line: rgba(6, 182, 212, 0.32);
+  --cyan-dot: #06b6d4;
+
+  --violet-fg: #6d28d9;
+  --violet-soft: rgba(139, 92, 246, 0.12);
+  --violet-line: rgba(139, 92, 246, 0.3);
+  --violet-dot: #8b5cf6;
+
+  --fuchsia-fg: #a21caf;
+  --fuchsia-soft: rgba(217, 70, 239, 0.12);
+  --fuchsia-line: rgba(217, 70, 239, 0.3);
+  --fuchsia-dot: #d946ef;
+
+  --rose-fg: #be123c;
+  --rose-soft: rgba(244, 63, 94, 0.12);
+  --rose-line: rgba(244, 63, 94, 0.3);
+  --rose-dot: #f43f5e;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --app: #05070f;
+  --panel: #0b1020;
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-hover: rgba(255, 255, 255, 0.06);
+  --inset: rgba(255, 255, 255, 0.02);
+  --inset-hover: rgba(255, 255, 255, 0.05);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-soft: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.2);
+  --scrim: rgba(2, 6, 23, 0.72);
+
+  --ink: #eef2f8;
+  --ink-muted: #94a3b8;
+  --ink-faint: #64748b;
+
+  --aurora-1: rgba(99, 102, 241, 0.3);
+  --aurora-2: rgba(168, 85, 247, 0.22);
+  --aurora-3: rgba(16, 185, 129, 0.16);
+  --paper-top: #080d1c;
+  --paper-mid: #060914;
+  --paper-bottom: #04060d;
+  --grid-line: rgba(255, 255, 255, 0.022);
+  --grid-opacity: 0.35;
+
+  --shadow-card: 0 10px 40px -14px rgba(2, 6, 23, 0.9);
+  --shadow-panel: 0 30px 80px -20px rgba(0, 0, 0, 0.9);
+
+  --slate-fg: #cbd5e1;
+  --slate-soft: rgba(148, 163, 184, 0.12);
+  --slate-line: rgba(148, 163, 184, 0.25);
+  --slate-dot: #94a3b8;
+
+  --indigo-fg: #a5b4fc;
+  --indigo-soft: rgba(99, 102, 241, 0.14);
+  --indigo-line: rgba(129, 140, 248, 0.3);
+  --indigo-dot: #818cf8;
+
+  --emerald-fg: #6ee7b7;
+  --emerald-soft: rgba(16, 185, 129, 0.14);
+  --emerald-line: rgba(52, 211, 153, 0.3);
+  --emerald-dot: #34d399;
+
+  --amber-fg: #fcd34d;
+  --amber-soft: rgba(245, 158, 11, 0.14);
+  --amber-line: rgba(251, 191, 36, 0.3);
+  --amber-dot: #fbbf24;
+
+  --sky-fg: #7dd3fc;
+  --sky-soft: rgba(14, 165, 233, 0.14);
+  --sky-line: rgba(56, 189, 248, 0.3);
+  --sky-dot: #38bdf8;
+
+  --cyan-fg: #67e8f9;
+  --cyan-soft: rgba(6, 182, 212, 0.14);
+  --cyan-line: rgba(34, 211, 238, 0.3);
+  --cyan-dot: #22d3ee;
+
+  --violet-fg: #c4b5fd;
+  --violet-soft: rgba(139, 92, 246, 0.14);
+  --violet-line: rgba(167, 139, 250, 0.3);
+  --violet-dot: #a78bfa;
+
+  --fuchsia-fg: #f0abfc;
+  --fuchsia-soft: rgba(217, 70, 239, 0.14);
+  --fuchsia-line: rgba(232, 121, 249, 0.3);
+  --fuchsia-dot: #e879f9;
+
+  --rose-fg: #fda4af;
+  --rose-soft: rgba(244, 63, 94, 0.14);
+  --rose-line: rgba(251, 113, 133, 0.3);
+  --rose-dot: #fb7185;
+}
+
+/* Expose every token as a Tailwind utility. `inline` keeps the utilities
+   pointing at the raw variables, so flipping data-theme repaints the whole
+   app without regenerating any CSS. */
+@theme inline {
+  --font-sans: var(--font-receipt);
+  --font-mono: var(--font-receipt);
+
+  --color-app: var(--app);
+  --color-panel: var(--panel);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-inset: var(--inset);
+  --color-inset-hover: var(--inset-hover);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+  --color-scrim: var(--scrim);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-panel: var(--shadow-panel);
+
+  --color-slate-fg: var(--slate-fg);
+  --color-slate-soft: var(--slate-soft);
+  --color-slate-line: var(--slate-line);
+  --color-slate-dot: var(--slate-dot);
+
+  --color-indigo-fg: var(--indigo-fg);
+  --color-indigo-soft: var(--indigo-soft);
+  --color-indigo-line: var(--indigo-line);
+  --color-indigo-dot: var(--indigo-dot);
+
+  --color-emerald-fg: var(--emerald-fg);
+  --color-emerald-soft: var(--emerald-soft);
+  --color-emerald-line: var(--emerald-line);
+  --color-emerald-dot: var(--emerald-dot);
+
+  --color-amber-fg: var(--amber-fg);
+  --color-amber-soft: var(--amber-soft);
+  --color-amber-line: var(--amber-line);
+  --color-amber-dot: var(--amber-dot);
+
+  --color-sky-fg: var(--sky-fg);
+  --color-sky-soft: var(--sky-soft);
+  --color-sky-line: var(--sky-line);
+  --color-sky-dot: var(--sky-dot);
+
+  --color-cyan-fg: var(--cyan-fg);
+  --color-cyan-soft: var(--cyan-soft);
+  --color-cyan-line: var(--cyan-line);
+  --color-cyan-dot: var(--cyan-dot);
+
+  --color-violet-fg: var(--violet-fg);
+  --color-violet-soft: var(--violet-soft);
+  --color-violet-line: var(--violet-line);
+  --color-violet-dot: var(--violet-dot);
+
+  --color-fuchsia-fg: var(--fuchsia-fg);
+  --color-fuchsia-soft: var(--fuchsia-soft);
+  --color-fuchsia-line: var(--fuchsia-line);
+  --color-fuchsia-dot: var(--fuchsia-dot);
+
+  --color-rose-fg: var(--rose-fg);
+  --color-rose-soft: var(--rose-soft);
+  --color-rose-line: var(--rose-line);
+  --color-rose-dot: var(--rose-dot);
+}

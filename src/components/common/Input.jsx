@@ -7,10 +7,10 @@ export default function Input({
   error,
 }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <label
         htmlFor={name}
-        className="block text-sm font-medium text-gray-700"
+        className="block text-xs font-bold uppercase tracking-wider text-ink-muted"
       >
         {label}
       </label>
@@ -20,17 +20,18 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         {...register(name)}
-        className={`w-full rounded-lg border px-4 py-2 outline-none transition bg-white text-gray-900
+        className={`w-full rounded-xl border bg-inset px-4 py-2.5 text-sm text-ink
+        outline-none transition placeholder:text-ink-faint
 
         ${
           error
-            ? "border-red-500 focus:border-red-500"
-            : "border-gray-300 focus:border-blue-500"
+            ? "border-rose-line focus:border-rose-dot focus:bg-rose-soft"
+            : "border-line focus:border-indigo-dot focus:bg-surface-hover"
         }`}
       />
 
       {error && (
-        <p className="text-sm text-red-500">
+        <p className="text-xs text-rose-fg">
           {error.message}
         </p>
       )}

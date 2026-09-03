@@ -1,26 +1,161 @@
 @import "tailwindcss";
+@import "../theme/theme.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* Receipts are printed a touch smaller than screen UI; the mono face runs
+     wide, so drop the root size to keep dense tables on one line. */
+  font-size: 15px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--app);
+  color: var(--ink);
+  font-family: var(--font-receipt), ui-monospace, "Courier New", monospace;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Aurora backdrop: fixed so it never scrolls with dense dashboards. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 620px at 10% -10%, var(--aurora-1), transparent 62%),
+    radial-gradient(820px 540px at 92% 0%, var(--aurora-2), transparent 64%),
+    radial-gradient(760px 520px at 55% 108%, var(--aurora-3), transparent 62%),
+    linear-gradient(
+      180deg,
+      var(--paper-top) 0%,
+      var(--paper-mid) 55%,
+      var(--paper-bottom) 100%
+    );
+}
+
+/* Faint grid so large empty cards still feel intentional. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--grid-opacity);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
+}
+
+/* ---------- Motion ---------- */
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes growX {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.reveal {
+  animation: revealUp 0.6s cubic-bezier(0.22, 0.7, 0.3, 1) both;
+}
+
+.panel-in {
+  animation: panelIn 0.22s cubic-bezier(0.22, 0.7, 0.3, 1) both;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out both;
+}
+
+/* Progress fills sweep out from the left on first paint. */
+.bar-grow {
+  transform-origin: left center;
+  animation: growX 0.9s cubic-bezier(0.22, 0.7, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .panel-in,
+  .fade-in,
+  .bar-grow {
+    animation: none !important;
+  }
+}
+
+/* ---------- Utilities ---------- */
+
+/* Numbers line up column-to-column across every card. */
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* Torn-paper rule, the way a receipt separates its sections. */
+.rule-dashed {
+  border-top: 1px dashed var(--line);
+}
+
+.scroll-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.scroll-slim::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-slim::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: var(--line-strong);
+}
+
+::selection {
+  background: var(--indigo-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--indigo-dot);
+  outline-offset: 2px;
 }
