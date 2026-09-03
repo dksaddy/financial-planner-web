@@ -101,7 +101,7 @@ export default function AddExpenseModal({
         <div className="space-y-1">
           <label
             htmlFor="expense_type_id"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-xs font-medium uppercase tracking-wider text-ink-muted"
           >
             Expense Type
           </label>
@@ -110,13 +110,13 @@ export default function AddExpenseModal({
             id="expense_type_id"
             disabled={loadingTypes}
             {...register("expense_type_id")}
-            className={`w-full rounded-lg border px-4 py-2 outline-none transition bg-white text-gray-900 disabled:cursor-not-allowed disabled:opacity-70 ${
+            className={`w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-ink outline-none transition disabled:cursor-not-allowed disabled:opacity-70 ${
               errors.expense_type_id
-                ? "border-red-500 focus:border-red-500"
-                : "border-gray-300 focus:border-blue-500"
+                ? "border-rose-line focus:border-rose-dot"
+                : "border-line focus:border-indigo-dot"
             }`}
           >
-            <option value="">
+            <option value="" className="bg-panel text-ink">
               {loadingTypes ? "Loading..." : "Select an expense type"}
             </option>
 
@@ -124,7 +124,7 @@ export default function AddExpenseModal({
               <option
                 key={type.id}
                 value={type.id}
-                className="bg-white text-gray-900"
+                className="bg-panel text-ink"
               >
                 {type.name} ({Number(type.total).toFixed(2)})
               </option>
@@ -132,7 +132,7 @@ export default function AddExpenseModal({
           </select>
 
           {errors.expense_type_id && (
-            <p className="text-sm text-red-500">
+            <p className="text-xs text-rose-fg">
               {errors.expense_type_id.message}
             </p>
           )}
@@ -141,7 +141,7 @@ export default function AddExpenseModal({
         <div className="space-y-1">
           <label
             htmlFor="date"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-xs font-medium uppercase tracking-wider text-ink-muted"
           >
             Date
           </label>
@@ -150,15 +150,15 @@ export default function AddExpenseModal({
             id="date"
             type="date"
             {...register("date")}
-            className={`w-full rounded-lg border px-4 py-2 outline-none transition bg-white text-gray-900 ${
+            className={`w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-ink outline-none transition ${
               errors.date
-                ? "border-red-500 focus:border-red-500"
-                : "border-gray-300 focus:border-blue-500"
+                ? "border-rose-line focus:border-rose-dot"
+                : "border-line focus:border-indigo-dot"
             }`}
           />
 
           {errors.date && (
-            <p className="text-sm text-red-500">
+            <p className="text-xs text-rose-fg">
               {errors.date.message}
             </p>
           )}

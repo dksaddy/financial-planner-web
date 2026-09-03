@@ -22,6 +22,9 @@ import { logout as logoutApi } from "@/services/auth.service";
 import { getDashboard } from "@/services/dashboard.service";
 import { isAuthenticated, getUser, logout as clearAuth } from "@/lib/auth";
 
+// Cards fade up in reading order rather than all at once.
+const stagger = (index) => ({ animationDelay: `${index * 70}ms` });
+
 export default function DashboardPage() {
   const router = useRouter();
 
@@ -64,16 +67,20 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-100">
-        <Spinner />
+      <main className="flex min-h-screen flex-col items-center justify-center gap-4">
+        <Spinner size={32} />
+
+        <p className="text-sm text-ink-faint">Loading your dashboard…</p>
       </main>
     );
   }
 
   if (!dashboard) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-100">
-        <p className="text-gray-500">Unable to load dashboard.</p>
+      <main className="flex min-h-screen items-center justify-center p-6">
+        <div className="rounded-2xl border border-line bg-surface px-8 py-10 text-center">
+          <p className="text-ink-muted">Unable to load dashboard.</p>
+        </div>
       </main>
     );
   }
@@ -81,51 +88,82 @@ export default function DashboardPage() {
   const { saving, spending, extraSaving, targets, expenses } = dashboard;
 
   return (
-    <main className="min-h-screen bg-gray-100 p-5">
-      <DashboardHeader user={user} onLogout={handleLogout} />
+    <main className="mx-auto min-h-screen w-full max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="reveal">
+        <DashboardHeader user={user} onLogout={handleLogout} />
+      </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Row 1 */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <SavingSummary saving={saving} />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          <div className="reveal lg:col-span-5" style={stagger(1)}>
+            <SavingSummary saving={saving} />
+          </div>
 
-          <SavingPlanOverview plans={saving.plans} onDeposit={fetchDashboard} />
+          <div className="reveal lg:col-span-7" style={stagger(2)}>
+            <SavingPlanOverview
+              plans={saving.plans}
+              onDeposit={fetchDashboard}
+            />
+          </div>
         </div>
 
         {/* Row 2 */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <SpendingCard spending={spending} />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          <div className="reveal lg:col-span-3" style={stagger(3)}>
+            <SpendingCard spending={spending} />
+          </div>
 
-          <ProgressCard saving={saving} spending={spending} targets={targets} />
+          <div className="reveal lg:col-span-6" style={stagger(4)}>
+            <ProgressCard
+              saving={saving}
+              spending={spending}
+              targets={targets}
+            />
+          </div>
 
-          <SavingBreakdown saving={saving} />
+          <div className="reveal lg:col-span-3" style={stagger(5)}>
+            <SavingBreakdown saving={saving} />
+          </div>
         </div>
 
         {/* Row 3 */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <TargetCard
-            targets={targets}
-            onAdded={fetchDashboard}
-            className="md:col-span-2"
-          />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="reveal lg:col-span-2" style={stagger(6)}>
+            <TargetCard targets={targets} onAdded={fetchDashboard} />
+          </div>
 
-          <ExtraSavingCard extraSaving={extraSaving} />
+          <div className="reveal" style={stagger(7)}>
+            <ExtraSavingCard extraSaving={extraSaving} />
+          </div>
         </div>
 
         {/* Row 4 */}
-        <FrequentExpense expenses={expenses.topExpenseTypes} />
+        <div className="reveal" style={stagger(8)}>
+          <FrequentExpense expenses={expenses.topExpenseTypes} />
+        </div>
 
         {/* Row 5 */}
-        <RunningWeeklyExpense
-          currentWeek={expenses.currentWeek}
-          onExpenseAdded={fetchDashboard}
-        />
+        <div className="reveal" style={stagger(9)}>
+          <RunningWeeklyExpense
+            currentWeek={expenses.currentWeek}
+            onExpenseAdded={fetchDashboard}
+          />
+        </div>
 
         {/* Row 6 */}
-        <LastFourWeeksExpense lastFourWeeks={expenses.lastFourWeeks} />
+        <div className="reveal" style={stagger(10)}>
+          <LastFourWeeksExpense
+            lastFourWeeks={expenses.lastFourWeeks}
+            weeklyBudget={spending.weekly}
+            dailyBudget={spending.daily}
+          />
+        </div>
 
         {/* Row 7 */}
-        <Savings plans={saving.plans} onAdded={fetchDashboard} />
+        <div className="reveal" style={stagger(11)}>
+          <Savings plans={saving.plans} onAdded={fetchDashboard} />
+        </div>
       </div>
     </main>
   );

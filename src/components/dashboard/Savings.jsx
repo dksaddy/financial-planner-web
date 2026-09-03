@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FiPlus, FiTrendingUp } from "react-icons/fi";
 
 import Section from "./Section";
 import AddSavingPlanModal from "./AddSavingPlanModal";
@@ -16,14 +17,16 @@ export default function Savings({
   return (
     <Section
       title="Savings"
+      icon={FiTrendingUp}
+      accent="emerald"
       actions={
         <button
           type="button"
           onClick={() => setModalOpen(true)}
-          className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700"
+          className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-lg shadow-emerald-500/30 transition hover:shadow-emerald-500/50 hover:brightness-110 active:scale-95"
           aria-label="Add saving plan"
         >
-          +
+          <FiPlus size={16} strokeWidth={2.6} />
         </button>
       }
     >
@@ -34,24 +37,29 @@ export default function Savings({
       />
 
       {savingPlans.length === 0 ? (
-        <p className="text-sm text-gray-400">
+        <p className="py-6 text-center text-sm text-ink-faint">
           No saving plans yet.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {savingPlans.map((plan) => (
             <div
               key={plan.id}
-              className="rounded-xl border border-gray-200 p-4 text-sm shadow-sm transition hover:shadow-md"
+              className="group/plan relative overflow-hidden rounded-xl border border-line-soft bg-inset p-4 transition-[background-color,border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-line-strong hover:bg-surface hover:shadow-card"
             >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-[0.12] blur-2xl"
+              />
+
               {/* Header */}
-              <div className="flex items-start justify-between gap-2">
-                <p className="truncate font-semibold text-gray-900">
+              <div className="relative flex items-start justify-between gap-2">
+                <p className="truncate text-base font-bold text-ink">
                   {plan.name}
                 </p>
 
                 <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusStyles(
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ring-1 ring-inset ${statusStyles(
                     plan.status
                   )}`}
                 >
@@ -60,27 +68,28 @@ export default function Savings({
               </div>
 
               {/* Deposit progress */}
-              <div className="mt-3">
-                <div className="flex h-2 w-full overflow-hidden rounded-full bg-gray-100">
-                  <div
-                    className="h-full bg-blue-600"
-                    style={{ width: `${plan.percentage}%` }}
-                  />
-                </div>
-
-                <div className="mt-1.5 flex items-center justify-between text-xs text-gray-500">
-                  <span>
-                    {plan.currentlyDeposited.toFixed(2)} deposited
-                  </span>
-
-                  <span className="font-medium text-gray-700">
+              <div className="relative mt-4">
+                <div className="mb-1.5 flex items-baseline justify-between">
+                  <span className="num text-2xl font-bold text-emerald-fg">
                     {plan.percentage.toFixed(0)}%
                   </span>
+
+                  <span className="num text-xs text-ink-muted">
+                    {plan.currentlyDeposited.toFixed(2)} deposited
+                  </span>
+                </div>
+
+                <div className="relative flex h-2.5 w-full overflow-hidden rounded-full bg-line-soft ring-1 ring-inset ring-line-soft">
+                  <div
+                    className="bar-grow relative h-full overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400"
+                    style={{ width: `${plan.percentage}%` }}
+                  >
+                  </div>
                 </div>
               </div>
 
               {/* Details */}
-              <div className="mt-4 grid grid-cols-2 gap-y-3 border-t border-gray-100 pt-3">
+              <div className="relative mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-line-soft pt-3.5">
                 <Stat
                   label="Contribution"
                   value={`${Number(plan.amount).toFixed(2)} / ${frequencyLabel(plan.frequency)}`}
@@ -113,16 +122,16 @@ export default function Savings({
               </div>
 
               {/* Profit footer */}
-              <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
-                <span className="text-xs text-gray-500">
+              <div className="relative mt-3.5 flex items-center justify-between border-t border-line-soft pt-3.5">
+                <span className="text-[11px] uppercase tracking-wider text-ink-faint">
                   Projected Profit
                 </span>
 
                 <span
-                  className={`text-sm font-semibold ${
+                  className={`num rounded-lg px-2.5 py-1 text-sm font-bold ring-1 ring-inset ${
                     plan.profit >= 0
-                      ? "text-green-600"
-                      : "text-red-500"
+                      ? "bg-emerald-soft text-emerald-fg ring-emerald-line"
+                      : "bg-rose-soft text-rose-fg ring-rose-line"
                   }`}
                 >
                   {plan.profit >= 0 ? "+" : ""}
@@ -139,9 +148,14 @@ export default function Savings({
 
 function Stat({ label, value }) {
   return (
-    <div>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="font-medium text-gray-800">{value}</p>
+    <div className="min-w-0">
+      <p className="truncate text-[10px] uppercase tracking-wider text-ink-faint">
+        {label}
+      </p>
+
+      <p className="num truncate text-sm font-bold text-ink">
+        {value}
+      </p>
     </div>
   );
 }
@@ -158,12 +172,12 @@ function frequencyLabel(frequency) {
 function statusStyles(status) {
   switch (status) {
     case "active":
-      return "bg-green-100 text-green-700";
+      return "bg-emerald-soft text-emerald-fg ring-emerald-line";
     case "completed":
-      return "bg-blue-100 text-blue-700";
+      return "bg-sky-soft text-sky-fg ring-sky-line";
     case "cancelled":
-      return "bg-gray-100 text-gray-600";
+      return "bg-slate-soft text-ink-muted ring-slate-line";
     default:
-      return "bg-gray-100 text-gray-600";
+      return "bg-slate-soft text-ink-muted ring-slate-line";
   }
 }

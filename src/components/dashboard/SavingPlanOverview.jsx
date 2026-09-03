@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FiCreditCard, FiPlus } from "react-icons/fi";
 
 import Section from "./Section";
 import DepositModal from "./DepositModal";
@@ -16,7 +17,11 @@ export default function SavingPlanOverview({
   );
 
   return (
-    <Section title="Overview">
+    <Section
+      title="Overview"
+      icon={FiCreditCard}
+      accent="indigo"
+    >
       <DepositModal
         open={Boolean(activePlan)}
         onClose={() => setActivePlan(null)}
@@ -25,51 +30,71 @@ export default function SavingPlanOverview({
       />
 
       {activePlans.length === 0 ? (
-        <p className="text-sm text-gray-400">
+        <p className="py-6 text-center text-sm text-ink-faint">
           No active saving plans yet.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {activePlans.map((plan) => (
-            <div key={plan.id}>
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <p className="truncate text-sm font-medium text-gray-700">
+            <div
+              key={plan.id}
+              className="rounded-xl border border-line-soft bg-inset p-4 transition hover:border-line-strong"
+            >
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="truncate text-sm font-bold text-ink">
                   {plan.name}
                 </p>
 
                 <button
                   type="button"
                   onClick={() => setActivePlan(plan)}
-                  className="shrink-0 rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white transition hover:bg-blue-700"
+                  className="group/btn flex shrink-0 items-center gap-1 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg shadow-indigo-500/30 transition hover:shadow-indigo-500/50 active:scale-95"
                 >
+                  <FiPlus
+                    size={12}
+                    className="transition-transform group-hover/btn:rotate-90"
+                  />
                   Deposit
                 </button>
               </div>
 
-              <div className="flex h-3 w-full overflow-hidden rounded-full bg-gray-100">
+              <div className="relative flex h-2.5 w-full overflow-hidden rounded-full bg-line-soft ring-1 ring-inset ring-line-soft">
                 <div
-                  className="h-full bg-sky-400"
+                  className="bar-grow relative h-full overflow-hidden bg-gradient-to-r from-sky-400 to-cyan-300"
                   style={{
                     width: `${plan.percentage}%`,
                   }}
-                />
+                >
+                </div>
 
                 <div
-                  className="h-full bg-lime-300"
+                  className="bar-grow h-full bg-gradient-to-r from-emerald-400/50 to-lime-300/50"
                   style={{
                     width: `${100 - plan.percentage}%`,
                   }}
                 />
               </div>
 
-              <div className="mt-2 flex items-center justify-between text-sm font-semibold text-gray-900">
-                <span>
-                  {plan.currentlyDeposited.toFixed(2)}
-                </span>
+              <div className="mt-2.5 flex items-end justify-between">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-ink-faint">
+                    Deposited
+                  </p>
 
-                <span>
-                  {plan.remaining.toFixed(2)}
-                </span>
+                  <p className="num text-base font-bold text-sky-fg">
+                    {plan.currentlyDeposited.toFixed(2)}
+                  </p>
+                </div>
+
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-wider text-ink-faint">
+                    Remaining
+                  </p>
+
+                  <p className="num text-base font-bold text-ink-muted">
+                    {plan.remaining.toFixed(2)}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

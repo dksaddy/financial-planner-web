@@ -74,13 +74,19 @@ export default function DepositModal({
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-500">
-          <span>
-            Deposited {Number(plan.currentlyDeposited).toFixed(2)}
+        <div className="flex items-center justify-between rounded-xl border border-line bg-surface px-3 py-2.5 text-xs text-ink-muted">
+          <span className="num">
+            Deposited{" "}
+            <span className="font-bold text-emerald-fg">
+              {Number(plan.currentlyDeposited).toFixed(2)}
+            </span>
           </span>
 
-          <span>
-            Target {Number(plan.depositAmount).toFixed(2)}
+          <span className="num">
+            Target{" "}
+            <span className="font-bold text-ink">
+              {Number(plan.depositAmount).toFixed(2)}
+            </span>
           </span>
         </div>
 

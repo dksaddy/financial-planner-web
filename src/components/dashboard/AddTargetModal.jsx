@@ -92,7 +92,7 @@ export default function AddTargetModal({
         />
 
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-xs font-bold uppercase tracking-wider text-ink-muted">
             Picture (optional)
           </label>
 
@@ -102,11 +102,11 @@ export default function AddTargetModal({
             onChange={(e) =>
               setImage(e.target.files?.[0] ?? null)
             }
-            className="block w-full text-sm text-gray-600
-            file:mr-3 file:rounded-lg file:border-0
-            file:bg-blue-50 file:px-3 file:py-2
-            file:text-sm file:font-medium file:text-blue-700
-            hover:file:bg-blue-100"
+            className="block w-full cursor-pointer text-sm text-ink-muted
+            file:mr-3 file:cursor-pointer file:rounded-lg file:border-0
+            file:bg-indigo-soft file:px-3 file:py-2
+            file:text-sm file:font-bold file:text-indigo-fg
+            hover:file:bg-surface-hover"
           />
         </div>
 
