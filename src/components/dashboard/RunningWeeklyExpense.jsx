@@ -14,6 +14,11 @@ export default function RunningWeeklyExpense({
 
   const records = currentWeek?.records || [];
 
+  const maxTotal = records.reduce(
+    (max, record) => Math.max(max, Number(record.total) || 0),
+    0
+  );
+
   return (
     <Section
       title="Running Weekly Expense"
@@ -51,35 +56,97 @@ export default function RunningWeeklyExpense({
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {records.map((record) => (
-            <div
-              key={record.id}
-              className="flex items-center justify-between gap-3 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 text-sm transition hover:border-cyan-line hover:bg-cyan-soft"
-            >
-              <span className="w-24 shrink-0 text-xs font-medium text-ink-faint">
-                {formatDate(record.date)}
-              </span>
-
-              <span className="flex-1 truncate font-medium text-ink">
-                {record.expense_type_name}
-              </span>
-
-              <span className="w-24 shrink-0 text-right text-xs">
-                {record.extraSave === null ? (
-                  <span className="text-ink-faint">—</span>
-                ) : (
-                  <span className="num rounded-full bg-emerald-soft px-2 py-0.5 font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
-                    +{Number(record.extraSave).toFixed(2)}
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+          {/* Records list — 60% */}
+          <div className="space-y-2 lg:w-3/5">
+            {records.map((record) => (
+              // Narrow screens stack the row into two lines (date + name,
+              // then the figures) — the fixed-width date/badge/total columns
+              // otherwise leave no room for the expense name.
+              <div
+                key={record.id}
+                className="flex flex-col gap-1.5 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 text-sm transition hover:border-cyan-line hover:bg-cyan-soft sm:flex-row sm:items-center sm:gap-3"
+              >
+                <div className="flex min-w-0 items-center justify-between gap-2.5 sm:flex-1">
+                  <span className="shrink-0 text-xs font-medium text-ink-faint sm:w-24">
+                    {formatDate(record.date)}
                   </span>
-                )}
-              </span>
 
-              <span className="num w-20 shrink-0 text-right font-bold text-ink">
-                {Number(record.total).toFixed(2)}
+                  <span className="min-w-0 flex-1 truncate text-right font-medium text-ink sm:text-left">
+                    {record.expense_type_name}
+                  </span>
+                </div>
+
+                <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
+                  <span className="text-xs sm:w-24 sm:text-right">
+                    {record.extraSave === null ? (
+                      <span className="text-ink-faint">—</span>
+                    ) : (
+                      <span className="num rounded-full bg-emerald-soft px-2 py-0.5 font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
+                        +{Number(record.extraSave).toFixed(2)}
+                      </span>
+                    )}
+                  </span>
+
+                  <span className="num shrink-0 text-right font-bold text-ink sm:w-20">
+                    {Number(record.total).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bar chart — 40% */}
+          <div
+            className="flex flex-col rounded-xl border border-line-soft bg-inset p-3 sm:p-4 lg:w-2/5"
+            style={{
+              backgroundImage:
+                "linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px)",
+              backgroundSize: "16px 16px",
+            }}
+          >
+            <div className="relative flex h-28 items-end justify-between gap-1.5 sm:h-36 sm:gap-3">
+              {records.map((record) => {
+                const total = Number(record.total) || 0;
+                const percent =
+                  maxTotal > 0 ? Math.max((total / maxTotal) * 100, 3) : 0;
+
+                return (
+                  <div
+                    key={record.id}
+                    title={`${formatDate(record.date)} — ${total.toFixed(2)}`}
+                    className="relative z-[1] flex h-full flex-1 flex-col items-center justify-end gap-1"
+                  >
+                    <span className="num text-[8px] font-bold text-ink-faint sm:text-[9px]">
+                      {total.toFixed(0)}
+                    </span>
+
+                    <div
+                      className="bar-grow w-full max-w-[16px] rounded-t-md bg-gradient-to-t from-cyan-500 to-sky-400 shadow-[0_0_10px_-2px_var(--cyan-dot)] sm:max-w-[22px]"
+                      style={{ height: `${percent}%` }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-2 flex justify-between gap-1.5 border-t border-line-soft pt-2 sm:gap-3">
+              {records.map((record) => (
+                <span
+                  key={record.id}
+                  className="flex-1 text-center text-[8px] font-medium uppercase text-ink-faint sm:text-[9px]"
+                >
+                  {formatDate(record.date).slice(0, 3)}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-3 flex flex-1 items-center justify-center">
+              <span className="text-center text-base font-bold uppercase tracking-[0.14em] text-ink">
+                Daily total
               </span>
             </div>
-          ))}
+          </div>
         </div>
       )}
 

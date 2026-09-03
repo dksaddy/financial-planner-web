@@ -92,7 +92,7 @@ export default function ProgressCard({
             {/* Inner disc punches the ring out of the conic gradient. */}
             <div className="flex h-[86px] w-[86px] flex-col items-center justify-center rounded-full bg-panel ring-1 ring-line">
               <span className="num text-xl font-bold text-ink">
-                {salary > 0 ? `${Math.round(allocatedPercent)}%` : "—"}
+                {salary > 0 ? `${allocatedPercent.toFixed(1)}%` : "—"}
               </span>
 
               <span className="text-[9px] font-medium uppercase tracking-[0.12em] text-ink-faint">
@@ -120,7 +120,7 @@ export default function ProgressCard({
 
                 <span className="flex items-baseline gap-2">
                   <span className="num font-bold text-ink">
-                    {item.percent.toFixed(0)}%
+                    {item.percent.toFixed(1)}%
                   </span>
 
                   <span className="num w-16 text-right text-[11px] text-ink-faint">

@@ -130,11 +130,15 @@ export default function DashboardPage() {
         {/* Row 3 */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="reveal lg:col-span-2" style={stagger(6)}>
-            <TargetCard targets={targets} onAdded={fetchDashboard} />
+            <TargetCard
+              targets={targets}
+              extraSaving={extraSaving}
+              onAdded={fetchDashboard}
+            />
           </div>
 
           <div className="reveal" style={stagger(7)}>
-            <ExtraSavingCard extraSaving={extraSaving} />
+            <ExtraSavingCard extraSaving={extraSaving} targets={targets} />
           </div>
         </div>
 
