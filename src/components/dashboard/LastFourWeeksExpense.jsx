@@ -32,21 +32,7 @@ export default function LastFourWeeksExpense({
     0
   );
 
-  // A completed week is measured against the whole weekly budget, not
-  // against the days that happen to have an expense record: an unrecorded
-  // working day is a day nothing was spent, so its budget was saved.
-  // Summing the per-day `extraSave` figures instead would only credit
-  // recorded days and report a week under budget as overspent.
-  const activeSaved = budget - activeTotal;
-
-  const activeOverBudget = budget > 0 && activeTotal > budget;
-  const activeOverPercent = activeOverBudget
-    ? ((activeTotal - budget) / budget) * 100
-    : 0;
-
-  // Sum of the per-day `extraSave` figures the API stores — real
-  // "budget - spent" for each recorded day only, unlike `activeSaved`
-  // above which also credits unrecorded days with a full day's budget.
+  // Sum of the per-day `extraSave` figures the API stores.
   const activeDailySaved = activeItems.reduce(
     (sum, item) =>
       item.extraSave === null ? sum : sum + Number(item.extraSave),
@@ -61,11 +47,7 @@ export default function LastFourWeeksExpense({
       0
     );
 
-    const saved = budget - total;
-
-    // Sum of the per-day `extraSave` figures the API stores — real
-    // "budget - spent" for each recorded day only. Unlike `saved` above,
-    // this does not credit unrecorded days with a full day's budget.
+    // Sum of the per-day `extraSave` figures the API stores.
     const dailySaved = items.reduce(
       (sum, item) =>
         item.extraSave === null
@@ -79,7 +61,6 @@ export default function LastFourWeeksExpense({
       label,
       items,
       total,
-      saved,
       dailySaved,
     };
   });
@@ -101,7 +82,7 @@ export default function LastFourWeeksExpense({
       accent="indigo"
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {weeks.map(({ weekKey, label, items, total, saved, dailySaved }) => {
+        {weeks.map(({ weekKey, label, items, total, dailySaved }) => {
           const overBudget = budget > 0 && total > budget;
           const overPercent = overBudget
             ? ((total - budget) / budget) * 100
@@ -173,26 +154,12 @@ export default function LastFourWeeksExpense({
 
             <div className="mt-2.5 flex items-center justify-between border-t border-line-soft pt-2.5">
               <span className="text-[11px] uppercase tracking-wider text-ink-faint">
-                Saving
+                Daily Saving
               </span>
 
               <span
                 className={`num text-sm font-bold ${
-                  saved > 0 ? "text-emerald-fg" : "text-rose-fg"
-                }`}
-              >
-                {saved.toFixed(2)}
-              </span>
-            </div>
-
-            <div className="mt-1 flex items-center justify-between">
-              <span className="text-[11px] uppercase tracking-wider text-ink-faint">
-                Daily Save
-              </span>
-
-              <span
-                className={`num text-xs font-medium ${
-                  dailySaved > 0 ? "text-emerald-fg" : "text-rose-fg"
+                  dailySaved >= 0 ? "text-emerald-fg" : "text-rose-fg"
                 }`}
               >
                 {dailySaved.toFixed(2)}
@@ -270,27 +237,11 @@ export default function LastFourWeeksExpense({
           </span>
 
           <span className="num rounded-full bg-indigo-soft px-2.5 py-1 text-[11px] font-medium text-indigo-fg ring-1 ring-inset ring-indigo-line">
-            Weekly Budget {budget.toFixed(2)}
+            Daily Budget {daily.toFixed(2)}
           </span>
-
-          <span
-            className={`num rounded-full px-2.5 py-1 text-[11px] font-medium ring-1 ring-inset ${
-              activeSaved >= 0
-                ? "bg-emerald-soft text-emerald-fg ring-emerald-line"
-                : "bg-rose-soft text-rose-fg ring-rose-line"
-            }`}
-          >
-            Saved {activeSaved.toFixed(2)}
-          </span>
-
-          {activeOverBudget && (
-            <span className="num rounded-full bg-rose-soft px-2.5 py-1 text-[11px] font-medium text-rose-fg ring-1 ring-inset ring-rose-line">
-              +{activeOverPercent.toFixed(0)}% Over
-            </span>
-          )}
 
           <span className="num rounded-full bg-surface px-2.5 py-1 text-[11px] font-medium text-ink-muted ring-1 ring-inset ring-line">
-             Budget {daily.toFixed(2)}
+            Spent {activeTotal.toFixed(2)}
           </span>
 
           <span
@@ -300,7 +251,7 @@ export default function LastFourWeeksExpense({
                 : "bg-rose-soft text-rose-fg ring-rose-line"
             }`}
           >
-            Save {activeDailySaved.toFixed(2)}
+            Daily Saving {activeDailySaved.toFixed(2)}
           </span>
         </div>
       </Modal>

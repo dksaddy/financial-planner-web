@@ -44,7 +44,7 @@ export default function Section({
             </span>
           )}
 
-          <h2 className="truncate text-[11px] font-bold uppercase tracking-[0.14em] text-ink-muted">
+          <h2 className="truncate text-[15px] font-bold uppercase tracking-[0.14em] text-ink-muted">
             {title}
           </h2>
         </div>

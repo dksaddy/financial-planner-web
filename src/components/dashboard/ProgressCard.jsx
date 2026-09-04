@@ -39,12 +39,6 @@ export default function ProgressCard({
     ${COLORS.remaining} ${spendingEnd}% 100%
   )`;
 
-  const remainingAmount = Math.max(salary - totalSaving - totalSpending, 0);
-  const remainingPercentRaw = Math.max(
-    100 - savingPercentRaw - spendingPercentRaw,
-    0
-  );
-
   const allocatedPercent = Math.min(
     savingPercentRaw + spendingPercentRaw,
     100
@@ -62,12 +56,6 @@ export default function ProgressCard({
       color: COLORS.spending,
       percent: spendingPercentRaw,
       value: totalSpending,
-    },
-    {
-      label: "Remaining",
-      color: COLORS.remaining,
-      percent: remainingPercentRaw,
-      value: remainingAmount,
     },
   ];
 

@@ -26,7 +26,7 @@ export default function ExtraSavingCard({ extraSaving, targets }) {
       icon={FiZap}
       accent="violet"
     >
-      <div className="flex items-center gap-5">
+      <div className="flex flex-col items-center gap-5">
         <div className="relative shrink-0">
           <span
             aria-hidden
@@ -38,35 +38,33 @@ export default function ExtraSavingCard({ extraSaving, targets }) {
           />
 
           <div
-            className="relative flex h-24 w-24 items-center justify-center rounded-full shadow-card"
+            className="relative flex h-36 w-36 items-center justify-center rounded-full shadow-card"
             style={{
               background: totalTargetAmount > 0 ? gradient : "var(--line-strong)",
             }}
           >
-            <div className="flex h-[62px] w-[62px] flex-col items-center justify-center rounded-full bg-panel ring-1 ring-line">
+            <div className="flex h-[93px] w-[93px] flex-col items-center justify-center rounded-full bg-panel ring-1 ring-line">
               <span
-                className={`num text-base font-bold ${
+                className={`num text-lg font-bold ${
                   isDeficit ? "text-rose-fg" : "text-emerald-fg"
                 }`}
               >
                 {coveredPercent.toFixed(0)}%
               </span>
-              <span className="text-[8px] font-medium uppercase tracking-[0.1em] text-ink-faint">
+              <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-faint">
                 of target
               </span>
             </div>
           </div>
         </div>
 
-        <div className="min-w-0 flex-1 space-y-1">
-          <div className="mb-2 border-b border-line pb-2">
-            <Row
-              label="Extra Save"
-              value={extraSaving.totalExtraSave}
-              accent="violet"
-              emphasis
-            />
-          </div>
+        <div className="w-full space-y-1">
+          <Row
+            label="Extra Save"
+            value={extraSaving.totalExtraSave}
+            accent="violet"
+            emphasis
+          />
 
           <Row
             label="Target Deduction"
