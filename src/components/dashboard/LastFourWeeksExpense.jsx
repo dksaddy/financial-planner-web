@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { FiCalendar, FiChevronRight } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { FiCalendar, FiChevronRight, FiArrowUpRight } from "react-icons/fi";
 
 import Section from "./Section";
 import Modal from "@/components/common/Modal";
@@ -18,6 +19,7 @@ export default function LastFourWeeksExpense({
   weeklyBudget = 0,
   dailyBudget = 0,
 }) {
+  const router = useRouter();
   const [activeWeek, setActiveWeek] = useState(null);
 
   const budget = Number(weeklyBudget || 0);
@@ -80,6 +82,16 @@ export default function LastFourWeeksExpense({
       title="Last Four Weekly Expense"
       icon={FiCalendar}
       accent="indigo"
+      actions={
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/expenses")}
+          className="flex h-8 items-center gap-1.5 rounded-xl border border-line-soft bg-inset px-3 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-indigo-line hover:bg-indigo-soft hover:text-indigo-fg active:scale-95"
+        >
+          View All
+          <FiArrowUpRight size={13} strokeWidth={2.6} />
+        </button>
+      }
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {weeks.map(({ weekKey, label, items, total, dailySaved }) => {
