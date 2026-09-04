@@ -91,10 +91,10 @@ export default function ProgressCard({
         </div>
 
         {/* Legend */}
-        <div className="w-full min-w-0 space-y-2.5">
+        <div className="w-full min-w-0 space-y-4.5">
           {legend.map((item) => (
             <div key={item.label} className="space-y-1">
-              <div className="flex items-center justify-between gap-2 text-xs">
+              <div className="flex items-center justify-between gap-2 text-sm">
                 <span className="flex items-center gap-2 text-ink-muted">
                   <span
                     className="h-2 w-2 shrink-0 rounded-full"
@@ -106,7 +106,7 @@ export default function ProgressCard({
                   {item.label}
                 </span>
 
-                <span className="flex items-baseline gap-2">
+                <span className="flex items-baseline gap-3">
                   <span className="num font-bold text-ink">
                     {item.percent.toFixed(1)}%
                   </span>
@@ -117,7 +117,7 @@ export default function ProgressCard({
                 </span>
               </div>
 
-              <div className="h-1 w-full overflow-hidden rounded-full bg-line-soft">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-line-soft">
                 <div
                   className="bar-grow h-full rounded-full"
                   style={{

@@ -25,7 +25,7 @@ export default function SavingBreakdown({ saving }) {
 
         <div className="mt-2 border-t border-line pt-2">
           <Row
-            label="Total Monthly Saving"
+            label="Total Saving"
             value={saving.totalMonthlySaving}
             accent="cyan"
             emphasis
