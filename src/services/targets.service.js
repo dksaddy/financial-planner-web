@@ -24,3 +24,18 @@ export const createTarget = async ({
 
   return response.data;
 };
+
+export const updateTarget = async (id, { name, target_amount }) => {
+  const response = await api.put(`/target/${id}`, {
+    name,
+    target_amount,
+  });
+
+  return response.data;
+};
+
+export const deleteTarget = async (id) => {
+  const response = await api.delete(`/target/${id}`);
+
+  return response.data;
+};

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { FiTarget, FiPlus } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { FiTarget, FiPlus, FiArrowUpRight } from "react-icons/fi";
 
 import Section from "./Section";
 import AddTargetModal from "./AddTargetModal";
@@ -12,6 +13,7 @@ export default function TargetCard({
   onAdded,
   className = "",
 }) {
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
 
   const availableSaving = Number(extraSaving?.totalExtraSave) || 0;
@@ -23,14 +25,25 @@ export default function TargetCard({
       accent="fuchsia"
       className={className}
       actions={
-        <button
-          type="button"
-          onClick={() => setModalOpen(true)}
-          className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 text-white shadow-lg shadow-fuchsia-500/30 transition hover:shadow-fuchsia-500/50 hover:brightness-110 active:scale-95"
-          aria-label="Add target"
-        >
-          <FiPlus size={16} strokeWidth={2.6} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard/targets")}
+            className="flex h-8 items-center gap-1.5 rounded-xl border border-line-soft bg-inset px-3 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-fuchsia-line hover:bg-fuchsia-soft hover:text-fuchsia-fg active:scale-95"
+          >
+            View All
+            <FiArrowUpRight size={13} strokeWidth={2.6} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 text-white shadow-lg shadow-fuchsia-500/30 transition hover:shadow-fuchsia-500/50 hover:brightness-110 active:scale-95"
+            aria-label="Add target"
+          >
+            <FiPlus size={16} strokeWidth={2.6} />
+          </button>
+        </div>
       }
     >
       <AddTargetModal

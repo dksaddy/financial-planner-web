@@ -5,6 +5,7 @@ export default function Button({
   loading = false,
   type = "button",
   className = "",
+  ...rest
 }) {
   return (
     <button
@@ -19,6 +20,7 @@ export default function Button({
       disabled:cursor-not-allowed
       disabled:opacity-70 disabled:active:scale-100
       ${className}`}
+      {...rest}
     >
       {loading ? <Spinner /> : children}
     </button>
