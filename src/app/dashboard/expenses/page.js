@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 
 import Section from "@/components/dashboard/Section";
+import MonthTabs from "@/components/dashboard/MonthTabs";
 import AddExpenseModal from "@/components/dashboard/AddExpenseModal";
 import EditExpenseModal from "@/components/dashboard/EditExpenseModal";
 import DeleteExpenseDialog from "@/components/dashboard/DeleteExpenseDialog";
@@ -30,6 +31,7 @@ export default function AllExpensesPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editRecord, setEditRecord] = useState(null);
   const [deleteRecord, setDeleteRecord] = useState(null);
+  const [activeMonth, setActiveMonth] = useState("all");
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -64,7 +66,34 @@ export default function AllExpensesPage() {
   }
 
   const items = records || [];
-  const totalSpent = items.reduce(
+
+  // Build the tab list from every record's "YYYY-MM", newest first, and
+  // always keep an "All" tab regardless of which month is selected.
+  const monthKeys = [
+    ...new Set(items.map((item) => String(item.date).slice(0, 7))),
+  ].sort((a, b) => (a < b ? 1 : -1));
+
+  const months = [
+    { key: "all", label: "All" },
+    ...monthKeys.map((key) => ({ key, label: formatMonthLabel(key) })),
+  ];
+
+  // If the previously active month has no records left (e.g. after a
+  // delete), fall back to "All" instead of showing an empty state for
+  // a tab that no longer makes sense.
+  const selectedMonth =
+    activeMonth === "all" || monthKeys.includes(activeMonth)
+      ? activeMonth
+      : "all";
+
+  const filteredItems =
+    selectedMonth === "all"
+      ? items
+      : items.filter(
+          (item) => String(item.date).slice(0, 7) === selectedMonth
+        );
+
+  const totalSpent = filteredItems.reduce(
     (sum, item) => sum + (Number(item.total) || 0),
     0
   );
@@ -73,7 +102,7 @@ export default function AllExpensesPage() {
   const groups = [];
   const groupIndex = new Map();
 
-  items.forEach((item) => {
+  filteredItems.forEach((item) => {
     const key = String(item.date).slice(0, 10);
 
     if (!groupIndex.has(key)) {
@@ -106,7 +135,7 @@ export default function AllExpensesPage() {
 
             <p className="flex items-center gap-1.5 text-sm text-ink-muted">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-dot" />
-              {items.length} records · {totalSpent.toFixed(2)} total
+              {filteredItems.length} records · {totalSpent.toFixed(2)} total
             </p>
           </div>
         </div>
@@ -143,9 +172,17 @@ export default function AllExpensesPage() {
 
       <div className="reveal" style={{ animationDelay: "70ms" }}>
         <Section title="Expense Records" icon={FiActivity} accent="indigo">
+          <MonthTabs
+            months={months}
+            active={selectedMonth}
+            onChange={setActiveMonth}
+          />
+
           {groups.length === 0 ? (
             <p className="py-6 text-center text-sm text-ink-faint">
-              No expenses recorded yet.
+              {selectedMonth === "all"
+                ? "No expenses recorded yet."
+                : "No expenses recorded for this month."}
             </p>
           ) : (
             <div className="space-y-5">
@@ -212,6 +249,24 @@ export default function AllExpensesPage() {
       </div>
     </main>
   );
+}
+
+function formatMonthLabel(key) {
+  // key is "YYYY-MM". Build the Date with the local-time constructor
+  // (no UTC round trip) — same reasoning as formatDate below.
+  const match = /^(\d{4})-(\d{2})$/.exec(key);
+
+  if (!match) {
+    return key;
+  }
+
+  const [, year, month] = match;
+  const parsed = new Date(Number(year), Number(month) - 1, 1);
+
+  return parsed.toLocaleDateString("en-GB", {
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function formatDate(date) {
