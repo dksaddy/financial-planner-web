@@ -5,17 +5,28 @@ export const getTargets = async () => {
   return response.data;
 };
 
+export const getTargetImages = async () => {
+  const response = await api.get("/target/images");
+  return response.data;
+};
+
 export const createTarget = async ({
   name,
   target_amount,
   image,
+  existingImageUrl,
 }) => {
   const formData = new FormData();
   formData.append("name", name);
   formData.append("target_amount", target_amount);
 
   if (image) {
+    // A brand new file was chosen — upload it.
     formData.append("image", image);
+  } else if (existingImageUrl) {
+    // An existing target picture was picked from the gallery — reuse it,
+    // no file upload needed.
+    formData.append("image_url", existingImageUrl);
   }
 
   const response = await api.post("/target", formData, {
