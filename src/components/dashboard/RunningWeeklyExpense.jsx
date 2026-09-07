@@ -170,7 +170,18 @@ export default function RunningWeeklyExpense({
 function formatDate(date) {
   if (!date) return "—";
 
-  const parsed = new Date(date);
+  // See the matching comment in app/dashboard/expenses/page.js:
+  // parse "YYYY-MM-DD" by hand and build the Date with the local-time
+  // constructor so no timezone conversion (server or browser) can
+  // shift the displayed calendar day.
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(date));
+
+  if (!match) {
+    return date;
+  }
+
+  const [, year, month, day] = match;
+  const parsed = new Date(Number(year), Number(month) - 1, Number(day));
 
   if (Number.isNaN(parsed.getTime())) {
     return date;

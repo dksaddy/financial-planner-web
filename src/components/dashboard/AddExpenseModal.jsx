@@ -12,8 +12,18 @@ import { createExpenseRecordSchema } from "@/validations/expenseRecords.validati
 import { createExpenseRecord } from "@/services/expenseRecords.service";
 import { getExpenseTypes } from "@/services/expenseTypes.service";
 
-const todayDateString = () =>
-  new Date().toISOString().slice(0, 10);
+// `toISOString()` converts to UTC before slicing, which reports
+// "yesterday" for part of the day whenever the browser's local
+// timezone is ahead of UTC (e.g. Asia/Dhaka, +6, for the first ~6
+// hours after local midnight). Build the string from local
+// year/month/day instead so "today" always matches the user's clock.
+const todayDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function AddExpenseModal({
   open,

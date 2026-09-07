@@ -217,7 +217,21 @@ export default function AllExpensesPage() {
 function formatDate(date) {
   if (!date) return "—";
 
-  const parsed = new Date(date);
+  // `date` is a plain "YYYY-MM-DD" calendar date with no time-of-day
+  // or timezone component. `new Date("YYYY-MM-DD")` parses it as UTC
+  // midnight, and toLocaleDateString() then renders it in the
+  // browser's LOCAL timezone — a round trip that can silently shift
+  // the displayed day depending on where the browser is. Parsing the
+  // parts by hand and building the Date with the local-time
+  // constructor avoids any timezone conversion entirely.
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(date));
+
+  if (!match) {
+    return date;
+  }
+
+  const [, year, month, day] = match;
+  const parsed = new Date(Number(year), Number(month) - 1, Number(day));
 
   if (Number.isNaN(parsed.getTime())) {
     return date;
