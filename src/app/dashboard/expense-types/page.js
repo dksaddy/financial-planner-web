@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { FiArrowLeft, FiRepeat, FiChevronDown } from "react-icons/fi";
+import { FiArrowLeft, FiRepeat, FiChevronDown, FiPlus } from "react-icons/fi";
 
 import Section from "@/components/dashboard/Section";
 import Spinner from "@/components/common/Spinner";
+import AddExpenseTypeModal from "@/components/dashboard/AddExpenseTypeModal";
 
 import { getExpenseTypes } from "@/services/expenseTypes.service";
 import { isAuthenticated } from "@/lib/auth";
@@ -23,6 +24,7 @@ export default function AllExpenseTypesPage() {
   const [types, setTypes] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -89,7 +91,22 @@ export default function AllExpenseTypesPage() {
             </p>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setAddOpen(true)}
+          className="flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 px-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-amber-500/30 transition hover:shadow-amber-500/50 hover:brightness-110 active:scale-95"
+        >
+          <FiPlus size={16} strokeWidth={2.6} />
+          Add Type
+        </button>
       </div>
+
+      <AddExpenseTypeModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        onSuccess={fetchTypes}
+      />
 
       <div className="reveal" style={{ animationDelay: "70ms" }}>
         <Section title="Expense Types" icon={FiRepeat} accent="amber">

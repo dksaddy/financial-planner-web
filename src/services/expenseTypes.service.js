@@ -9,3 +9,12 @@ export const getExpenseType = async (id) => {
   const response = await api.get(`/expense-types/${id}`);
   return response.data;
 };
+
+export const createExpenseType = async ({ name, categories }) => {
+  const response = await api.post("/expense-types", {
+    name,
+    categories,
+  });
+
+  return response.data;
+};
