@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { FiRepeat } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { FiRepeat, FiArrowUpRight } from "react-icons/fi";
 
 import Section from "./Section";
 import ExpenseTypeDetailsModal from "./ExpenseTypeDetailsModal";
@@ -17,6 +18,7 @@ const RANK_STYLES = [
 export default function FrequentExpense({
   expenses = [],
 }) {
+  const router = useRouter();
   const [selected, setSelected] = useState(null);
 
   const slots = [
@@ -31,6 +33,16 @@ export default function FrequentExpense({
       title="Frequently Expense Type"
       icon={FiRepeat}
       accent="amber"
+      actions={
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/expense-types")}
+          className="flex h-8 items-center gap-1.5 rounded-xl border border-line-soft bg-inset px-3 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-amber-line hover:bg-amber-soft hover:text-amber-fg active:scale-95"
+        >
+          View All
+          <FiArrowUpRight size={13} strokeWidth={2.6} />
+        </button>
+      }
     >
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {slots.map((expense, index) =>
