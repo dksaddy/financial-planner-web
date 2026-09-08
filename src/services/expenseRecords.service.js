@@ -5,8 +5,18 @@ export const createExpenseRecord = async (data) => {
   return response.data;
 };
 
-export const getExpenseRecords = async () => {
-  const response = await api.get("/expense-records");
+// Paginated. The envelope's `meta` carries `pagination`, `summary`
+// (totals over the whole filtered set) and `months` (every month the user
+// has records in) — none of which can be derived from one page.
+export const getExpenseRecords = async ({ page, limit, month } = {}) => {
+  const response = await api.get("/expense-records", {
+    params: {
+      ...(page ? { page } : {}),
+      ...(limit ? { limit } : {}),
+      ...(month && month !== "all" ? { month } : {}),
+    },
+  });
+
   return response.data;
 };
 

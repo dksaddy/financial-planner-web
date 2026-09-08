@@ -10,7 +10,10 @@ import Button from "@/components/common/Button";
 
 import { createExpenseRecordSchema } from "@/validations/expenseRecords.validation";
 import { updateExpenseRecord } from "@/services/expenseRecords.service";
-import { getExpenseTypes } from "@/services/expenseTypes.service";
+import {
+  getExpenseTypes,
+  getExpenseType,
+} from "@/services/expenseTypes.service";
 
 export default function EditExpenseModal({
   open,
@@ -49,9 +52,24 @@ export default function EditExpenseModal({
       try {
         setLoadingTypes(true);
 
-        const response = await getExpenseTypes();
+        // Only active types are selectable, but keep the record's own
+        // type in the list when it has since been deactivated — otherwise
+        // the select would silently show no selection at all.
+        const response = await getExpenseTypes("active");
 
-        setExpenseTypes(response.data || []);
+        const types = response.data || [];
+
+        const hasCurrent = types.some(
+          (type) => type.id === record.expense_type_id
+        );
+
+        if (!hasCurrent && record.expense_type_id) {
+          const current = await getExpenseType(record.expense_type_id);
+
+          setExpenseTypes([current.data, ...types]);
+        } else {
+          setExpenseTypes(types);
+        }
       } catch (error) {
         toast.error(
           error.response?.data?.message ||
@@ -125,6 +143,7 @@ export default function EditExpenseModal({
                 className="bg-panel text-ink"
               >
                 {type.name} ({Number(type.total).toFixed(2)})
+              {type.is_active === false ? " — inactive" : ""}
               </option>
             ))}
           </select>

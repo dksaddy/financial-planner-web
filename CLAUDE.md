@@ -36,6 +36,10 @@ page ("use client") → src/services/*.service.js → src/lib/axios.js → API
 - **Services** are thin one-function-per-endpoint wrappers returning `response.data` (the API's
   `{ success, statusCode, message, data }` envelope). Callers read `response.data` for the payload and
   `response.message` for toasts.
+- **Paginated lists** (`dashboard/expenses`) are server-driven: page and month live in `useState`, an
+  effect refetches on either change, and `response.meta` supplies the pagination, the totals for the
+  whole filtered set, and the month-tab list — none of which can be derived from a single page. A
+  `useRef` request counter drops out-of-order responses. `components/common/Pagination.jsx` is shared.
 - **No global state.** Refresh after a mutation is done by passing `fetchDashboard` down as an
   `onSuccess` / `onAdded` / `onDeposit` callback, which refetches the entire dashboard. Keep that
   pattern for new mutating components rather than introducing local optimistic state.

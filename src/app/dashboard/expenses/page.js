@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -18,20 +18,72 @@ import AddExpenseModal from "@/components/dashboard/AddExpenseModal";
 import EditExpenseModal from "@/components/dashboard/EditExpenseModal";
 import DeleteExpenseDialog from "@/components/dashboard/DeleteExpenseDialog";
 import Spinner from "@/components/common/Spinner";
+import Pagination from "@/components/common/Pagination";
 
 import { getExpenseRecords } from "@/services/expenseRecords.service";
 import { isAuthenticated } from "@/lib/auth";
+
+const PAGE_SIZE = 10;
 
 export default function AllExpensesPage() {
   const router = useRouter();
 
   const [records, setRecords] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
 
   const [addOpen, setAddOpen] = useState(false);
   const [editRecord, setEditRecord] = useState(null);
   const [deleteRecord, setDeleteRecord] = useState(null);
   const [activeMonth, setActiveMonth] = useState("all");
+  const [page, setPage] = useState(1);
+
+  // Page and month changes each fire a request, and the answers can come
+  // back out of order. Only the newest request is allowed to write state.
+  const requestId = useRef(0);
+
+  const fetchRecords = useCallback(
+    async (nextPage = page, nextMonth = activeMonth) => {
+      const id = requestId.current + 1;
+      requestId.current = id;
+
+      try {
+        setFetching(true);
+
+        const response = await getExpenseRecords({
+          page: nextPage,
+          limit: PAGE_SIZE,
+          month: nextMonth,
+        });
+
+        if (requestId.current !== id) return;
+
+        setRecords(response.data || []);
+        setMeta(response.meta || null);
+
+        // The API clamps a page past the end (after deleting the last
+        // record on the last page, say); follow it back.
+        const serverPage = response.meta?.pagination?.page;
+
+        if (serverPage && serverPage !== nextPage) {
+          setPage(serverPage);
+        }
+      } catch (error) {
+        if (requestId.current !== id) return;
+
+        toast.error(
+          error.response?.data?.message || "Failed to load expenses"
+        );
+      } finally {
+        if (requestId.current === id) {
+          setFetching(false);
+          setLoading(false);
+        }
+      }
+    },
+    [page, activeMonth]
+  );
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -39,21 +91,23 @@ export default function AllExpensesPage() {
       return;
     }
 
-    fetchRecords();
-  }, [router]);
+    fetchRecords(page, activeMonth);
+    // Refetch whenever the page or the month filter changes.
+  }, [router, page, activeMonth]);
 
-  const fetchRecords = async () => {
-    try {
-      const response = await getExpenseRecords();
-      setRecords(response.data || []);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to load expenses"
-      );
-    } finally {
-      setLoading(false);
+  // The selected month can disappear underneath us — deleting its last
+  // record drops it from `meta.months`. Fall back to "All", which
+  // refetches through the effect above.
+  useEffect(() => {
+    const knownMonths = meta?.months;
+
+    if (!knownMonths || activeMonth === "all") return;
+
+    if (!knownMonths.includes(activeMonth)) {
+      setActiveMonth("all");
+      setPage(1);
     }
-  };
+  }, [meta, activeMonth]);
 
   if (loading) {
     return (
@@ -65,44 +119,56 @@ export default function AllExpensesPage() {
     );
   }
 
-  const items = records || [];
+  // This page holds one page of records; everything describing the full
+  // set — the month tabs, the record count, the total spent — comes from
+  // the response's `meta`, because it cannot be derived from ten rows.
+  const pageItems = records || [];
 
-  // Build the tab list from every record's "YYYY-MM", newest first, and
-  // always keep an "All" tab regardless of which month is selected.
-  const monthKeys = [
-    ...new Set(items.map((item) => String(item.date).slice(0, 7))),
-  ].sort((a, b) => (a < b ? 1 : -1));
+  const monthKeys = meta?.months || [];
 
   const months = [
     { key: "all", label: "All" },
     ...monthKeys.map((key) => ({ key, label: formatMonthLabel(key) })),
   ];
 
-  // If the previously active month has no records left (e.g. after a
-  // delete), fall back to "All" instead of showing an empty state for
-  // a tab that no longer makes sense.
+  // If the active month has no records left (e.g. after deleting the last
+  // one), fall back to "All" rather than showing a tab that is now gone.
   const selectedMonth =
     activeMonth === "all" || monthKeys.includes(activeMonth)
       ? activeMonth
       : "all";
 
-  const filteredItems =
-    selectedMonth === "all"
-      ? items
-      : items.filter(
-          (item) => String(item.date).slice(0, 7) === selectedMonth
-        );
+  const pagination = meta?.pagination;
 
-  const totalSpent = filteredItems.reduce(
-    (sum, item) => sum + (Number(item.total) || 0),
-    0
-  );
+  const totalRecords = pagination?.total ?? pageItems.length;
+  const totalPages = pagination?.totalPages ?? 1;
+  const currentPage = pagination?.page ?? page;
 
-  // Group into date buckets while keeping the API's date-desc order.
+  const totalSpent = Number(meta?.summary?.total_amount ?? 0);
+
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+
+  const changeMonth = (month) => {
+    setActiveMonth(month);
+    setPage(1);
+  };
+
+  const changePage = (next) => {
+    setPage(Math.min(Math.max(next, 1), totalPages));
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Refetch the page currently on screen — used after add/edit/delete.
+  const refresh = () => fetchRecords(page, activeMonth);
+
+  // Group into date buckets while keeping the API's date-desc order. The
+  // API paginates records, not days, so a busy day can straddle two pages
+  // and its header then totals only the part shown here.
   const groups = [];
   const groupIndex = new Map();
 
-  filteredItems.forEach((item) => {
+  pageItems.forEach((item) => {
     const key = String(item.date).slice(0, 10);
 
     if (!groupIndex.has(key)) {
@@ -135,7 +201,9 @@ export default function AllExpensesPage() {
 
             <p className="flex items-center gap-1.5 text-sm text-ink-muted">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-dot" />
-              {filteredItems.length} records · {totalSpent.toFixed(2)} total
+              {totalRecords} records · {totalSpent.toFixed(2)} total
+              {totalRecords > PAGE_SIZE &&
+                ` · showing ${pageStart + 1}–${pageStart + pageItems.length}`}
             </p>
           </div>
         </div>
@@ -153,21 +221,21 @@ export default function AllExpensesPage() {
       <AddExpenseModal
         open={addOpen}
         onClose={() => setAddOpen(false)}
-        onSuccess={fetchRecords}
+        onSuccess={refresh}
       />
 
       <EditExpenseModal
         open={Boolean(editRecord)}
         record={editRecord}
         onClose={() => setEditRecord(null)}
-        onSuccess={fetchRecords}
+        onSuccess={refresh}
       />
 
       <DeleteExpenseDialog
         open={Boolean(deleteRecord)}
         record={deleteRecord}
         onClose={() => setDeleteRecord(null)}
-        onSuccess={fetchRecords}
+        onSuccess={refresh}
       />
 
       <div className="reveal" style={{ animationDelay: "70ms" }}>
@@ -175,9 +243,16 @@ export default function AllExpensesPage() {
           <MonthTabs
             months={months}
             active={selectedMonth}
-            onChange={setActiveMonth}
+            onChange={changeMonth}
           />
 
+          {/* Keep the current page visible but muted while the next one
+              loads, so the layout does not collapse between pages. */}
+          <div
+            className={
+              fetching ? "pointer-events-none opacity-50 transition" : ""
+            }
+          >
           {groups.length === 0 ? (
             <p className="py-6 text-center text-sm text-ink-faint">
               {selectedMonth === "all"
@@ -245,6 +320,14 @@ export default function AllExpensesPage() {
               })}
             </div>
           )}
+
+          </div>
+
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={changePage}
+          />
         </Section>
       </div>
     </main>

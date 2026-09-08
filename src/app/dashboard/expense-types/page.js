@@ -4,13 +4,25 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { FiArrowLeft, FiRepeat, FiChevronDown, FiPlus } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiRepeat,
+  FiChevronDown,
+  FiPlus,
+  FiEdit2,
+  FiEyeOff,
+  FiEye,
+} from "react-icons/fi";
 
 import Section from "@/components/dashboard/Section";
 import Spinner from "@/components/common/Spinner";
 import AddExpenseTypeModal from "@/components/dashboard/AddExpenseTypeModal";
+import EditExpenseTypeModal from "@/components/dashboard/EditExpenseTypeModal";
 
-import { getExpenseTypes } from "@/services/expenseTypes.service";
+import {
+  getExpenseTypes,
+  setExpenseTypeStatus,
+} from "@/services/expenseTypes.service";
 import { isAuthenticated } from "@/lib/auth";
 
 // Seed data writes `value` while the API schema validates `amount`, so
@@ -25,6 +37,8 @@ export default function AllExpenseTypesPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [statusPendingId, setStatusPendingId] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -48,6 +62,28 @@ export default function AllExpenseTypesPage() {
     }
   };
 
+  const toggleStatus = async (type) => {
+    try {
+      setStatusPendingId(type.id);
+
+      const response = await setExpenseTypeStatus(
+        type.id,
+        !type.is_active
+      );
+
+      toast.success(response.message);
+
+      await fetchTypes();
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to change expense type status"
+      );
+    } finally {
+      setStatusPendingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4">
@@ -60,7 +96,13 @@ export default function AllExpenseTypesPage() {
 
   const items = types || [];
 
-  const grandTotal = items.reduce(
+  const activeItems = items.filter((item) => item.is_active !== false);
+
+  const inactiveCount = items.length - activeItems.length;
+
+  // Only active types can back new records, so the headline total counts
+  // those alone.
+  const grandTotal = activeItems.reduce(
     (sum, item) => sum + (Number(item.total) || 0),
     0
   );
@@ -87,7 +129,8 @@ export default function AllExpenseTypesPage() {
 
             <p className="flex items-center gap-1.5 text-sm text-ink-muted">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-dot" />
-              {items.length} types · {grandTotal.toFixed(2)} total
+              {activeItems.length} active · {grandTotal.toFixed(2)} total
+              {inactiveCount > 0 && ` · ${inactiveCount} inactive`}
             </p>
           </div>
         </div>
@@ -108,6 +151,13 @@ export default function AllExpenseTypesPage() {
         onSuccess={fetchTypes}
       />
 
+      <EditExpenseTypeModal
+        open={Boolean(editing)}
+        onClose={() => setEditing(null)}
+        expenseType={editing}
+        onSuccess={fetchTypes}
+      />
+
       <div className="reveal" style={{ animationDelay: "70ms" }}>
         <Section title="Expense Types" icon={FiRepeat} accent="amber">
           {items.length === 0 ? (
@@ -121,11 +171,16 @@ export default function AllExpenseTypesPage() {
                   ? type.categories
                   : [];
                 const isOpen = expandedId === type.id;
+                const isActive = type.is_active !== false;
 
                 return (
                   <div
                     key={type.id}
-                    className="overflow-hidden rounded-xl border border-line-soft bg-inset transition hover:-translate-y-0.5 hover:border-amber-line hover:bg-amber-soft"
+                    className={`overflow-hidden rounded-xl border bg-inset transition hover:-translate-y-0.5 hover:border-amber-line hover:bg-amber-soft ${
+                      isActive
+                        ? "border-line-soft"
+                        : "border-dashed border-line opacity-60"
+                    }`}
                   >
                     <button
                       type="button"
@@ -153,10 +208,18 @@ export default function AllExpenseTypesPage() {
                         {Number(type.total).toFixed(2)}
                       </p>
 
-                      <p className="text-[11px] text-ink-faint">
-                        {categories.length} categor
-                        {categories.length === 1 ? "y" : "ies"}
-                      </p>
+                      <div className="flex w-full items-center gap-2">
+                        <p className="text-[11px] text-ink-faint">
+                          {categories.length} categor
+                          {categories.length === 1 ? "y" : "ies"}
+                        </p>
+
+                        {!isActive && (
+                          <span className="rounded-md border border-line px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-faint">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
                     </button>
 
                     {isOpen && (
@@ -190,6 +253,36 @@ export default function AllExpenseTypesPage() {
                             ))}
                           </ul>
                         )}
+
+                        <div className="mt-3 flex items-center gap-2 border-t border-line-soft pt-3">
+                          <button
+                            type="button"
+                            onClick={() => setEditing(type)}
+                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+                          >
+                            <FiEdit2 size={12} />
+                            Edit
+                          </button>
+
+                          <button
+                            type="button"
+                            disabled={statusPendingId === type.id}
+                            onClick={() => toggleStatus(type)}
+                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            {isActive ? (
+                              <>
+                                <FiEyeOff size={12} />
+                                Deactivate
+                              </>
+                            ) : (
+                              <>
+                                <FiEye size={12} />
+                                Activate
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

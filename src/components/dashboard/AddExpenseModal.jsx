@@ -61,7 +61,9 @@ export default function AddExpenseModal({
       try {
         setLoadingTypes(true);
 
-        const response = await getExpenseTypes();
+        // Only active types: the API rejects a record against a
+        // deactivated one.
+        const response = await getExpenseTypes("active");
 
         setExpenseTypes(response.data || []);
       } catch (error) {

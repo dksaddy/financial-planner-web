@@ -83,6 +83,13 @@ export default function ExpenseTypeDetailsModal({
         </p>
       ) : (
         <div className="space-y-4">
+          {details.is_active === false && (
+            <p className="rounded-xl border border-dashed border-line bg-inset px-3.5 py-2.5 text-xs text-ink-muted">
+              This type is inactive — past records keep it, but new
+              expenses cannot be recorded against it.
+            </p>
+          )}
+
           <div className="grid grid-cols-3 gap-2">
             <Stat
               label="Per use"
