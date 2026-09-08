@@ -11,6 +11,7 @@ import {
   FiEdit2,
   FiTrash2,
   FiCheckCircle,
+  FiRotateCcw,
 } from "react-icons/fi";
 
 import Section from "@/components/dashboard/Section";
@@ -19,7 +20,7 @@ import EditTargetModal from "@/components/dashboard/EditTargetModal";
 import DeleteTargetDialog from "@/components/dashboard/DeleteTargetDialog";
 import Spinner from "@/components/common/Spinner";
 
-import { getTargets } from "@/services/targets.service";
+import { getTargets, updateTargetStatus } from "@/services/targets.service";
 import { getDashboard } from "@/services/dashboard.service";
 import { isAuthenticated } from "@/lib/auth";
 
@@ -33,6 +34,7 @@ export default function AllTargetsPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [statusUpdatingId, setStatusUpdatingId] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -60,6 +62,27 @@ export default function AllTargetsPage() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleStatus = async (target) => {
+    const nextStatus =
+      target.status === "completed" ? "pending" : "completed";
+
+    try {
+      setStatusUpdatingId(target.id);
+
+      const response = await updateTargetStatus(target.id, nextStatus);
+
+      toast.success(response.message);
+
+      await fetchTargets();
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to update status"
+      );
+    } finally {
+      setStatusUpdatingId(null);
     }
   };
 
@@ -183,6 +206,23 @@ export default function AllTargetsPage() {
 
                         <button
                           type="button"
+                          disabled={statusUpdatingId === target.id}
+                          onClick={() => handleToggleStatus(target)}
+                          className="flex h-7 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[11px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                          aria-label={`Mark ${target.name} as completed`}
+                        >
+                          {statusUpdatingId === target.id ? (
+                            <Spinner size={12} />
+                          ) : (
+                            <>
+                              <FiCheckCircle size={12} />
+                              Complete
+                            </>
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
                           onClick={() => setEditTarget(target)}
                           className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-surface-hover hover:text-ink"
                           aria-label={`Edit ${target.name}`}
@@ -255,9 +295,22 @@ export default function AllTargetsPage() {
                       {Number(target.target_amount).toFixed(2)}
                     </span>
 
-                    <span className="rounded-full bg-emerald-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line">
-                      Completed
-                    </span>
+                    <button
+                      type="button"
+                      disabled={statusUpdatingId === target.id}
+                      onClick={() => handleToggleStatus(target)}
+                      className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                      aria-label={`Mark ${target.name} as pending`}
+                    >
+                      {statusUpdatingId === target.id ? (
+                        <Spinner size={12} />
+                      ) : (
+                        <>
+                          <FiRotateCcw size={12} />
+                          Pending
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
               ))}

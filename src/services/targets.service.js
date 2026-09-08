@@ -45,6 +45,12 @@ export const updateTarget = async (id, { name, target_amount }) => {
   return response.data;
 };
 
+export const updateTargetStatus = async (id, status) => {
+  const response = await api.put(`/target/${id}`, { status });
+
+  return response.data;
+};
+
 export const deleteTarget = async (id) => {
   const response = await api.delete(`/target/${id}`);
 
