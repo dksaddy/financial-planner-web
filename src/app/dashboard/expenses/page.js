@@ -39,6 +39,11 @@ export default function AllExpensesPage() {
   const [activeMonth, setActiveMonth] = useState("all");
   const [page, setPage] = useState(1);
 
+  // Bumped every time a fresh batch of records lands. Used as a `key` on
+  // the list wrapper so the row entrance animation replays on every page
+  // change, month switch, and add/edit/delete — not just first mount.
+  const [renderKey, setRenderKey] = useState(0);
+
   // Page and month changes each fire a request, and the answers can come
   // back out of order. Only the newest request is allowed to write state.
   const requestId = useRef(0);
@@ -61,6 +66,7 @@ export default function AllExpensesPage() {
 
         setRecords(response.data || []);
         setMeta(response.meta || null);
+        setRenderKey((k) => k + 1);
 
         // The API clamps a page past the end (after deleting the last
         // record on the last page, say); follow it back.
@@ -179,6 +185,11 @@ export default function AllExpensesPage() {
     groups[groupIndex.get(key)].items.push(item);
   });
 
+  // Running row counter across all groups, used to keep the cascade delay
+  // increasing smoothly from the top of the list to the bottom rather than
+  // restarting at each date header.
+  let rowCursor = 0;
+
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
       <div className="reveal mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -249,26 +260,32 @@ export default function AllExpensesPage() {
           {/* Keep the current page visible but muted while the next one
               loads, so the layout does not collapse between pages. */}
           <div
-            className={
-              fetching ? "pointer-events-none opacity-50 transition" : ""
-            }
+            className={`transition-all duration-300 ease-out ${
+              fetching ? "pointer-events-none opacity-40" : "opacity-100"
+            }`}
           >
           {groups.length === 0 ? (
-            <p className="py-6 text-center text-sm text-ink-faint">
+            <p className="fade-in py-6 text-center text-sm text-ink-faint">
               {selectedMonth === "all"
                 ? "No expenses recorded yet."
                 : "No expenses recorded for this month."}
             </p>
           ) : (
-            <div className="space-y-5">
-              {groups.map((group) => {
+            <div key={renderKey} className="space-y-5">
+              {groups.map((group, gIndex) => {
                 const dayTotal = group.items.reduce(
                   (sum, item) => sum + (Number(item.total) || 0),
                   0
                 );
 
                 return (
-                  <div key={group.date}>
+                  <div
+                    key={group.date}
+                    className="reveal"
+                    style={{
+                      animationDelay: `${Math.min(gIndex * 55, 300)}ms`,
+                    }}
+                  >
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-xs font-bold uppercase tracking-wider text-ink-faint">
                         {formatDate(group.date)}
@@ -280,40 +297,49 @@ export default function AllExpensesPage() {
                     </div>
 
                     <div className="space-y-2">
-                      {group.items.map((record) => (
-                        <div
-                          key={record.id}
-                          className="flex items-center justify-between gap-3 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 text-sm transition hover:border-indigo-line hover:bg-indigo-soft"
-                        >
-                          <span className="min-w-0 flex-1 truncate font-medium text-ink">
-                            {record.expense_type_name}
-                          </span>
+                      {group.items.map((record) => {
+                        // Capture this row's position across the whole
+                        // list (not just within its group) before
+                        // incrementing, so the cascade reads top-to-bottom.
+                        const rowDelay = Math.min(rowCursor * 35, 380);
+                        rowCursor += 1;
 
-                          <div className="flex shrink-0 items-center gap-2.5">
-                            <span className="num text-base font-bold text-ink">
-                              {Number(record.total).toFixed(2)}
+                        return (
+                          <div
+                            key={record.id}
+                            className="reveal flex items-center justify-between gap-3 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 text-sm transition hover:border-indigo-line hover:bg-indigo-soft hover:shadow-md hover:shadow-indigo-500/10"
+                            style={{ animationDelay: `${rowDelay}ms` }}
+                          >
+                            <span className="min-w-0 flex-1 truncate font-medium text-ink">
+                              {record.expense_type_name}
                             </span>
 
-                            <button
-                              type="button"
-                              onClick={() => setEditRecord(record)}
-                              className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-surface-hover hover:text-ink"
-                              aria-label={`Edit ${record.expense_type_name}`}
-                            >
-                              <FiEdit2 size={13} />
-                            </button>
+                            <div className="flex shrink-0 items-center gap-2.5">
+                              <span className="num text-base font-bold text-ink">
+                                {Number(record.total).toFixed(2)}
+                              </span>
 
-                            <button
-                              type="button"
-                              onClick={() => setDeleteRecord(record)}
-                              className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-rose-soft hover:text-rose-fg"
-                              aria-label={`Delete ${record.expense_type_name}`}
-                            >
-                              <FiTrash2 size={13} />
-                            </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditRecord(record)}
+                                className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-surface-hover hover:text-ink"
+                                aria-label={`Edit ${record.expense_type_name}`}
+                              >
+                                <FiEdit2 size={13} />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setDeleteRecord(record)}
+                                className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-rose-soft hover:text-rose-fg"
+                                aria-label={`Delete ${record.expense_type_name}`}
+                              >
+                                <FiTrash2 size={13} />
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );

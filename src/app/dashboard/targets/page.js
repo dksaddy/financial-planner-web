@@ -36,6 +36,14 @@ export default function AllTargetsPage() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [statusUpdatingId, setStatusUpdatingId] = useState(null);
 
+  // Animation state: item currently playing its exit pulse (before it
+  // switches sections) and item currently playing its arrival glow
+  // (right after it lands in the new section).
+  const [exitingId, setExitingId] = useState(null);
+  const [exitingDirection, setExitingDirection] = useState(null); // "completed" | "pending"
+  const [enteringId, setEnteringId] = useState(null);
+  const [enteringDirection, setEnteringDirection] = useState(null);
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.replace("/login");
@@ -71,18 +79,35 @@ export default function AllTargetsPage() {
 
     try {
       setStatusUpdatingId(target.id);
+      setExitingId(target.id);
+      setExitingDirection(nextStatus);
 
-      const response = await updateTargetStatus(target.id, nextStatus);
+      // Run the request alongside a minimum exit-animation window so the
+      // pulse always gets to play out, even on a fast network.
+      const [response] = await Promise.all([
+        updateTargetStatus(target.id, nextStatus),
+        new Promise((resolve) => setTimeout(resolve, 420)),
+      ]);
 
       toast.success(response.message);
 
       await fetchTargets();
+
+      // Item has now landed in its new section — play the arrival glow.
+      setEnteringId(target.id);
+      setEnteringDirection(nextStatus);
+      window.setTimeout(() => {
+        setEnteringId(null);
+        setEnteringDirection(null);
+      }, 650);
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to update status"
       );
     } finally {
       setStatusUpdatingId(null);
+      setExitingId(null);
+      setExitingDirection(null);
     }
   };
 
@@ -174,10 +199,16 @@ export default function AllTargetsPage() {
                       )
                     : 0;
 
+                const isExiting = exitingId === target.id;
+                const isEntering =
+                  enteringId === target.id && enteringDirection === "pending";
+
                 return (
                   <div
                     key={target.id}
-                    className="rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 transition hover:border-fuchsia-line hover:bg-fuchsia-soft"
+                    className={`target-row rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 transition hover:border-fuchsia-line hover:bg-fuchsia-soft ${
+                      isExiting ? "target-exit-complete" : ""
+                    } ${isEntering ? "target-enter-pending" : ""}`}
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -266,58 +297,170 @@ export default function AllTargetsPage() {
             </p>
           ) : (
             <div className="space-y-2">
-              {completed.map((target) => (
-                <div
-                  key={target.id}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5"
-                >
-                  <div className="flex min-w-0 flex-1 items-center gap-3">
-                    {target.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={target.image_url}
-                        alt={target.name}
-                        className="h-11 w-11 shrink-0 rounded-lg object-cover ring-1 ring-line"
-                      />
-                    ) : (
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-soft text-emerald-fg ring-1 ring-line">
-                        <FiCheckCircle size={16} />
-                      </span>
-                    )}
+              {completed.map((target) => {
+                const isExiting = exitingId === target.id;
+                const isEntering =
+                  enteringId === target.id &&
+                  enteringDirection === "completed";
 
-                    <span className="truncate text-sm font-medium text-ink">
-                      {target.name}
-                    </span>
-                  </div>
-
-                  <div className="flex shrink-0 items-center gap-2.5">
-                    <span className="num text-base font-bold text-emerald-fg">
-                      {Number(target.target_amount).toFixed(2)}
-                    </span>
-
-                    <button
-                      type="button"
-                      disabled={statusUpdatingId === target.id}
-                      onClick={() => handleToggleStatus(target)}
-                      className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
-                      aria-label={`Mark ${target.name} as pending`}
-                    >
-                      {statusUpdatingId === target.id ? (
-                        <Spinner size={12} />
+                return (
+                  <div
+                    key={target.id}
+                    className={`target-row flex items-center justify-between gap-3 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 ${
+                      isExiting ? "target-exit-pending" : ""
+                    } ${isEntering ? "target-enter-complete" : ""}`}
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      {target.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={target.image_url}
+                          alt={target.name}
+                          className="h-11 w-11 shrink-0 rounded-lg object-cover ring-1 ring-line"
+                        />
                       ) : (
-                        <>
-                          <FiRotateCcw size={12} />
-                          Pending
-                        </>
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-soft text-emerald-fg ring-1 ring-line">
+                          <FiCheckCircle size={16} />
+                        </span>
                       )}
-                    </button>
+
+                      <span className="truncate text-sm font-medium text-ink">
+                        {target.name}
+                      </span>
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-2.5">
+                      <span className="num text-base font-bold text-emerald-fg">
+                        {Number(target.target_amount).toFixed(2)}
+                      </span>
+
+                      <button
+                        type="button"
+                        disabled={statusUpdatingId === target.id}
+                        onClick={() => handleToggleStatus(target)}
+                        className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={`Mark ${target.name} as pending`}
+                      >
+                        {statusUpdatingId === target.id ? (
+                          <Spinner size={12} />
+                        ) : (
+                          <>
+                            <FiRotateCcw size={12} />
+                            Pending
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </Section>
       </div>
+
+      <style jsx>{`
+        .target-row {
+          will-change: transform, opacity, box-shadow;
+        }
+
+        .target-exit-complete {
+          animation: exitComplete 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .target-exit-pending {
+          animation: exitPending 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .target-enter-complete {
+          animation: enterComplete 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .target-enter-pending {
+          animation: enterPending 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes exitComplete {
+          0% {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+          }
+          35% {
+            opacity: 1;
+            transform: scale(1.015) translateX(3px);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(0.94) translateX(18px);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+          }
+        }
+
+        @keyframes exitPending {
+          0% {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+            box-shadow: 0 0 0 0 rgba(217, 70, 239, 0);
+          }
+          35% {
+            opacity: 1;
+            transform: scale(1.015) translateX(-3px);
+            box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.35);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(0.94) translateX(-18px);
+            box-shadow: 0 0 0 0 rgba(217, 70, 239, 0);
+          }
+        }
+
+        @keyframes enterComplete {
+          0% {
+            opacity: 0;
+            transform: scale(0.92) translateY(-10px);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+          }
+          45% {
+            opacity: 1;
+            transform: scale(1.015) translateY(0);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+          }
+        }
+
+        @keyframes enterPending {
+          0% {
+            opacity: 0;
+            transform: scale(0.92) translateY(-10px);
+            box-shadow: 0 0 0 0 rgba(217, 70, 239, 0);
+          }
+          45% {
+            opacity: 1;
+            transform: scale(1.015) translateY(0);
+            box-shadow: 0 0 0 4px rgba(217, 70, 239, 0.3);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            box-shadow: 0 0 0 0 rgba(217, 70, 239, 0);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .target-exit-complete,
+          .target-exit-pending,
+          .target-enter-complete,
+          .target-enter-pending {
+            animation: none !important;
+          }
+        }
+      `}</style>
     </main>
   );
 }
