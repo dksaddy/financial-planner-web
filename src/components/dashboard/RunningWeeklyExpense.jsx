@@ -117,7 +117,7 @@ export default function RunningWeeklyExpense({
                     title={`${formatDate(record.date)} — ${total.toFixed(2)}`}
                     className="relative z-[1] flex h-full flex-1 flex-col items-center justify-end gap-1"
                   >
-                    <span className="num text-[9.6px] font-bold text-ink-faint sm:text-[10.8px]">
+                    <span className="num text-[9.12px] font-bold text-ink-faint sm:text-[10.26px]">
                       {total.toFixed(0)}
                     </span>
 
@@ -134,7 +134,7 @@ export default function RunningWeeklyExpense({
               {records.map((record) => (
                 <span
                   key={record.id}
-                  className="flex-1 text-center text-[9.6px] font-medium uppercase text-ink-faint sm:text-[10.8px]"
+                  className="flex-1 text-center text-[9.12px] font-medium uppercase text-ink-faint sm:text-[10.26px]"
                 >
                   {formatDate(record.date).slice(0, 3)}
                 </span>
@@ -151,15 +151,15 @@ export default function RunningWeeklyExpense({
       )}
 
       <div className="mt-3.5 flex flex-wrap items-center gap-2 border-t border-line-soft pt-3">
-        <span className="num rounded-full bg-surface px-2.5 py-1 text-[13.2px] font-medium text-ink-muted ring-1 ring-inset ring-line">
+        <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
           {currentWeek.totalRecords} records
         </span>
 
-        <span className="num rounded-full bg-cyan-soft px-2.5 py-1 text-[13.2px] font-medium text-cyan-fg ring-1 ring-inset ring-cyan-line">
+        <span className="num rounded-full bg-cyan-soft px-2.5 py-1 text-[12.54px] font-medium text-cyan-fg ring-1 ring-inset ring-cyan-line">
           total {Number(currentWeek.totalExpense).toFixed(2)}
         </span>
 
-        <span className="num rounded-full bg-emerald-soft px-2.5 py-1 text-[13.2px] font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
+        <span className="num rounded-full bg-emerald-soft px-2.5 py-1 text-[12.54px] font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
           saved {Number(currentWeek.totalExtraSave).toFixed(2)}
         </span>
       </div>

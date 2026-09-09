@@ -51,7 +51,7 @@ export default function ExtraSavingCard({ extraSaving, targets }) {
               >
                 {coveredPercent.toFixed(2)}%
               </span>
-              <span className="text-[12px] font-medium uppercase tracking-[0.1em] text-ink-faint">
+              <span className="text-[11.4px] font-medium uppercase tracking-[0.1em] text-ink-faint">
                 of target
               </span>
             </div>

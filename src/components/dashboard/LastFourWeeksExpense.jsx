@@ -86,7 +86,7 @@ export default function LastFourWeeksExpense({
         <button
           type="button"
           onClick={() => router.push("/dashboard/expenses")}
-          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-line-soft bg-inset px-3 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-indigo-line hover:bg-indigo-soft hover:text-indigo-fg active:scale-95"
+          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-line-soft bg-inset px-3 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-indigo-line hover:bg-indigo-soft hover:text-indigo-fg active:scale-95"
         >
           View All
           <FiArrowUpRight size={13} strokeWidth={2.6} />
@@ -116,19 +116,19 @@ export default function LastFourWeeksExpense({
                   </p>
 
                   {overBudget ? (
-                    <span className="num shrink-0 rounded-full bg-rose-soft px-1.5 py-0.5 text-[12px] font-bold text-rose-fg ring-1 ring-inset ring-rose-line">
+                    <span className="num shrink-0 rounded-full bg-rose-soft px-1.5 py-0.5 text-[11.4px] font-bold text-rose-fg ring-1 ring-inset ring-rose-line">
                       +{overPercent.toFixed(0)}%
                     </span>
                   ) : (
                     budget > 0 && (
-                      <span className="num shrink-0 rounded-full bg-indigo-soft px-1.5 py-0.5 text-[12px] font-bold text-indigo-fg ring-1 ring-inset ring-indigo-line">
+                      <span className="num shrink-0 rounded-full bg-indigo-soft px-1.5 py-0.5 text-[11.4px] font-bold text-indigo-fg ring-1 ring-inset ring-indigo-line">
                         {usedPercent.toFixed(0)}%
                       </span>
                     )
                   )}
                 </div>
 
-                <p className="num text-[13.2px] text-ink-faint">
+                <p className="num text-[12.54px] text-ink-faint">
                   {items.length} records
                 </p>
               </div>
@@ -165,7 +165,7 @@ export default function LastFourWeeksExpense({
             </div>
 
             <div className="mt-2.5 flex items-center justify-between border-t border-line-soft pt-2.5">
-              <span className="text-[13.2px] uppercase tracking-wider text-ink-faint">
+              <span className="text-[12.54px] uppercase tracking-wider text-ink-faint">
                 Daily Saving
               </span>
 
@@ -196,7 +196,7 @@ export default function LastFourWeeksExpense({
           </p>
         ) : (
           <div className="scroll-slim max-h-80 space-y-2 overflow-y-auto pr-1">
-            <div className="flex items-center justify-end gap-3 px-3 text-[12px] uppercase tracking-wider text-ink-faint sm:gap-3">
+            <div className="flex items-center justify-end gap-3 px-3 text-[11.4px] uppercase tracking-wider text-ink-faint sm:gap-3">
               <span className="sm:w-24 sm:text-right">Daily Saving</span>
               <span className="sm:w-20 sm:text-right">Spent</span>
             </div>
@@ -244,20 +244,20 @@ export default function LastFourWeeksExpense({
         )}
 
         <div className="mt-3.5 flex flex-wrap items-center gap-2 border-t border-line-soft pt-3">
-          <span className="num rounded-full bg-surface px-2.5 py-1 text-[13.2px] font-medium text-ink-muted ring-1 ring-inset ring-line">
+          <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
             {activeItems.length} Records
           </span>
 
-          <span className="num rounded-full bg-indigo-soft px-2.5 py-1 text-[13.2px] font-medium text-indigo-fg ring-1 ring-inset ring-indigo-line">
+          <span className="num rounded-full bg-indigo-soft px-2.5 py-1 text-[12.54px] font-medium text-indigo-fg ring-1 ring-inset ring-indigo-line">
             Daily Budget {daily.toFixed(2)}
           </span>
 
-          <span className="num rounded-full bg-surface px-2.5 py-1 text-[13.2px] font-medium text-ink-muted ring-1 ring-inset ring-line">
+          <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
             Spent {activeTotal.toFixed(2)}
           </span>
 
           <span
-            className={`num rounded-full px-2.5 py-1 text-[13.2px] font-medium ring-1 ring-inset ${
+            className={`num rounded-full px-2.5 py-1 text-[12.54px] font-medium ring-1 ring-inset ${
               activeDailySaved >= 0
                 ? "bg-emerald-soft text-emerald-fg ring-emerald-line"
                 : "bg-rose-soft text-rose-fg ring-rose-line"

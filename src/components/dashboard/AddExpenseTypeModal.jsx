@@ -113,7 +113,7 @@ export default function AddExpenseTypeModal({
             <button
               type="button"
               onClick={() => append(emptyCategory)}
-              className="flex items-center gap-1 text-[13.2px] font-bold uppercase tracking-wider text-amber-fg transition hover:brightness-110"
+              className="flex items-center gap-1 text-[12.54px] font-bold uppercase tracking-wider text-amber-fg transition hover:brightness-110"
             >
               <FiPlus size={13} strokeWidth={2.6} />
               Add Category
@@ -185,7 +185,7 @@ export default function AddExpenseTypeModal({
         </div>
 
         <div className="flex items-center justify-between rounded-xl border border-line-soft bg-inset px-3.5 py-2.5">
-          <span className="text-[13.2px] font-bold uppercase tracking-wider text-ink-muted">
+          <span className="text-[12.54px] font-bold uppercase tracking-wider text-ink-muted">
             Total
           </span>
 

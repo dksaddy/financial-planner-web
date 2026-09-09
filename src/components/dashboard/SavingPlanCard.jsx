@@ -30,7 +30,7 @@ export default function SavingPlanCard({
         </p>
 
         <span
-          className={`shrink-0 rounded-full px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider ring-1 ring-inset ${statusStyles(
+          className={`shrink-0 rounded-full px-2.5 py-1 text-[11.4px] font-bold uppercase tracking-wider ring-1 ring-inset ${statusStyles(
             plan.status
           )}`}
         >
@@ -95,7 +95,7 @@ export default function SavingPlanCard({
 
       {/* Profit footer */}
       <div className="relative mt-3.5 flex items-center justify-between border-t border-line-soft pt-3.5">
-        <span className="text-[13.2px] uppercase tracking-wider text-ink-faint">
+        <span className="text-[12.54px] uppercase tracking-wider text-ink-faint">
           Projected Profit
         </span>
 
@@ -117,7 +117,7 @@ export default function SavingPlanCard({
         <button
           type="button"
           onClick={() => onDeposit(plan)}
-          className="group/btn relative mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-emerald-line hover:bg-emerald-soft hover:text-emerald-fg"
+          className="group/btn relative mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-emerald-line hover:bg-emerald-soft hover:text-emerald-fg"
         >
           <FiPlus
             size={12}
@@ -134,7 +134,7 @@ export default function SavingPlanCard({
             <button
               type="button"
               onClick={() => onEdit(plan)}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
             >
               <FiEdit2 size={12} />
               Edit
@@ -145,7 +145,7 @@ export default function SavingPlanCard({
             <button
               type="button"
               onClick={() => onDelete(plan)}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-rose-line hover:bg-rose-soft hover:text-rose-fg"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-rose-line hover:bg-rose-soft hover:text-rose-fg"
             >
               <FiTrash2 size={12} />
               Delete
@@ -156,7 +156,7 @@ export default function SavingPlanCard({
 
       {onStatusChange && (
         <div className="relative mt-3 border-t border-line-soft pt-3">
-          <p className="mb-2 text-[12px] uppercase tracking-wider text-ink-faint">
+          <p className="mb-2 text-[11.4px] uppercase tracking-wider text-ink-faint">
             Status
           </p>
 
@@ -171,7 +171,7 @@ export default function SavingPlanCard({
                   disabled={isCurrent || statusPending}
                   onClick={() => onStatusChange(plan, status)}
                   aria-pressed={isCurrent}
-                  className={`flex-1 rounded-lg border px-2 py-1.5 text-[12px] font-bold uppercase tracking-wider transition disabled:cursor-not-allowed ${
+                  className={`flex-1 rounded-lg border px-2 py-1.5 text-[11.4px] font-bold uppercase tracking-wider transition disabled:cursor-not-allowed ${
                     isCurrent
                       ? `${statusStyles(status)} border-transparent opacity-100`
                       : "border-line text-ink-faint hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:opacity-50"
@@ -191,7 +191,7 @@ export default function SavingPlanCard({
 function Stat({ label, value }) {
   return (
     <div className="min-w-0">
-      <p className="truncate text-[12px] uppercase tracking-wider text-ink-faint">
+      <p className="truncate text-[11.4px] uppercase tracking-wider text-ink-faint">
         {label}
       </p>
 

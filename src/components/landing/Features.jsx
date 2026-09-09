@@ -88,7 +88,7 @@ export default function Features() {
                 <Icon size={17} strokeWidth={2.3} />
               </span>
 
-              <h3 className="relative mt-4 text-[18px] font-bold uppercase tracking-[0.12em] text-ink">
+              <h3 className="relative mt-4 text-[17.1px] font-bold uppercase tracking-[0.12em] text-ink">
                 {feature.title}
               </h3>
 

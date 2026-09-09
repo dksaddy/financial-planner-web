@@ -148,7 +148,7 @@ export default function EditSavingPlanModal({
 
         {/* Deposits already made are not part of this form — the update
             endpoint leaves currently_deposited untouched. */}
-        <p className="num text-center text-[13.2px] text-ink-faint">
+        <p className="num text-center text-[12.54px] text-ink-faint">
           {Number(plan.currentlyDeposited).toFixed(2)} already deposited stays
           as it is
         </p>

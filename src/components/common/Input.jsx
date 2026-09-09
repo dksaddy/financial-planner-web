@@ -67,7 +67,7 @@ export default function Input({
           {error.message}
         </p>
       ) : (
-        hint && <p className="text-[13.2px] text-ink-faint">{hint}</p>
+        hint && <p className="text-[12.54px] text-ink-faint">{hint}</p>
       )}
     </div>
   );

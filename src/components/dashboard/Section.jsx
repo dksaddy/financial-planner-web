@@ -51,7 +51,7 @@ export default function Section({
             </span>
           )}
 
-          <h2 className="truncate text-[18px] font-bold uppercase tracking-[0.14em] text-ink-muted">
+          <h2 className="truncate text-[17.1px] font-bold uppercase tracking-[0.14em] text-ink-muted">
             {title}
           </h2>
         </div>

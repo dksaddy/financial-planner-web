@@ -122,7 +122,7 @@ export default function AllSavingPlansPage() {
           </Link>
 
           <div>
-            <h1 className="text-[22px] font-bold uppercase leading-tight sm:text-[31.2px] tracking-[0.06em] text-ink">
+            <h1 className="text-[20.9px] font-bold uppercase leading-tight sm:text-[29.64px] tracking-[0.06em] text-ink">
               All Saving Plans
             </h1>
 
@@ -179,7 +179,7 @@ export default function AllSavingPlansPage() {
                     type="button"
                     onClick={() => setFilter(option.value)}
                     aria-pressed={isSelected}
-                    className={`flex h-8 items-center justify-center rounded-xl border px-3 text-[13.2px] font-bold uppercase tracking-wider leading-none transition active:scale-95 ${
+                    className={`flex h-8 items-center justify-center rounded-xl border px-3 text-[12.54px] font-bold uppercase tracking-wider leading-none transition active:scale-95 ${
                       isSelected
                         ? "border-emerald-line bg-emerald-soft text-emerald-fg"
                         : "border-line-soft bg-inset text-ink-muted hover:border-line-strong hover:text-ink"
@@ -195,7 +195,7 @@ export default function AllSavingPlansPage() {
             <button
               type="button"
               onClick={() => setAddOpen(true)}
-              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 px-3.5 text-[13.2px] font-bold uppercase tracking-wider text-white shadow-lg shadow-emerald-500/30 transition hover:shadow-emerald-500/50 hover:brightness-110 active:scale-95"
+              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 px-3.5 text-[12.54px] font-bold uppercase tracking-wider text-white shadow-lg shadow-emerald-500/30 transition hover:shadow-emerald-500/50 hover:brightness-110 active:scale-95"
             >
               <FiPlus size={14} strokeWidth={2.6} />
               Add Plan

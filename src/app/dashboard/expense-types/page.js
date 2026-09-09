@@ -123,7 +123,7 @@ export default function AllExpenseTypesPage() {
           </Link>
 
           <div>
-            <h1 className="text-[22px] font-bold uppercase leading-tight sm:text-[31.2px] tracking-[0.06em] text-ink">
+            <h1 className="text-[20.9px] font-bold uppercase leading-tight sm:text-[29.64px] tracking-[0.06em] text-ink">
               All Expense Types
             </h1>
 
@@ -159,7 +159,7 @@ export default function AllExpenseTypesPage() {
             <button
               type="button"
               onClick={() => setAddOpen(true)}
-              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 px-3.5 text-[13.2px] font-bold uppercase tracking-wider text-white shadow-lg shadow-amber-500/30 transition hover:shadow-amber-500/50 hover:brightness-110 active:scale-95"
+              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 px-3.5 text-[12.54px] font-bold uppercase tracking-wider text-white shadow-lg shadow-amber-500/30 transition hover:shadow-amber-500/50 hover:brightness-110 active:scale-95"
             >
               <FiPlus size={14} strokeWidth={2.6} />
               Add Type
@@ -215,13 +215,13 @@ export default function AllExpenseTypesPage() {
                       </p>
 
                       <div className="flex w-full items-center gap-2">
-                        <p className="text-[13.2px] text-ink-faint">
+                        <p className="text-[12.54px] text-ink-faint">
                           {categories.length} categor
                           {categories.length === 1 ? "y" : "ies"}
                         </p>
 
                         {!isActive && (
-                          <span className="rounded-md border border-line px-1.5 py-0.5 text-[12px] font-bold uppercase tracking-[0.12em] text-ink-faint">
+                          <span className="rounded-md border border-line px-1.5 py-0.5 text-[11.4px] font-bold uppercase tracking-[0.12em] text-ink-faint">
                             Inactive
                           </span>
                         )}
@@ -264,7 +264,7 @@ export default function AllExpenseTypesPage() {
                           <button
                             type="button"
                             onClick={() => setEditing(type)}
-                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
                           >
                             <FiEdit2 size={12} />
                             Edit
@@ -274,7 +274,7 @@ export default function AllExpenseTypesPage() {
                             type="button"
                             disabled={statusPendingId === type.id}
                             onClick={() => toggleStatus(type)}
-                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             {isActive ? (
                               <>

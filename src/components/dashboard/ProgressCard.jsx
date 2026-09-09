@@ -83,7 +83,7 @@ export default function ProgressCard({
                 {salary > 0 ? `${allocatedPercent.toFixed(1)}%` : "—"}
               </span>
 
-              <span className="text-[10.8px] font-medium uppercase tracking-[0.12em] text-ink-faint">
+              <span className="text-[10.26px] font-medium uppercase tracking-[0.12em] text-ink-faint">
                 allocated
               </span>
             </div>
@@ -111,7 +111,7 @@ export default function ProgressCard({
                     {item.percent.toFixed(1)}%
                   </span>
 
-                  <span className="num w-16 text-right text-[13.2px] text-ink-faint">
+                  <span className="num w-16 text-right text-[12.54px] text-ink-faint">
                     {item.value.toFixed(2)}
                   </span>
                 </span>

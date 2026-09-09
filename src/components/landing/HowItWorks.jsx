@@ -58,7 +58,7 @@ export default function HowItWorks() {
             </span>
 
             <div className="min-w-0">
-              <h3 className="text-[18px] font-bold uppercase tracking-[0.12em] text-ink">
+              <h3 className="text-[17.1px] font-bold uppercase tracking-[0.12em] text-ink">
                 {step.title}
               </h3>
 

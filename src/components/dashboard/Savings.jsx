@@ -26,7 +26,7 @@ export default function Savings({ plans }) {
         <button
           type="button"
           onClick={() => router.push("/dashboard/savings")}
-          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-line-soft bg-inset px-3 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-emerald-line hover:bg-emerald-soft hover:text-emerald-fg active:scale-95"
+          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-line-soft bg-inset px-3 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-emerald-line hover:bg-emerald-soft hover:text-emerald-fg active:scale-95"
         >
           View All
           <FiArrowUpRight size={13} strokeWidth={2.6} />

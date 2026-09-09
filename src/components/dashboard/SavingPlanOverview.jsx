@@ -77,7 +77,7 @@ export default function SavingPlanOverview({
 
               <div className="mt-2.5 flex items-end justify-between">
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-ink-faint">
+                  <p className="text-[11.4px] uppercase tracking-wider text-ink-faint">
                     Deposited
                   </p>
 
@@ -87,7 +87,7 @@ export default function SavingPlanOverview({
                 </div>
 
                 <div className="text-right">
-                  <p className="text-[12px] uppercase tracking-wider text-ink-faint">
+                  <p className="text-[11.4px] uppercase tracking-wider text-ink-faint">
                     Remaining
                   </p>
 

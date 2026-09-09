@@ -8,12 +8,12 @@ export default function Hero() {
     <section className="relative mx-auto w-full max-w-6xl px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="reveal lg:col-span-6">
-          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-line bg-indigo-soft px-3.5 py-1.5 text-[13.2px] font-bold uppercase tracking-[0.16em] text-indigo-fg">
+          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-line bg-indigo-soft px-3.5 py-1.5 text-[12.54px] font-bold uppercase tracking-[0.16em] text-indigo-fg">
             <FiZap size={12} strokeWidth={2.6} />
             Your money, on autopilot
           </span>
 
-          <h1 className="mt-6 text-4xl font-bold uppercase leading-[1.08] tracking-[0.02em] text-ink sm:text-5xl lg:text-[67.2px]">
+          <h1 className="mt-6 text-4xl font-bold uppercase leading-[1.08] tracking-[0.02em] text-ink sm:text-5xl lg:text-[63.84px]">
             Plan the month.
             <br />
             <span className="bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
@@ -58,7 +58,7 @@ export default function Hero() {
                   {stat.value}
                 </dd>
 
-                <dt className="mt-1 text-[13.2px] uppercase leading-tight tracking-wider text-ink-faint">
+                <dt className="mt-1 text-[12.54px] uppercase leading-tight tracking-wider text-ink-faint">
                   {stat.label}
                 </dt>
               </div>

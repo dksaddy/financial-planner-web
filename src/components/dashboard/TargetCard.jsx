@@ -24,7 +24,7 @@ export default function TargetCard({
         <button
           type="button"
           onClick={() => router.push("/dashboard/targets")}
-          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-line-soft bg-inset px-3 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-fuchsia-line hover:bg-fuchsia-soft hover:text-fuchsia-fg active:scale-95"
+          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-line-soft bg-inset px-3 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-fuchsia-line hover:bg-fuchsia-soft hover:text-fuchsia-fg active:scale-95"
         >
           View All
           <FiArrowUpRight size={13} strokeWidth={2.6} />
@@ -81,7 +81,7 @@ export default function TargetCard({
                       style={{ width: `${percent}%` }}
                     />
                   </div>
-                  <span className="num shrink-0 text-[13.2px] font-bold text-fuchsia-fg">
+                  <span className="num shrink-0 text-[12.54px] font-bold text-fuchsia-fg">
                     {percent.toFixed(0)}%
                   </span>
                 </div>
@@ -90,11 +90,11 @@ export default function TargetCard({
           })}
 
           <div className="flex flex-wrap items-center gap-2 pt-1.5">
-            <span className="rounded-full bg-surface px-2.5 py-1 text-[13.2px] font-medium text-ink-muted ring-1 ring-inset ring-line">
+            <span className="rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
               {targets.totalPendingTargets} pending
             </span>
 
-            <span className="num rounded-full bg-fuchsia-soft px-2.5 py-1 text-[13.2px] font-medium text-fuchsia-fg ring-1 ring-inset ring-fuchsia-line">
+            <span className="num rounded-full bg-fuchsia-soft px-2.5 py-1 text-[12.54px] font-medium text-fuchsia-fg ring-1 ring-inset ring-fuchsia-line">
               total {Number(targets.totalTargetAmount).toFixed(2)}
             </span>
           </div>

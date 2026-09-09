@@ -49,18 +49,18 @@ export default function BudgetPreview() {
               <FiTrendingUp size={15} strokeWidth={2.4} />
             </span>
 
-            <h2 className="text-[15.6px] font-bold uppercase tracking-[0.14em] text-ink-muted">
+            <h2 className="text-[14.82px] font-bold uppercase tracking-[0.14em] text-ink-muted">
               This Month
             </h2>
           </div>
 
-          <span className="rounded-md border border-emerald-line bg-emerald-soft px-2 py-1 text-[12px] font-bold uppercase tracking-wider text-emerald-fg">
+          <span className="rounded-md border border-emerald-line bg-emerald-soft px-2 py-1 text-[11.4px] font-bold uppercase tracking-wider text-emerald-fg">
             On track
           </span>
         </div>
 
         <div className="relative mt-5">
-          <p className="text-[13.2px] font-bold uppercase tracking-wider text-ink-faint">
+          <p className="text-[12.54px] font-bold uppercase tracking-wider text-ink-faint">
             Salary
           </p>
 
@@ -85,7 +85,7 @@ export default function BudgetPreview() {
         <div className="relative mt-4 rounded-xl border border-line-soft bg-inset p-4">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="text-[13.2px] font-bold uppercase tracking-wider text-ink-faint">
+              <p className="text-[12.54px] font-bold uppercase tracking-wider text-ink-faint">
                 Daily budget
               </p>
 
@@ -94,7 +94,7 @@ export default function BudgetPreview() {
               </p>
             </div>
 
-            <p className="text-right text-[13.2px] leading-tight text-ink-faint">
+            <p className="text-right text-[12.54px] leading-tight text-ink-faint">
               32,000 ÷ 26
               <br />
               working days
@@ -116,14 +116,14 @@ export default function BudgetPreview() {
                   />
                 </div>
 
-                <span className="text-[12px] uppercase tracking-wider text-ink-faint">
+                <span className="text-[11.4px] uppercase tracking-wider text-ink-faint">
                   {entry.day}
                 </span>
               </div>
             ))}
           </div>
 
-          <p className="rule-dashed mt-4 pt-3 text-center text-[13.2px] text-ink-muted">
+          <p className="rule-dashed mt-4 pt-3 text-center text-[12.54px] text-ink-muted">
             Unspent today rolls into
             <span className="font-bold text-emerald-fg"> Extra Saving</span>
           </p>

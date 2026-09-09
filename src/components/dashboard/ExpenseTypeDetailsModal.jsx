@@ -110,7 +110,7 @@ export default function ExpenseTypeDetailsModal({
           </div>
 
           <div>
-            <p className="mb-2 text-[13.2px] font-bold uppercase tracking-[0.14em] text-ink-muted">
+            <p className="mb-2 text-[12.54px] font-bold uppercase tracking-[0.14em] text-ink-muted">
               Categories
             </p>
 
@@ -143,7 +143,7 @@ export default function ExpenseTypeDetailsModal({
                 ))}
 
                 <li className="flex items-center justify-between gap-3 bg-surface px-3.5 py-2.5">
-                  <span className="text-[13.2px] font-bold uppercase tracking-[0.14em] text-ink-muted">
+                  <span className="text-[12.54px] font-bold uppercase tracking-[0.14em] text-ink-muted">
                     Per use total
                   </span>
 
@@ -163,7 +163,7 @@ export default function ExpenseTypeDetailsModal({
 function Stat({ label, value }) {
   return (
     <div className="rounded-xl border border-line-soft bg-inset px-3 py-2.5">
-      <p className="text-[12px] uppercase tracking-[0.12em] text-ink-faint">
+      <p className="text-[11.4px] uppercase tracking-[0.12em] text-ink-faint">
         {label}
       </p>
 

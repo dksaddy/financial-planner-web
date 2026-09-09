@@ -140,7 +140,7 @@ export default function AllTargetsPage() {
           </Link>
 
           <div>
-            <h1 className="text-[22px] font-bold uppercase leading-tight sm:text-[31.2px] tracking-[0.06em] text-ink">
+            <h1 className="text-[20.9px] font-bold uppercase leading-tight sm:text-[29.64px] tracking-[0.06em] text-ink">
               All Targets
             </h1>
 
@@ -182,7 +182,7 @@ export default function AllTargetsPage() {
             <button
               type="button"
               onClick={() => setAddOpen(true)}
-              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 px-3.5 text-[13.2px] font-bold uppercase tracking-wider text-white shadow-lg shadow-fuchsia-500/30 transition hover:shadow-fuchsia-500/50 hover:brightness-110 active:scale-95"
+              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 px-3.5 text-[12.54px] font-bold uppercase tracking-wider text-white shadow-lg shadow-fuchsia-500/30 transition hover:shadow-fuchsia-500/50 hover:brightness-110 active:scale-95"
             >
               <FiPlus size={14} strokeWidth={2.6} />
               Add Target
@@ -245,7 +245,7 @@ export default function AllTargetsPage() {
                           type="button"
                           disabled={statusUpdatingId === target.id}
                           onClick={() => handleToggleStatus(target)}
-                          className="flex h-7 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[13.2px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="flex h-7 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[12.54px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                           aria-label={`Mark ${target.name} as completed`}
                         >
                           {statusUpdatingId === target.id ? (
@@ -285,7 +285,7 @@ export default function AllTargetsPage() {
                           style={{ width: `${percent}%` }}
                         />
                       </div>
-                      <span className="num shrink-0 text-[13.2px] font-bold text-fuchsia-fg">
+                      <span className="num shrink-0 text-[12.54px] font-bold text-fuchsia-fg">
                         {percent.toFixed(0)}%
                       </span>
                     </div>
@@ -344,7 +344,7 @@ export default function AllTargetsPage() {
                         type="button"
                         disabled={statusUpdatingId === target.id}
                         onClick={() => handleToggleStatus(target)}
-                        className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                        className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
                         aria-label={`Mark ${target.name} as pending`}
                       >
                         {statusUpdatingId === target.id ? (
