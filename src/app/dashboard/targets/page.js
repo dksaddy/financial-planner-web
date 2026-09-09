@@ -140,7 +140,7 @@ export default function AllTargetsPage() {
           </Link>
 
           <div>
-            <h1 className="text-[26px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
+            <h1 className="text-[31.2px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
               All Targets
             </h1>
 
@@ -239,7 +239,7 @@ export default function AllTargetsPage() {
                           type="button"
                           disabled={statusUpdatingId === target.id}
                           onClick={() => handleToggleStatus(target)}
-                          className="flex h-7 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[11px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="flex h-7 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[13.2px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                           aria-label={`Mark ${target.name} as completed`}
                         >
                           {statusUpdatingId === target.id ? (
@@ -279,7 +279,7 @@ export default function AllTargetsPage() {
                           style={{ width: `${percent}%` }}
                         />
                       </div>
-                      <span className="num shrink-0 text-[11px] font-bold text-fuchsia-fg">
+                      <span className="num shrink-0 text-[13.2px] font-bold text-fuchsia-fg">
                         {percent.toFixed(0)}%
                       </span>
                     </div>
@@ -338,7 +338,7 @@ export default function AllTargetsPage() {
                         type="button"
                         disabled={statusUpdatingId === target.id}
                         onClick={() => handleToggleStatus(target)}
-                        className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                        className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
                         aria-label={`Mark ${target.name} as pending`}
                       >
                         {statusUpdatingId === target.id ? (

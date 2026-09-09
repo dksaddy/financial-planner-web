@@ -19,7 +19,8 @@ import Savings from "@/components/dashboard/Savings";
 import Spinner from "@/components/common/Spinner";
 
 import { getDashboard } from "@/services/dashboard.service";
-import { isAuthenticated, getUser } from "@/lib/auth";
+import { getProfile } from "@/services/user.service";
+import { isAuthenticated, getUser, setUser as cacheUser } from "@/lib/auth";
 
 // Cards fade up in reading order rather than all at once.
 const stagger = (index) => ({ animationDelay: `${index * 70}ms` });
@@ -31,16 +32,17 @@ export default function DashboardPage() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace("/login");
-      return;
+  const refreshUser = async () => {
+    try {
+      const response = await getProfile();
+
+      setUser(response.data);
+      cacheUser(response.data);
+    } catch (error) {
+      // The cached user is enough to render the header; a genuinely dead
+      // session is caught by the dashboard request's own error handling.
     }
-
-    setUser(getUser());
-
-    fetchDashboard();
-  }, [router]);
+  };
 
   const fetchDashboard = async () => {
     try {
@@ -52,6 +54,22 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.replace("/login");
+      return;
+    }
+
+    // Paint the header from the cookie copy first, then reconcile it with the
+    // server — a cookie written by an older login can be missing fields the
+    // header renders, and the name or photo may have changed elsewhere.
+    setUser(getUser());
+
+    refreshUser();
+
+    fetchDashboard();
+  }, [router]);
 
   if (loading) {
     return (
@@ -118,11 +136,7 @@ export default function DashboardPage() {
         {/* Row 3 */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="reveal lg:col-span-2" style={stagger(6)}>
-            <TargetCard
-              targets={targets}
-              extraSaving={extraSaving}
-              onAdded={fetchDashboard}
-            />
+            <TargetCard targets={targets} extraSaving={extraSaving} />
           </div>
 
           <div className="reveal" style={stagger(7)}>
@@ -154,7 +168,7 @@ export default function DashboardPage() {
 
         {/* Row 7 */}
         <div className="reveal" style={stagger(11)}>
-          <Savings plans={saving.plans} onAdded={fetchDashboard} />
+          <Savings plans={saving.plans} />
         </div>
       </div>
     </main>

@@ -123,7 +123,7 @@ export default function AllExpenseTypesPage() {
           </Link>
 
           <div>
-            <h1 className="text-[26px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
+            <h1 className="text-[31.2px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
               All Expense Types
             </h1>
 
@@ -209,13 +209,13 @@ export default function AllExpenseTypesPage() {
                       </p>
 
                       <div className="flex w-full items-center gap-2">
-                        <p className="text-[11px] text-ink-faint">
+                        <p className="text-[13.2px] text-ink-faint">
                           {categories.length} categor
                           {categories.length === 1 ? "y" : "ies"}
                         </p>
 
                         {!isActive && (
-                          <span className="rounded-md border border-line px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-faint">
+                          <span className="rounded-md border border-line px-1.5 py-0.5 text-[12px] font-bold uppercase tracking-[0.12em] text-ink-faint">
                             Inactive
                           </span>
                         )}
@@ -258,7 +258,7 @@ export default function AllExpenseTypesPage() {
                           <button
                             type="button"
                             onClick={() => setEditing(type)}
-                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
                           >
                             <FiEdit2 size={12} />
                             Edit
@@ -268,7 +268,7 @@ export default function AllExpenseTypesPage() {
                             type="button"
                             disabled={statusPendingId === type.id}
                             onClick={() => toggleStatus(type)}
-                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             {isActive ? (
                               <>

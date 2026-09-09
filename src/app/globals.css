@@ -50,6 +50,20 @@ body::after {
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
 }
 
+/* Tailwind v4's preflight stopped forcing `cursor: pointer` on buttons, which
+   leaves every control in the app on the default arrow. Put it back once here
+   rather than adding a utility to each button. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+summary,
+select {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 /* ---------- Motion ---------- */
 
 @keyframes revealUp {

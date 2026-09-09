@@ -174,6 +174,29 @@
   --font-sans: var(--font-receipt);
   --font-mono: var(--font-receipt);
 
+  /* Type scale, Tailwind's defaults × 1.2. Overriding the scale rather than
+     the root font size keeps padding, gaps and widths — all rem-based in
+     Tailwind — exactly where they were, so only the text grows. Arbitrary
+     `text-[Npx]` sizes in components carry the same 1.2 factor. */
+  --text-xs: 0.9rem;
+  --text-xs--line-height: 1.2rem;
+  --text-sm: 1.05rem;
+  --text-sm--line-height: 1.5rem;
+  --text-base: 1.2rem;
+  --text-base--line-height: 1.8rem;
+  --text-lg: 1.35rem;
+  --text-lg--line-height: 2.1rem;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 2.1rem;
+  --text-2xl: 1.8rem;
+  --text-2xl--line-height: 2.4rem;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 2.7rem;
+  --text-4xl: 2.7rem;
+  --text-4xl--line-height: 3rem;
+  --text-5xl: 3.6rem;
+  --text-5xl--line-height: 1;
+
   --color-app: var(--app);
   --color-panel: var(--panel);
   --color-surface: var(--surface);

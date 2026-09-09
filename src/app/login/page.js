@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -83,6 +84,16 @@ export default function LoginPage() {
         >
           Login
         </Button>
+
+        <p className="text-center text-sm text-ink-muted">
+          No account yet?{" "}
+          <Link
+            href="/register"
+            className="font-bold text-indigo-fg transition hover:brightness-110"
+          >
+            Register
+          </Link>
+        </p>
       </form>
     </AuthLayout>
   );

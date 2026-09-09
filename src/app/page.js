@@ -1,44 +1,56 @@
 import Link from "next/link";
 
-import ThemeToggle from "@/components/common/ThemeToggle";
+import LandingNav from "@/components/landing/LandingNav";
+import Hero from "@/components/landing/Hero";
+import Features from "@/components/landing/Features";
+import HowItWorks from "@/components/landing/HowItWorks";
+import Benefits from "@/components/landing/Benefits";
+import CallToAction from "@/components/landing/CallToAction";
+
+export const metadata = {
+  title: "Financial Planner — plan the month, spend the day",
+  description:
+    "Turn one salary figure into a daily budget: saving plans, reusable expense types, logged spending, targets funded by whatever you do not spend.",
+};
 
 export default function LandingPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-5">
-      <div className="absolute right-5 top-5">
-        <ThemeToggle />
-      </div>
+    <>
+      <LandingNav />
 
-      <div className="reveal w-full max-w-lg text-center">
-        <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs font-medium text-ink-muted">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-dot" />
-          Personal finance, in one view
-        </span>
+      <main className="flex-1">
+        <Hero />
 
-        <h1 className="mb-3 text-5xl font-bold uppercase tracking-[0.04em] text-ink">
-          Financial Planner
-        </h1>
+        <Features />
 
-        <p className="mb-9 text-base text-ink-muted">
-          Track your expenses, savings, and targets in one place.
-        </p>
+        <HowItWorks />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link
-            href="/login"
-            className="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:brightness-110 hover:shadow-indigo-500/50 active:scale-[0.98]"
-          >
-            Login
-          </Link>
+        <Benefits />
 
-          <Link
-            href="/register"
-            className="rounded-xl border border-line bg-surface px-7 py-3 text-sm font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
-          >
-            Register
-          </Link>
+        <CallToAction />
+      </main>
+
+      <footer className="border-t border-line-soft">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-ink-faint sm:flex-row sm:px-6 lg:px-8">
+          <p className="uppercase tracking-[0.16em]">Financial Planner</p>
+
+          <div className="flex items-center gap-4">
+            <Link
+              href="/login"
+              className="uppercase tracking-wider transition hover:text-ink"
+            >
+              Login
+            </Link>
+
+            <Link
+              href="/register"
+              className="uppercase tracking-wider transition hover:text-ink"
+            >
+              Register
+            </Link>
+          </div>
         </div>
-      </div>
-    </main>
+      </footer>
+    </>
   );
 }

@@ -10,21 +10,12 @@ import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 
 import { createSavingPlanSchema } from "@/validations/savingPlans.validation";
-import { createSavingPlan } from "@/services/savingPlans.service";
+import { updateSavingPlan } from "@/services/savingPlans.service";
 
-const DEFAULT_VALUES = {
-  name: "",
-  amount: "",
-  frequency: "",
-  months: "",
-  depositAmount: "",
-  depositFrequency: "",
-  withdrawalAmount: "",
-};
-
-export default function AddSavingPlanModal({
+export default function EditSavingPlanModal({
   open,
   onClose,
+  plan,
   onSuccess,
 }) {
   const [submitting, setSubmitting] = useState(false);
@@ -35,21 +26,41 @@ export default function AddSavingPlanModal({
     reset,
     formState: { errors },
   } = useForm({
+    // `PUT /saving-plans/:id` validates against the create schema — every
+    // field is required on an update too.
     resolver: zodResolver(createSavingPlanSchema),
-    defaultValues: DEFAULT_VALUES,
+    defaultValues: {
+      name: "",
+      amount: "",
+      frequency: "",
+      months: "",
+      depositAmount: "",
+      depositFrequency: "",
+      withdrawalAmount: "",
+    },
   });
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !plan) return;
 
-    reset(DEFAULT_VALUES);
-  }, [open, reset]);
+    reset({
+      name: plan.name ?? "",
+      amount: plan.amount ?? "",
+      frequency: plan.frequency ?? "",
+      months: plan.months ?? "",
+      depositAmount: plan.depositAmount ?? "",
+      depositFrequency: plan.depositFrequency ?? "",
+      withdrawalAmount: plan.withdrawalAmount ?? "",
+    });
+  }, [open, plan, reset]);
+
+  if (!plan) return null;
 
   const onSubmit = async (data) => {
     try {
       setSubmitting(true);
 
-      const response = await createSavingPlan(data);
+      const response = await updateSavingPlan(plan.id, data);
 
       toast.success(response.message);
 
@@ -58,8 +69,7 @@ export default function AddSavingPlanModal({
       onClose();
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
-          "Failed to create saving plan"
+        error.response?.data?.message || "Failed to update saving plan"
       );
     } finally {
       setSubmitting(false);
@@ -67,15 +77,8 @@ export default function AddSavingPlanModal({
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Add Saving Plan"
-    >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+    <Modal open={open} onClose={onClose} title="Edit Saving Plan">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input
           label="Plan Name"
           name="name"
@@ -143,11 +146,15 @@ export default function AddSavingPlanModal({
           error={errors.withdrawalAmount}
         />
 
-        <Button
-          type="submit"
-          loading={submitting}
-        >
-          Create Plan
+        {/* Deposits already made are not part of this form — the update
+            endpoint leaves currently_deposited untouched. */}
+        <p className="num text-center text-[13.2px] text-ink-faint">
+          {Number(plan.currentlyDeposited).toFixed(2)} already deposited stays
+          as it is
+        </p>
+
+        <Button type="submit" loading={submitting}>
+          Save Changes
         </Button>
       </form>
     </Modal>

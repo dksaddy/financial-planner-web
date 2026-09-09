@@ -37,7 +37,7 @@ export default function FrequentExpense({
         <button
           type="button"
           onClick={() => router.push("/dashboard/expense-types")}
-          className="flex h-8 items-center gap-1.5 rounded-xl border border-line-soft bg-inset px-3 text-[11px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-amber-line hover:bg-amber-soft hover:text-amber-fg active:scale-95"
+          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-line-soft bg-inset px-3 text-[13.2px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-amber-line hover:bg-amber-soft hover:text-amber-fg active:scale-95"
         >
           View All
           <FiArrowUpRight size={13} strokeWidth={2.6} />
@@ -60,7 +60,7 @@ export default function FrequentExpense({
                 </p>
 
                 <span
-                  className={`flex h-5 shrink-0 items-center rounded-md bg-gradient-to-br px-1.5 text-[10px] font-bold text-white shadow-md ${
+                  className={`flex h-5 shrink-0 items-center rounded-md bg-gradient-to-br px-1.5 text-[12px] font-bold text-white shadow-md ${
                     RANK_STYLES[index] || RANK_STYLES[3]
                   }`}
                 >
@@ -72,7 +72,7 @@ export default function FrequentExpense({
                 {Number(expense.totalAmount).toFixed(2)}
               </p>
 
-              <p className="mt-1 text-[11px] text-ink-faint">
+              <p className="mt-1 text-[13.2px] text-ink-faint">
                 <span className="num font-bold text-ink-muted">
                   {expense.frequency}x
                 </span>{" "}

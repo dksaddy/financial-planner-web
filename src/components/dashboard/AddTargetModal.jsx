@@ -180,14 +180,14 @@ export default function AddTargetModal({
                     alt="Target preview"
                     className="h-full w-full object-cover"
                   />
-                  <span className="absolute inset-0 flex items-center justify-center bg-scrim text-[10px] font-bold uppercase tracking-wider text-white opacity-0 transition group-hover:opacity-100">
+                  <span className="absolute inset-0 flex items-center justify-center bg-scrim text-[12px] font-bold uppercase tracking-wider text-white opacity-0 transition group-hover:opacity-100">
                     Change
                   </span>
                 </>
               ) : (
                 <span className="flex flex-col items-center gap-1.5">
                   <FiImage size={20} strokeWidth={2} />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">
+                  <span className="text-[12px] font-bold uppercase tracking-wider">
                     Add image
                   </span>
                 </span>
@@ -201,7 +201,7 @@ export default function AddTargetModal({
                   e.stopPropagation();
                   clearPicture();
                 }}
-                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-ink-faint transition hover:text-rose-fg"
+                className="flex items-center gap-1 text-[13.2px] font-bold uppercase tracking-wider text-ink-faint transition hover:text-rose-fg"
               >
                 <FiX size={12} strokeWidth={2.6} />
                 Remove
@@ -210,14 +210,14 @@ export default function AddTargetModal({
           </div>
 
           {loadingImages && (
-            <p className="pt-1 text-[10px] font-bold uppercase tracking-wider text-ink-faint">
+            <p className="pt-1 text-[12px] font-bold uppercase tracking-wider text-ink-faint">
               Loading past pictures…
             </p>
           )}
 
           {!loadingImages && existingImages.length > 0 && (
             <div className="space-y-1.5 pt-1">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-ink-faint">
+              <span className="block text-[12px] font-bold uppercase tracking-wider text-ink-faint">
                 Or reuse an existing picture
               </span>
 

@@ -49,9 +49,9 @@ export default function ExtraSavingCard({ extraSaving, targets }) {
                   isDeficit ? "text-rose-fg" : "text-emerald-fg"
                 }`}
               >
-                {coveredPercent.toFixed(0)}%
+                {coveredPercent.toFixed(2)}%
               </span>
-              <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-faint">
+              <span className="text-[12px] font-medium uppercase tracking-[0.1em] text-ink-faint">
                 of target
               </span>
             </div>

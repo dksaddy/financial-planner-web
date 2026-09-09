@@ -116,7 +116,7 @@ export default function AvatarCard({ profile, onSuccess }) {
           <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-scrim text-white opacity-0 transition group-hover:opacity-100">
             <FiCamera size={18} strokeWidth={2.2} />
 
-            <span className="text-[10px] font-bold uppercase tracking-wider">
+            <span className="text-[12px] font-bold uppercase tracking-wider">
               Change
             </span>
           </span>
@@ -142,14 +142,14 @@ export default function AvatarCard({ profile, onSuccess }) {
               type="button"
               onClick={clearSelection}
               disabled={uploading}
-              className="flex w-full items-center justify-center gap-1 text-[11px] font-bold uppercase tracking-wider text-ink-faint transition hover:text-rose-fg disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-1 text-[13.2px] font-bold uppercase tracking-wider text-ink-faint transition hover:text-rose-fg disabled:cursor-not-allowed disabled:opacity-50"
             >
               <FiX size={12} strokeWidth={2.6} />
               Cancel
             </button>
           </div>
         ) : (
-          <p className="text-center text-[11px] text-ink-faint">
+          <p className="text-center text-[13.2px] text-ink-faint">
             JPG, PNG, WEBP or GIF · up to 5MB
           </p>
         )}

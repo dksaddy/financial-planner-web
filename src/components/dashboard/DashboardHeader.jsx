@@ -37,7 +37,7 @@ export default function DashboardHeader({ user }) {
         </Link>
 
         <div>
-          <h1 className="text-[26px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
+          <h1 className="text-[31.2px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
             Dashboard
           </h1>
 

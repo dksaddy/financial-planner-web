@@ -48,7 +48,7 @@ export default function SavingPlanOverview({
                 <button
                   type="button"
                   onClick={() => setActivePlan(plan)}
-                  className="group/btn flex shrink-0 items-center gap-1 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg shadow-indigo-500/30 transition hover:shadow-indigo-500/50 active:scale-95"
+                  className="group/btn flex shrink-0 items-center gap-1 rounded-lg border border-line px-3 py-1.5 text-xs font-bold text-ink-muted transition hover:border-indigo-line hover:bg-indigo-soft hover:text-indigo-fg active:scale-95"
                 >
                   <FiPlus
                     size={12}
@@ -77,7 +77,7 @@ export default function SavingPlanOverview({
 
               <div className="mt-2.5 flex items-end justify-between">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-ink-faint">
+                  <p className="text-[12px] uppercase tracking-wider text-ink-faint">
                     Deposited
                   </p>
 
@@ -87,7 +87,7 @@ export default function SavingPlanOverview({
                 </div>
 
                 <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-wider text-ink-faint">
+                  <p className="text-[12px] uppercase tracking-wider text-ink-faint">
                     Remaining
                   </p>
 

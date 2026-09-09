@@ -44,12 +44,14 @@ export default function Section({
             </span>
           )}
 
-          <h2 className="truncate text-[15px] font-bold uppercase tracking-[0.14em] text-ink-muted">
+          <h2 className="truncate text-[18px] font-bold uppercase tracking-[0.14em] text-ink-muted">
             {title}
           </h2>
         </div>
 
-        {actions}
+        {/* Held at its natural width so a narrow card squeezes the title
+            (which truncates) rather than wrapping the buttons. */}
+        {actions && <div className="shrink-0">{actions}</div>}
       </header>
 
       <div className="relative flex-1">{children}</div>
