@@ -11,7 +11,9 @@ export default function LandingNav() {
             FP
           </span>
 
-          <span className="text-sm font-bold uppercase tracking-[0.18em] text-ink">
+          {/* The badge carries the identity on a phone, where the wordmark
+              plus both buttons would not fit on one row. */}
+          <span className="hidden text-sm font-bold uppercase tracking-[0.18em] text-ink sm:inline">
             Financial
             <span className="text-ink-faint"> / </span>
             Planner

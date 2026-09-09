@@ -191,7 +191,7 @@ export default function EditExpenseTypeModal({
                   )}
                 </div>
 
-                <div className="w-28 space-y-1">
+                <div className="w-24 shrink-0 space-y-1 sm:w-28">
                   <input
                     type="number"
                     step="any"

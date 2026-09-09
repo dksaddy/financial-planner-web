@@ -140,7 +140,7 @@ export default function AllTargetsPage() {
           </Link>
 
           <div>
-            <h1 className="text-[31.2px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
+            <h1 className="text-[22px] font-bold uppercase leading-tight sm:text-[31.2px] tracking-[0.06em] text-ink">
               All Targets
             </h1>
 
@@ -151,14 +151,6 @@ export default function AllTargetsPage() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setAddOpen(true)}
-          className="flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 px-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-fuchsia-500/30 transition hover:shadow-fuchsia-500/50 hover:brightness-110 active:scale-95"
-        >
-          <FiPlus size={16} strokeWidth={2.6} />
-          Add Target
-        </button>
       </div>
 
       <AddTargetModal
@@ -182,7 +174,21 @@ export default function AllTargetsPage() {
       />
 
       <div className="reveal space-y-4" style={{ animationDelay: "70ms" }}>
-        <Section title="Pending" icon={FiTarget} accent="fuchsia">
+        <Section
+          title="Pending"
+          icon={FiTarget}
+          accent="fuchsia"
+          actions={
+            <button
+              type="button"
+              onClick={() => setAddOpen(true)}
+              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 px-3.5 text-[13.2px] font-bold uppercase tracking-wider text-white shadow-lg shadow-fuchsia-500/30 transition hover:shadow-fuchsia-500/50 hover:brightness-110 active:scale-95"
+            >
+              <FiPlus size={14} strokeWidth={2.6} />
+              Add Target
+            </button>
+          }
+        >
           {pending.length === 0 ? (
             <p className="py-6 text-center text-sm text-ink-faint">
               No pending targets.

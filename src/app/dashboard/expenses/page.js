@@ -206,7 +206,7 @@ export default function AllExpensesPage() {
           </Link>
 
           <div>
-            <h1 className="text-[31.2px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
+            <h1 className="text-[22px] font-bold uppercase leading-tight sm:text-[31.2px] tracking-[0.06em] text-ink">
               All Expenses
             </h1>
 
@@ -219,14 +219,6 @@ export default function AllExpensesPage() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setAddOpen(true)}
-          className="flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 px-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:shadow-indigo-500/50 hover:brightness-110 active:scale-95"
-        >
-          <FiPlus size={16} strokeWidth={2.6} />
-          Add Expense
-        </button>
       </div>
 
       <AddExpenseModal
@@ -250,7 +242,21 @@ export default function AllExpensesPage() {
       />
 
       <div className="reveal" style={{ animationDelay: "70ms" }}>
-        <Section title="Expense Records" icon={FiActivity} accent="indigo">
+        <Section
+          title="Expense Records"
+          icon={FiActivity}
+          accent="indigo"
+          actions={
+            <button
+              type="button"
+              onClick={() => setAddOpen(true)}
+              className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 px-3.5 text-[13.2px] font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:shadow-indigo-500/50 hover:brightness-110 active:scale-95"
+            >
+              <FiPlus size={14} strokeWidth={2.6} />
+              Add Expense
+            </button>
+          }
+        >
           <MonthTabs
             months={months}
             active={selectedMonth}

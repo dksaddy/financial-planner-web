@@ -47,7 +47,7 @@ export default function Pagination({
   return (
     <nav
       aria-label="Pagination"
-      className="mt-5 flex items-center justify-center gap-1.5 border-t border-line-soft pt-4"
+      className="mt-5 flex flex-wrap items-center justify-center gap-1.5 border-t border-line-soft pt-4"
     >
       <button
         type="button"

@@ -49,7 +49,7 @@ export default function Modal({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
     >
       <div
         className="fade-in absolute inset-0 bg-scrim backdrop-blur-sm"
@@ -58,7 +58,7 @@ export default function Modal({
 
       <div className={`panel-in relative max-h-[90vh] w-full ${
         SIZES[size] || SIZES.md
-      } overflow-y-auto overflow-x-hidden rounded-2xl border border-line bg-panel p-5 shadow-panel`}>
+      } overflow-y-auto overflow-x-hidden rounded-2xl border border-line bg-panel p-4 shadow-panel sm:p-5`}>
         <span
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"

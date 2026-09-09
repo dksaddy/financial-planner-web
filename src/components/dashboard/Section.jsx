@@ -3,6 +3,10 @@ import { accent as resolveAccent } from "@/theme/accents";
 export default function Section({
   title,
   actions,
+  // Sits between the title and `actions`, centred in the leftover space —
+  // for filters, which belong to the whole card rather than reading as its
+  // primary action.
+  centerActions,
   children,
   icon: Icon,
   accent = "indigo",
@@ -33,8 +37,11 @@ export default function Section({
         bg-gradient-to-br ${tone.grad} opacity-[0.12] blur-2xl`}
       />
 
-      <header className="relative mb-4 flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2.5">
+      {/* Wraps rather than squeezing: a title floor of 7rem means a crowded
+          header on a phone drops its actions onto a second line instead of
+          truncating the title away to nothing. */}
+      <header className="relative mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-[7rem] flex-1 items-center gap-2.5">
           {Icon && (
             <span
               className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl
@@ -48,6 +55,15 @@ export default function Section({
             {title}
           </h2>
         </div>
+
+        {centerActions && (
+          // Takes the same flex weight as the title, so it lands in the
+          // middle of the header; on a phone it drops to its own full-width
+          // row below the title.
+          <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:flex-1">
+            {centerActions}
+          </div>
+        )}
 
         {/* Held at its natural width so a narrow card squeezes the title
             (which truncates) rather than wrapping the buttons. */}

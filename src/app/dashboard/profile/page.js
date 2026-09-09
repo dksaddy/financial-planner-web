@@ -105,7 +105,7 @@ export default function ProfilePage() {
           </Link>
 
           <div>
-            <h1 className="text-[31.2px] font-bold uppercase leading-tight tracking-[0.06em] text-ink">
+            <h1 className="text-[22px] font-bold uppercase leading-tight sm:text-[31.2px] tracking-[0.06em] text-ink">
               Profile
             </h1>
 
