@@ -18,9 +18,8 @@ import LastFourWeeksExpense from "@/components/dashboard/LastFourWeeksExpense";
 import Savings from "@/components/dashboard/Savings";
 import Spinner from "@/components/common/Spinner";
 
-import { logout as logoutApi } from "@/services/auth.service";
 import { getDashboard } from "@/services/dashboard.service";
-import { isAuthenticated, getUser, logout as clearAuth } from "@/lib/auth";
+import { isAuthenticated, getUser } from "@/lib/auth";
 
 // Cards fade up in reading order rather than all at once.
 const stagger = (index) => ({ animationDelay: `${index * 70}ms` });
@@ -54,17 +53,6 @@ export default function DashboardPage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logoutApi();
-    } catch (error) {
-      // Clear local authentication even if API logout fails.
-    } finally {
-      clearAuth();
-      router.push("/login");
-    }
-  };
-
   if (loading) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4">
@@ -90,7 +78,7 @@ export default function DashboardPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
       <div className="reveal">
-        <DashboardHeader user={user} onLogout={handleLogout} />
+        <DashboardHeader user={user} />
       </div>
 
       <div className="space-y-4">
