@@ -127,7 +127,7 @@ export default function AllTargetsPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
       <div className="reveal mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-start gap-3.5">
           <Link
             href="/dashboard"
             className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
@@ -144,9 +144,19 @@ export default function AllTargetsPage() {
               All Targets
             </h1>
 
-            <p className="flex items-center gap-1.5 text-sm text-ink-muted">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-dot" />
-              {pending.length} pending · {completed.length} completed
+            {/* Each stat carries its own dot instead of one leading dot and
+                "·" separators: when the line wraps on a phone the marker
+                stays with its own figure. */}
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-dot" />
+                {pending.length} pending
+              </span>
+
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-dot" />
+                {completed.length} completed
+              </span>
             </p>
           </div>
         </div>

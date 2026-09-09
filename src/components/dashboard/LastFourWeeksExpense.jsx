@@ -195,7 +195,9 @@ export default function LastFourWeeksExpense({
             No expenses recorded this week.
           </p>
         ) : (
-          <div className="scroll-slim max-h-80 space-y-2 overflow-y-auto pr-1">
+          // A week holds at most seven rows, so the whole list shows at once;
+          // the modal shell's own max-h-[90vh] is the only fallback needed.
+          <div className="space-y-2">
             <div className="flex items-center justify-end gap-3 px-3 text-[11.4px] uppercase tracking-wider text-ink-faint sm:gap-3">
               <span className="sm:w-24 sm:text-right">Daily Saving</span>
               <span className="sm:w-20 sm:text-right">Spent</span>

@@ -57,10 +57,10 @@ export default function Section({
         </div>
 
         {centerActions && (
-          // Takes the same flex weight as the title, so it lands in the
-          // middle of the header; on a phone it drops to its own full-width
-          // row below the title.
-          <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:flex-1">
+          // On a phone it drops to its own full-width row below the title and
+          // centres there; from `sm` up it keeps its natural width and sits
+          // beside `actions`, so the title takes the slack instead.
+          <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:shrink-0">
             {centerActions}
           </div>
         )}

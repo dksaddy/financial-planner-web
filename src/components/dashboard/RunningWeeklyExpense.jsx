@@ -105,7 +105,13 @@ export default function RunningWeeklyExpense({
               backgroundSize: "16px 16px",
             }}
           >
-            <div className="relative flex h-28 items-end justify-between gap-1.5 sm:h-36 sm:gap-3">
+            {/* From `lg` the chart sits beside the records list and stretches
+                to its height, so the bar area takes the slack instead of
+                leaving dead space below. Stacked, nothing stretches it and a
+                min-height alone would leave the bars' percentage heights with
+                no definite parent to resolve against — hence the fixed height
+                below `lg`. */}
+            <div className="relative flex h-28 items-end justify-between gap-1.5 sm:h-36 sm:gap-3 lg:h-auto lg:min-h-[9rem] lg:flex-1">
               {records.map((record) => {
                 const total = Number(record.total) || 0;
                 const percent =
@@ -130,7 +136,7 @@ export default function RunningWeeklyExpense({
               })}
             </div>
 
-            <div className="mt-2 flex justify-between gap-1.5 border-t border-line-soft pt-2 sm:gap-3">
+            <div className="mt-2 flex justify-between gap-1.5 pt-2 sm:gap-3">
               {records.map((record) => (
                 <span
                   key={record.id}
@@ -141,7 +147,7 @@ export default function RunningWeeklyExpense({
               ))}
             </div>
 
-            <div className="mt-3 flex flex-1 items-center justify-center">
+            <div className="mt-3 flex items-center justify-center">
               <span className="text-center text-base font-bold uppercase tracking-[0.14em] text-ink">
                 Daily total
               </span>
