@@ -182,52 +182,25 @@
    the single-colour rule outright.
    ========================================================================= */
 
-:root[data-theme="phormism"] {
-  color-scheme: light;
-
-  /* One ground colour, used by every layer. Mid-tone on purpose: the
-     highlight needs somewhere brighter to go and the shade somewhere
-     darker, which pure white cannot give. */
-  --app: #e6e2d9;
-  --panel: #e6e2d9;
-
-  /* Fills are absent, not tinted. What reads as a "surface" is this same
-     ground with light on it. */
+/* Structure, shared by both variants. Everything here is about the absence
+   of the usual depth cues rather than about colour, so it is identical
+   whether the ground is pale or dark — only the two lights differ, and each
+   variant sets those below. */
+:root[data-theme^="phormism"] {
+  /* Fills are absent, not tinted. What reads as a "surface" is the ground
+     itself with light falling on it. */
   --surface: transparent;
-  --surface-hover: rgba(255, 255, 255, 0.28);
   --inset: transparent;
-  --inset-hover: rgba(255, 255, 255, 0.22);
 
-  /* Borders are what neumorphism replaces. Kept non-zero only where a
-     component leans on one to separate rows. */
+  /* Borders are the thing neumorphism replaces. */
   --line: transparent;
-  --line-soft: rgba(23, 27, 33, 0.05);
-  --line-strong: rgba(255, 255, 255, 0.55);
-  --scrim: rgba(120, 113, 98, 0.32);
 
-  --ink: #45413a;
-  --ink-muted: #6d685e;
-  --ink-faint: #928c80;
-
-  /* Flat ground: no aurora, no grid. */
+  /* Flat ground: no aurora, no grid. A lit surface needs a matte backdrop. */
   --aurora-1: transparent;
   --aurora-2: transparent;
   --aurora-3: transparent;
-  --paper-top: #e6e2d9;
-  --paper-mid: #e6e2d9;
-  --paper-bottom: #e6e2d9;
   --grid-line: transparent;
   --grid-opacity: 0;
-
-  /* The two lights every shadow below is built from. */
-  --neu-light: #f7f4ec;
-  --neu-dark: #c2bdb1;
-
-  /* Same highlight, held back. A shadow's spread grows with the element, so
-     the near-solid `--neu-light` that reads as a soft edge on a button turns
-     into a band of glare down the top and left of something modal-sized.
-     Large surfaces use this instead. */
-  --neu-light-soft: rgba(255, 253, 247, 0.4);
 
   --neu-raised-sm:
     3px 3px 6px var(--neu-dark),
@@ -252,6 +225,41 @@
      existing shadow-card / shadow-panel utilities need no component change. */
   --shadow-card: var(--neu-raised);
   --shadow-panel: var(--neu-raised-lg);
+}
+
+/* --- Phormism, pale ------------------------------------------------------ */
+
+:root[data-theme="phormism"] {
+  color-scheme: light;
+
+  /* One ground colour, used by every layer. Mid-tone on purpose: the
+     highlight needs somewhere brighter to go and the shade somewhere
+     darker, which pure white cannot give. */
+  --app: #e6e2d9;
+  --panel: #e6e2d9;
+  --paper-top: #e6e2d9;
+  --paper-mid: #e6e2d9;
+  --paper-bottom: #e6e2d9;
+
+  --surface-hover: rgba(255, 255, 255, 0.28);
+  --inset-hover: rgba(255, 255, 255, 0.22);
+  --line-soft: rgba(23, 27, 33, 0.05);
+  --line-strong: rgba(255, 255, 255, 0.55);
+  --scrim: rgba(120, 113, 98, 0.32);
+
+  --ink: #45413a;
+  --ink-muted: #6d685e;
+  --ink-faint: #928c80;
+
+  /* The two lights every shadow is built from. */
+  --neu-light: #f7f4ec;
+  --neu-dark: #c2bdb1;
+
+  /* Same highlight, held back. A shadow's spread grows with the element, so
+     the near-solid `--neu-light` that reads as a soft edge on a button turns
+     into a band of glare down the top and left of something modal-sized.
+     Large surfaces use this instead. */
+  --neu-light-soft: rgba(255, 253, 247, 0.4);
 
   /* Accents keep their hue but darken: a pale tint is invisible against a
      mid ground, and these sit on it as text rather than on a white card. */
@@ -301,6 +309,88 @@
   --rose-dot: #e03356;
 }
 
+/* --- Phormism, dark ------------------------------------------------------
+   The same structure lit from a dimmer source. Dark neumorphism fails in one
+   specific way: a ground near black leaves the shade nowhere to go, so the
+   form collapses to a highlight on one side and nothing on the other. This
+   ground sits well above black to keep both halves of every shadow visible,
+   and the two lights are held much closer together than in the pale variant —
+   a strong white edge on a dark surface reads as a stroke, not as light.
+   ------------------------------------------------------------------------- */
+
+:root[data-theme="phormism-dark"] {
+  color-scheme: dark;
+
+  --app: #2b2f37;
+  --panel: #2b2f37;
+  --paper-top: #2b2f37;
+  --paper-mid: #2b2f37;
+  --paper-bottom: #2b2f37;
+
+  --surface-hover: rgba(255, 255, 255, 0.05);
+  --inset-hover: rgba(255, 255, 255, 0.035);
+  --line-soft: rgba(255, 255, 255, 0.045);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --scrim: rgba(10, 12, 16, 0.6);
+
+  --ink: #e4e7ec;
+  --ink-muted: #a3aab6;
+  --ink-faint: #7b828e;
+
+  --neu-light: #343943;
+  --neu-dark: #1f2229;
+
+  --neu-light-soft: rgba(72, 79, 92, 0.55);
+
+  /* Accents brighten instead of darkening — the mirror of the pale variant,
+     and the same reasoning as the flat dark theme: a tint has to out-light
+     its ground to be seen at all. */
+  --slate-fg: #c3ccd9;
+  --slate-soft: rgba(148, 163, 184, 0.14);
+  --slate-line: rgba(148, 163, 184, 0.24);
+  --slate-dot: #94a3b8;
+
+  --indigo-fg: #a9b6fd;
+  --indigo-soft: rgba(99, 102, 241, 0.16);
+  --indigo-line: rgba(129, 140, 248, 0.28);
+  --indigo-dot: #818cf8;
+
+  --emerald-fg: #74ebbd;
+  --emerald-soft: rgba(16, 185, 129, 0.16);
+  --emerald-line: rgba(52, 211, 153, 0.28);
+  --emerald-dot: #34d399;
+
+  --amber-fg: #fcd558;
+  --amber-soft: rgba(245, 158, 11, 0.16);
+  --amber-line: rgba(251, 191, 36, 0.28);
+  --amber-dot: #fbbf24;
+
+  --sky-fg: #86d6fc;
+  --sky-soft: rgba(14, 165, 233, 0.16);
+  --sky-line: rgba(56, 189, 248, 0.28);
+  --sky-dot: #38bdf8;
+
+  --cyan-fg: #70ebfa;
+  --cyan-soft: rgba(6, 182, 212, 0.16);
+  --cyan-line: rgba(34, 211, 238, 0.28);
+  --cyan-dot: #22d3ee;
+
+  --violet-fg: #c8bafd;
+  --violet-soft: rgba(139, 92, 246, 0.16);
+  --violet-line: rgba(167, 139, 250, 0.28);
+  --violet-dot: #a78bfa;
+
+  --fuchsia-fg: #f2b3fc;
+  --fuchsia-soft: rgba(217, 70, 239, 0.16);
+  --fuchsia-line: rgba(232, 121, 249, 0.28);
+  --fuchsia-dot: #e879f9;
+
+  --rose-fg: #fdaab4;
+  --rose-soft: rgba(244, 63, 94, 0.16);
+  --rose-line: rgba(251, 113, 133, 0.28);
+  --rose-dot: #fb7185;
+}
+
 /* -------------------------------------------------------------------------
    Phormism, part two: the shadows themselves.
 
@@ -315,13 +405,36 @@
    stated before the specific card and control cases that override it.
    ------------------------------------------------------------------------- */
 
-[data-theme="phormism"] .bg-surface,
-[data-theme="phormism"] .bg-panel {
+[data-theme^="phormism"] .bg-surface,
+[data-theme^="phormism"] .bg-panel {
+  box-shadow: var(--neu-raised-sm);
+}
+
+/* The tinted pills — "total 1635.00", "saved -19.62", every status chip and
+   the warning block in a delete dialog. None of them carry a surface or a
+   shadow utility, so they were the one thing the mode skipped, sitting flat
+   among extruded neighbours.
+
+   The tint stays. Strict neumorphism would have these be ground-coloured
+   too, but the colour *is* the information here — green saved, rose over —
+   and a shape cannot say that. So they keep the hue and gain the extrusion.
+
+   This also replaces their `ring`, which Tailwind implements as a box-shadow;
+   losing the hairline is the intent, since the mode has no borders. */
+[data-theme^="phormism"] .bg-slate-soft,
+[data-theme^="phormism"] .bg-indigo-soft,
+[data-theme^="phormism"] .bg-emerald-soft,
+[data-theme^="phormism"] .bg-amber-soft,
+[data-theme^="phormism"] .bg-sky-soft,
+[data-theme^="phormism"] .bg-cyan-soft,
+[data-theme^="phormism"] .bg-violet-soft,
+[data-theme^="phormism"] .bg-fuchsia-soft,
+[data-theme^="phormism"] .bg-rose-soft {
   box-shadow: var(--neu-raised-sm);
 }
 
 /* A well: anything that was a recessed tint becomes an actual recess. */
-[data-theme="phormism"] .bg-inset {
+[data-theme^="phormism"] .bg-inset {
   box-shadow: var(--neu-pressed);
 }
 
@@ -329,51 +442,51 @@
    in this mode the thing sticking out is the thing you can push, and it
    sinks on :active below. Covers the frequent-expense tiles and the file
    pickers, which are buttons wearing a well's styling. */
-[data-theme="phormism"] button.bg-inset,
-[data-theme="phormism"] a.bg-inset {
+[data-theme^="phormism"] button.bg-inset,
+[data-theme^="phormism"] a.bg-inset {
   box-shadow: var(--neu-raised-sm);
 }
 
 /* Cards and modals, the two things that were already carrying a shadow. */
-[data-theme="phormism"] .shadow-card {
+[data-theme^="phormism"] .shadow-card {
   box-shadow: var(--neu-raised);
 }
 
-[data-theme="phormism"] .shadow-panel {
+[data-theme^="phormism"] .shadow-panel {
   box-shadow: var(--neu-raised-lg);
 }
 
 /* Buttons and badges. The coloured glows (`shadow-indigo-500/30` and
    friends) are replaced wholesale — a tinted halo fights the single light
    source the whole mode is built on. */
-[data-theme="phormism"] .shadow-md,
-[data-theme="phormism"] .shadow-lg {
+[data-theme^="phormism"] .shadow-md,
+[data-theme^="phormism"] .shadow-lg {
   box-shadow: var(--neu-raised-sm);
 }
 
 /* Form controls read as carved out, which is also the affordance: the one
    place on screen you put something into. */
-[data-theme="phormism"] input,
-[data-theme="phormism"] textarea,
-[data-theme="phormism"] select {
+[data-theme^="phormism"] input,
+[data-theme^="phormism"] textarea,
+[data-theme^="phormism"] select {
   border-color: transparent;
   box-shadow: var(--neu-pressed);
 }
 
-[data-theme="phormism"] input:focus,
-[data-theme="phormism"] textarea:focus,
-[data-theme="phormism"] select:focus {
+[data-theme^="phormism"] input:focus,
+[data-theme^="phormism"] textarea:focus,
+[data-theme^="phormism"] select:focus {
   box-shadow: var(--neu-pressed-deep);
 }
 
 /* Pressing physically pushes a control in. `active:scale-95` elsewhere in
    the app still applies and reads as part of the same motion. */
-[data-theme="phormism"] button:not(:disabled):active {
+[data-theme^="phormism"] button:not(:disabled):active {
   box-shadow: var(--neu-pressed);
 }
 
 /* A disabled control is flush with the ground — nothing to press. */
-[data-theme="phormism"] button:disabled {
+[data-theme^="phormism"] button:disabled {
   box-shadow: none;
 }
 
@@ -386,8 +499,8 @@
    be built from: a Tailwind class rename would silently stop hiding them,
    and the elements are decorative, so nothing would look broken enough to
    notice. `.edge-sheen` and `.corner-bloom` exist only as this hook. */
-[data-theme="phormism"] .edge-sheen,
-[data-theme="phormism"] .corner-bloom {
+[data-theme^="phormism"] .edge-sheen,
+[data-theme^="phormism"] .corner-bloom {
   display: none;
 }
 

@@ -12,9 +12,18 @@ const notify = () => {
   listeners.forEach((listener) => listener());
 };
 
-// Order the toggle cycles through. Phormism sits last so the two flat
-// themes stay adjacent — one press still gets you between light and dark.
-export const THEMES = ["light", "dark", "phormism"];
+// The four themes are really a 2x2: a surface style crossed with a
+// brightness. `data-theme` stays a single attribute because the stylesheet
+// and the boot script both want one value, but nothing outside this file
+// should have to know which of the four names encodes which pair.
+export const THEMES = ["light", "dark", "phormism", "phormism-dark"];
+
+const THEME_BY_AXES = {
+  "normal:light": "light",
+  "normal:dark": "dark",
+  "morphism:light": "phormism",
+  "morphism:dark": "phormism-dark",
+};
 
 const systemTheme = () =>
   window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -43,12 +52,35 @@ export const setTheme = (theme) => {
   notify();
 };
 
-// Advances one step round THEMES. Named a cycle rather than a toggle
-// because there are three of them now.
-export const cycleTheme = () => {
-  const next = (THEMES.indexOf(getTheme()) + 1) % THEMES.length;
+// --- The two axes -------------------------------------------------------
+// Read off the theme name rather than stored separately, so there is still
+// one source of truth and no way for the two to disagree.
 
-  setTheme(THEMES[next]);
+// Pure, so a component can pass the value it already subscribed to instead
+// of reading the DOM again — which it must not do during a server render.
+export const styleOf = (theme) =>
+  String(theme).startsWith("phormism") ? "morphism" : "normal";
+
+export const brightnessOf = (theme) =>
+  String(theme).endsWith("dark") ? "dark" : "light";
+
+export const getStyle = () => styleOf(getTheme());
+
+export const getBrightness = () => brightnessOf(getTheme());
+
+// Flipping one axis leaves the other where it was — which is the whole point
+// of splitting them: switching to dark should not also drop you out of
+// morphism, and vice versa.
+export const toggleStyle = () => {
+  const next = getStyle() === "morphism" ? "normal" : "morphism";
+
+  setTheme(THEME_BY_AXES[`${next}:${getBrightness()}`]);
+};
+
+export const toggleBrightness = () => {
+  const next = getBrightness() === "dark" ? "light" : "dark";
+
+  setTheme(THEME_BY_AXES[`${getStyle()}:${next}`]);
 };
 
 export const subscribe = (listener) => {
@@ -102,10 +134,10 @@ export const THEME_BOOT_SCRIPT = `
     var system = window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
+    var known = ["light", "dark", "phormism", "phormism-dark"];
+
     document.documentElement.dataset.theme =
-      stored === "dark" || stored === "light" || stored === "phormism"
-        ? stored
-        : system;
+      known.indexOf(stored) !== -1 ? stored : system;
   } catch (error) {
     document.documentElement.dataset.theme = "light";
   }
