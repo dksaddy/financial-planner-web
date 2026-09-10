@@ -181,6 +181,13 @@ export default function AllExpensesPage() {
 
   const totalSpent = Number(meta?.summary?.total_amount ?? 0);
 
+  // Sum of the daily saved figures across the same filter as `totalSpent`.
+  // Not the dashboard's Extra Save, which also nets off completed targets.
+  const totalSaved = Number(meta?.summary?.total_extra_save ?? 0);
+
+  // Keyed by "YYYY-MM-DD", covering only the days on this page.
+  const extraSavings = meta?.extraSavings || {};
+
   const pageStart = (currentPage - 1) * PAGE_SIZE;
 
   const changeMonth = (month) => {
@@ -239,27 +246,37 @@ export default function AllExpensesPage() {
               All Expenses
             </h1>
 
-            {/* Each stat carries its own dot instead of one leading dot and
-                "·" separators: when the line wraps on a phone the marker
-                stays with its own figure. */}
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-dot" />
+            {/* Chips rather than the dotted line the other page headers use,
+                matching RunningWeeklyExpense — the saved figure carries its
+                own colour, which a shared dot colour would fight. Every
+                figure covers the whole filtered set, not just this page. */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
                 {totalRecords} records
               </span>
 
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-dot" />
-                {totalSpent.toFixed(2)} total
+              <span className="num rounded-full bg-cyan-soft px-2.5 py-1 text-[12.54px] font-medium text-cyan-fg ring-1 ring-inset ring-cyan-line">
+                total {totalSpent.toFixed(2)}
+              </span>
+
+              {/* Rose when negative: spending past the budget across the
+                  filter is a real loss, not a smaller saving. */}
+              <span
+                className={`num rounded-full px-2.5 py-1 text-[12.54px] font-medium ring-1 ring-inset ${
+                  totalSaved < 0
+                    ? "bg-rose-soft text-rose-fg ring-rose-line"
+                    : "bg-emerald-soft text-emerald-fg ring-emerald-line"
+                }`}
+              >
+                saved {totalSaved.toFixed(2)}
               </span>
 
               {totalRecords > PAGE_SIZE && (
-                <span className="flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-dot" />
+                <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-faint ring-1 ring-inset ring-line">
                   showing {pageStart + 1}–{pageStart + pageItems.length}
                 </span>
               )}
-            </p>
+            </div>
           </div>
         </div>
 
@@ -323,10 +340,16 @@ export default function AllExpensesPage() {
           ) : (
             <div key={renderKey} className="space-y-5">
               {groups.map((group, gIndex) => {
-                const dayTotal = group.items.reduce(
-                  (sum, item) => sum + (Number(item.total) || 0),
-                  0
-                );
+                // Read from the API, never derived here: it counts the day's
+                // whole spend against that day's budget, and neither the
+                // budget nor the records that spilled onto another page are
+                // in this response. Absent for a day with no stored row.
+                const daySaving = extraSavings[group.date];
+
+                const extra =
+                  daySaving === undefined
+                    ? null
+                    : Number(daySaving.extra_amount);
 
                 return (
                   <div
@@ -336,14 +359,28 @@ export default function AllExpensesPage() {
                       animationDelay: `${Math.min(gIndex * 55, 300)}ms`,
                     }}
                   >
-                    <div className="mb-2 flex items-center justify-between">
+                    {/* No day total here: one record per day means it only
+                        ever repeated the figure on the row below it. The
+                        day's saving is the one thing the rows cannot say. */}
+                    <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                       <span className="text-xs font-bold uppercase tracking-wider text-ink-faint">
                         {formatDate(group.date)}
                       </span>
 
-                      <span className="num text-xs font-bold text-ink-muted">
-                        {dayTotal.toFixed(2)}
-                      </span>
+                      {extra !== null && (
+                        // Overspending a day's budget is a real outcome, so a
+                        // negative reads as "over" in rose rather than being
+                        // hidden or shown as a saving.
+                        <span
+                          className={`num text-xs font-bold ${
+                            extra < 0 ? "text-rose-fg" : "text-emerald-fg"
+                          }`}
+                        >
+                          {extra < 0
+                            ? `${Math.abs(extra).toFixed(2)} over`
+                            : `${extra.toFixed(2)} saved`}
+                        </span>
+                      )}
                     </div>
 
                     <div className="space-y-2">
