@@ -8,6 +8,7 @@ import { FiArrowLeft, FiLogOut } from "react-icons/fi";
 
 import Spinner from "@/components/common/Spinner";
 import AvatarCard from "@/components/profile/AvatarCard";
+import AvatarAlbum from "@/components/profile/AvatarAlbum";
 import ProfileForm from "@/components/profile/ProfileForm";
 import PasswordForm from "@/components/profile/PasswordForm";
 
@@ -143,8 +144,13 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12">
-        <div className="reveal lg:col-span-5" style={{ animationDelay: "70ms" }}>
+        <div
+          className="reveal space-y-4 lg:col-span-5"
+          style={{ animationDelay: "70ms" }}
+        >
           <AvatarCard profile={profile} onSuccess={fetchProfile} />
+
+          <AvatarAlbum profile={profile} onSuccess={fetchProfile} />
         </div>
 
         <div

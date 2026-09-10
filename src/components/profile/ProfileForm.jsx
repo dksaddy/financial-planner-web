@@ -20,7 +20,7 @@ export default function ProfileForm({ profile, onSuccess }) {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
@@ -31,14 +31,17 @@ export default function ProfileForm({ profile, onSuccess }) {
   });
 
   // The page fetches the profile after mount, and refetches after every
-  // save, so the form follows whatever came back last.
+  // save, so the form follows whatever came back last. Resetting also clears
+  // the dirty flag, which is what re-disables the save button after a save.
   useEffect(() => {
     if (!profile) return;
 
     reset({
       name: profile.name ?? "",
       email: profile.email ?? "",
-      salary: profile.salary ?? "",
+      // Inputs always hand back strings, so keep the baseline a string too —
+      // otherwise retyping the original salary still counts as a change.
+      salary: profile.salary == null ? "" : String(profile.salary),
     });
   }, [profile, reset]);
 
@@ -89,7 +92,7 @@ export default function ProfileForm({ profile, onSuccess }) {
           error={errors.salary}
         />
 
-        <Button type="submit" loading={submitting}>
+        <Button type="submit" loading={submitting} disabled={!isDirty || submitting}>
           Save Changes
         </Button>
       </form>

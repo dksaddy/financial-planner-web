@@ -28,6 +28,21 @@ export const updateAvatar = async (file) => {
   return response.data;
 };
 
+export const getAvatarAlbum = async () => {
+  const response = await api.get("/users/avatars");
+  return response.data;
+};
+
+export const deleteAvatarImage = async (name) => {
+  // The API rebuilds the path as `<userId>/<name>`, so only the bare file
+  // name travels — encoded, since it ends up as a URL segment.
+  const response = await api.delete(
+    `/users/avatars/${encodeURIComponent(name)}`
+  );
+
+  return response.data;
+};
+
 export const changePassword = async ({
   oldPassword,
   newPassword,
