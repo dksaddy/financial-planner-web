@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -10,6 +11,7 @@ import Modal from "@/components/common/Modal";
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 
+import { isLocalPreview } from "@/lib/image";
 import { createTargetSchema } from "@/validations/targets.validation";
 import {
   createTarget,
@@ -23,12 +25,17 @@ export default function AddTargetModal({
 }) {
   const [submitting, setSubmitting] = useState(false);
 
-  const [image, setImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  // The chosen file and its object URL move together in one state value, so
+  // the URL is minted and revoked in the handlers rather than in an effect —
+  // the same shape AvatarCard uses.
+  const [selection, setSelection] = useState(null);
   const fileInputRef = useRef(null);
 
   const [existingImages, setExistingImages] = useState([]);
-  const [loadingImages, setLoadingImages] = useState(false);
+  // Starts true so the first open shows the loading line. A reopen keeps the
+  // list already on screen and refreshes it underneath, rather than flashing
+  // the spinner again.
+  const [loadingImages, setLoadingImages] = useState(true);
   const [selectedExistingUrl, setSelectedExistingUrl] = useState(null);
 
   const {
@@ -44,63 +51,77 @@ export default function AddTargetModal({
     },
   });
 
+  // Refetched on every open so a picture added since last time shows up.
   useEffect(() => {
     if (!open) return;
 
-    reset({ name: "", target_amount: "" });
-    setImage(null);
-    setSelectedExistingUrl(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    let active = true;
 
-    const fetchExistingImages = async () => {
-      try {
-        setLoadingImages(true);
-        const response = await getTargetImages();
-        setExistingImages(response.data ?? []);
-      } catch {
+    getTargetImages()
+      .then((response) => {
+        if (active) setExistingImages(response.data ?? []);
+      })
+      .catch(() => {
         // Picking a past picture is a bonus feature — if it fails to
         // load, uploading a new image still works fine.
-        setExistingImages([]);
-      } finally {
-        setLoadingImages(false);
-      }
+        if (active) setExistingImages([]);
+      })
+      .finally(() => {
+        if (active) setLoadingImages(false);
+      });
+
+    return () => {
+      active = false;
     };
+  }, [open]);
 
-    fetchExistingImages();
-  }, [open, reset]);
-
-  useEffect(() => {
-    if (!image) {
-      setPreviewUrl(null);
-      return;
-    }
-
-    const url = URL.createObjectURL(image);
-    setPreviewUrl(url);
-
-    return () => URL.revokeObjectURL(url);
-  }, [image]);
+  const revokeSelection = () => {
+    if (selection) URL.revokeObjectURL(selection.url);
+  };
 
   // Uploading a new file and picking an existing picture are mutually
   // exclusive — choosing one clears the other.
   const handleNewFile = (file) => {
-    setImage(file ?? null);
+    revokeSelection();
+
+    setSelection(
+      file ? { file, url: URL.createObjectURL(file) } : null
+    );
     setSelectedExistingUrl(null);
   };
 
   const handleSelectExisting = (url) => {
+    revokeSelection();
+
     setSelectedExistingUrl((current) => (current === url ? null : url));
-    setImage(null);
+    setSelection(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const clearPicture = () => {
-    setImage(null);
+    revokeSelection();
+
+    setSelection(null);
     setSelectedExistingUrl(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const displayedPreview = previewUrl || selectedExistingUrl;
+  // Clearing on the way out rather than on the way in: every close runs
+  // through here — the backdrop, Escape, Cancel and a successful submit — so
+  // the modal is already empty by its next open, with no reset effect and no
+  // leaked object URL. Unlike `clearPicture` this leaves the file input alone,
+  // because Modal unmounts its whole subtree on close and the next open gets a
+  // brand new, empty input anyway.
+  const handleClose = () => {
+    revokeSelection();
+
+    setSelection(null);
+    setSelectedExistingUrl(null);
+    reset({ name: "", target_amount: "" });
+    onClose();
+  };
+
+  const displayedPreview = selection?.url || selectedExistingUrl;
 
   const onSubmit = async (data) => {
     try {
@@ -108,7 +129,7 @@ export default function AddTargetModal({
 
       const response = await createTarget({
         ...data,
-        image,
+        image: selection?.file ?? null,
         existingImageUrl: selectedExistingUrl,
       });
 
@@ -116,7 +137,7 @@ export default function AddTargetModal({
 
       onSuccess?.();
 
-      onClose();
+      handleClose();
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -130,7 +151,7 @@ export default function AddTargetModal({
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       title="Add Target"
     >
       <form
@@ -175,10 +196,13 @@ export default function AddTargetModal({
             >
               {displayedPreview ? (
                 <>
-                  <img
+                  <Image
                     src={displayedPreview}
                     alt="Target preview"
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="(min-width: 640px) 448px, 90vw"
+                    unoptimized={isLocalPreview(displayedPreview)}
+                    className="object-cover"
                   />
                   <span className="absolute inset-0 flex items-center justify-center bg-scrim text-[11.4px] font-bold uppercase tracking-wider text-white opacity-0 transition group-hover:opacity-100">
                     Change
@@ -238,9 +262,11 @@ export default function AddTargetModal({
                           : "border-line hover:border-line-strong"
                       }`}
                     >
-                      <img
+                      <Image
                         src={img.image_url}
                         alt={img.name}
+                        width={48}
+                        height={48}
                         className="h-full w-full object-cover"
                       />
 

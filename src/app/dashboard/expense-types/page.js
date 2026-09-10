@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -40,27 +40,50 @@ export default function AllExpenseTypesPage() {
   const [editing, setEditing] = useState(null);
   const [statusPendingId, setStatusPendingId] = useState(null);
 
+  // Fetches and reports failures, but never touches state — that is left to
+  // the caller. Keeping the commit out of here is what lets the mount effect
+  // below cancel a response it no longer wants.
+  const loadTypes = useCallback(async () => {
+    try {
+      const response = await getExpenseTypes();
+      return response.data || [];
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to load expense types"
+      );
+
+      return null;
+    }
+  }, []);
+
+  // What children call after a mutation. Still awaitable, so a caller can hold
+  // its own pending state open until the new list has landed.
+  const fetchTypes = useCallback(async () => {
+    const data = await loadTypes();
+
+    if (data) setTypes(data);
+  }, [loadTypes]);
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.replace("/login");
       return;
     }
 
-    fetchTypes();
-  }, [router]);
+    let active = true;
 
-  const fetchTypes = async () => {
-    try {
-      const response = await getExpenseTypes();
-      setTypes(response.data || []);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to load expense types"
-      );
-    } finally {
+    loadTypes().then((data) => {
+      if (!active) return;
+
+      if (data) setTypes(data);
       setLoading(false);
-    }
-  };
+    });
+
+    // Drops a response that arrives after this effect has been superseded.
+    return () => {
+      active = false;
+    };
+  }, [router, loadTypes]);
 
   const toggleStatus = async (type) => {
     try {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { FiPlus, FiTrash2 } from "react-icons/fi";
@@ -26,7 +26,6 @@ export default function AddExpenseTypeModal({
     register,
     control,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -51,7 +50,10 @@ export default function AddExpenseTypeModal({
     });
   }, [open, reset]);
 
-  const categoryValues = watch("categories");
+  // `useWatch` rather than `watch()`: it subscribes through `control` instead
+  // of handing back a fresh function on every render, which is what lets React
+  // Compiler memoize this component instead of skipping it.
+  const categoryValues = useWatch({ control, name: "categories" });
 
   const total = (categoryValues || []).reduce(
     (sum, category) => sum + (Number(category?.amount) || 0),

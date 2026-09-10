@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -39,21 +39,32 @@ export default function AllSavingPlansPage() {
   const [deletingPlan, setDeletingPlan] = useState(null);
   const [statusPendingId, setStatusPendingId] = useState(null);
 
-  const fetchPlans = async () => {
+  // Fetches and reports failures, but never touches state — that is left to
+  // the caller. Keeping the commit out of here is what lets the mount effect
+  // below cancel a response it no longer wants.
+  const loadPlans = useCallback(async () => {
     try {
       const response = await getSavingPlans();
 
       // Unlike /dashboard, this endpoint returns raw rows, so the derived
       // figures the card needs are computed here.
-      setPlans((response.data || []).map(normalizeSavingPlan));
+      return (response.data || []).map(normalizeSavingPlan);
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to load saving plans"
       );
-    } finally {
-      setLoading(false);
+
+      return null;
     }
-  };
+  }, []);
+
+  // What the cards and modals call after a mutation. Still awaitable, so
+  // `changeStatus` below can hold its spinner up until the list has landed.
+  const fetchPlans = useCallback(async () => {
+    const data = await loadPlans();
+
+    if (data) setPlans(data);
+  }, [loadPlans]);
 
   const changeStatus = async (plan, status) => {
     try {
@@ -79,8 +90,20 @@ export default function AllSavingPlansPage() {
       return;
     }
 
-    fetchPlans();
-  }, [router]);
+    let active = true;
+
+    loadPlans().then((data) => {
+      if (!active) return;
+
+      if (data) setPlans(data);
+      setLoading(false);
+    });
+
+    // Drops a response that arrives after this effect has been superseded.
+    return () => {
+      active = false;
+    };
+  }, [router, loadPlans]);
 
   if (loading) {
     return (

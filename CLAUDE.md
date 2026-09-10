@@ -19,7 +19,12 @@ No test runner is configured.
 
 This is the frontend half of a pair. The Express/PostgreSQL API lives in the sibling
 `financial-planner-api/` directory and must be running for anything past the login page to work.
-`NEXT_PUBLIC_API_URL` in `.env.local` points at it and is the only environment variable.
+`NEXT_PUBLIC_API_URL` in `.env.local` points at it.
+
+`NEXT_PUBLIC_SUPABASE_URL` is the only other variable — it must match the API's `SUPABASE_URL`.
+`next.config.mjs` turns its hostname into the `images.remotePatterns` entry that lets `next/image`
+optimize avatars and target pictures. Without it the patterns list is empty and every remote image
+404s through the optimizer, so it has to be set anywhere the app is built or deployed.
 
 ## Architecture
 
@@ -33,6 +38,11 @@ page ("use client") → src/services/*.service.js → src/lib/axios.js → API
 
 - **Pages** are client components. `dashboard/page.js` guards on `isAuthenticated()`, fetches once in
   `useEffect`, holds the whole dashboard payload in one `useState`, and passes slices down as props.
+- **Fetching is split in two** on every page: a `loadX` that calls the service and toasts on failure
+  but never touches state, and a `fetchX` that awaits it and commits. The mount effect calls `loadX`
+  and commits inside `.then` behind an `active` flag it clears on cleanup, so a superseded response is
+  dropped; `fetchX` is what gets passed to children. Keep this shape — calling a state-setting
+  function straight from an effect trips `react-hooks/set-state-in-effect` and cannot be cancelled.
 - **Services** are thin one-function-per-endpoint wrappers returning `response.data` (the API's
   `{ success, statusCode, message, data }` envelope). Callers read `response.data` for the payload and
   `response.message` for toasts.

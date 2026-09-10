@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { FiAlertTriangle, FiImage, FiTrash2 } from "react-icons/fi";
 
@@ -15,27 +16,38 @@ export default function AvatarAlbum({ profile, onSuccess }) {
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  // Bumped by the delete handler to ask the effect below for a fresh list.
+  // Keeping the fetch in one place — the effect — is what lets it own its own
+  // cancellation; a second fetch path could not be cancelled by it.
+  const [reloadToken, setReloadToken] = useState(0);
 
-  const fetchAlbum = useCallback(async () => {
-    try {
-      const response = await getAvatarAlbum();
-
-      setPhotos(response.data ?? []);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to load your photos"
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Keyed on the avatar rather than the whole profile: a new upload both adds
-  // a file to the album and changes `avatar_url`, so this refetches on upload
-  // without also firing for an unrelated name or salary edit.
+  // Also keyed on the avatar rather than the whole profile: a new upload both
+  // adds a file to the album and changes `avatar_url`, so this refetches on
+  // upload without firing for an unrelated name or salary edit.
   useEffect(() => {
-    fetchAlbum();
-  }, [fetchAlbum, profile?.avatar_url]);
+    let active = true;
+
+    getAvatarAlbum()
+      .then((response) => {
+        if (active) setPhotos(response.data ?? []);
+      })
+      .catch((error) => {
+        if (active) {
+          toast.error(
+            error.response?.data?.message || "Failed to load your photos"
+          );
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    // Drops a response that lands after this effect has been superseded, so a
+    // slow first request can't overwrite the list a later one already wrote.
+    return () => {
+      active = false;
+    };
+  }, [reloadToken, profile?.avatar_url]);
 
   const handleDelete = async () => {
     if (!pending) return;
@@ -49,7 +61,7 @@ export default function AvatarAlbum({ profile, onSuccess }) {
 
       setPending(null);
 
-      await fetchAlbum();
+      setReloadToken((token) => token + 1);
 
       // The deleted file is never the current avatar — the API refuses that —
       // so the profile itself is untouched. Still told, in case a parent wants
@@ -85,11 +97,14 @@ export default function AvatarAlbum({ profile, onSuccess }) {
                   : "border-line"
               }`}
             >
-              <img
+              <Image
                 src={photo.url}
                 alt=""
-                loading="lazy"
-                className="h-full w-full object-cover"
+                fill
+                // Three to a row inside the narrow profile column, so the
+                // largest a tile ever gets is roughly a third of it.
+                sizes="(min-width: 1024px) 150px, 33vw"
+                className="object-cover"
               />
 
               {photo.is_current ? (

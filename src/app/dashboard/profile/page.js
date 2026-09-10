@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -23,23 +23,33 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const fetchProfile = async () => {
+  // Fetches and reports failures, but never touches React state — that is
+  // left to the caller. Keeping the commit out of here is what lets the mount
+  // effect below cancel a response it no longer wants. The cookie write stays,
+  // because the dashboard header reads the user out of the cookie and must be
+  // kept in step with the server after every profile change.
+  const loadProfile = useCallback(async () => {
     try {
       const response = await getProfile();
 
-      setProfile(response.data);
-
-      // The dashboard header reads the user out of the cookie, so keep the
-      // cookie in step with the server after every profile change.
       setUser(response.data);
+
+      return response.data;
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to load profile"
       );
-    } finally {
-      setLoading(false);
+
+      return null;
     }
-  };
+  }, []);
+
+  // Passed to the cards as `onSuccess` after they mutate the profile.
+  const fetchProfile = useCallback(async () => {
+    const data = await loadProfile();
+
+    if (data) setProfile(data);
+  }, [loadProfile]);
 
   const handleLogout = async () => {
     try {
@@ -59,8 +69,20 @@ export default function ProfilePage() {
       return;
     }
 
-    fetchProfile();
-  }, [router]);
+    let active = true;
+
+    loadProfile().then((data) => {
+      if (!active) return;
+
+      if (data) setProfile(data);
+      setLoading(false);
+    });
+
+    // Drops a response that arrives after this effect has been superseded.
+    return () => {
+      active = false;
+    };
+  }, [router, loadProfile]);
 
   if (loading) {
     return (

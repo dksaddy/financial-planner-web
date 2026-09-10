@@ -1,12 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { FiCamera, FiUser, FiX } from "react-icons/fi";
 
 import Section from "@/components/dashboard/Section";
 import Button from "@/components/common/Button";
 
+import { isLocalPreview } from "@/lib/image";
 import { updateAvatar } from "@/services/user.service";
 
 // Matches the multer filter on the API — rejecting here saves a round trip
@@ -102,10 +104,13 @@ export default function AvatarCard({ profile, onSuccess }) {
           aria-label="Change profile photo"
         >
           {displayed ? (
-            <img
+            <Image
               src={displayed}
               alt={profile?.name || "Profile photo"}
-              className="h-full w-full object-cover"
+              fill
+              sizes="128px"
+              unoptimized={isLocalPreview(displayed)}
+              className="object-cover"
             />
           ) : (
             <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-400 to-purple-500 text-4xl font-bold text-white">

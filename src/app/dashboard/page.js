@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -28,32 +28,37 @@ const stagger = (index) => ({ animationDelay: `${index * 70}ms` });
 export default function DashboardPage() {
   const router = useRouter();
 
-  const [user, setUser] = useState(null);
+  // Seeded straight from the cookie copy rather than written in on mount, so
+  // the header has a name and photo on its first paint instead of rendering
+  // empty and then re-rendering. The effect below still reconciles it with the
+  // server — a cookie written by an older login can be missing fields the
+  // header renders, and the name or photo may have changed elsewhere. Reading
+  // a cookie during prerender yields null, which is fine: this page renders
+  // the spinner until `loading` clears, so the markup matches either way.
+  const [user, setUser] = useState(getUser);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshUser = async () => {
-    try {
-      const response = await getProfile();
-
-      setUser(response.data);
-      cacheUser(response.data);
-    } catch (error) {
-      // The cached user is enough to render the header; a genuinely dead
-      // session is caught by the dashboard request's own error handling.
-    }
-  };
-
-  const fetchDashboard = async () => {
+  // Fetches and reports failures, but never touches state — that is left to
+  // the caller. Keeping the commit out of here is what lets the mount effect
+  // below cancel a response it no longer wants.
+  const loadDashboard = useCallback(async () => {
     try {
       const response = await getDashboard();
-      setDashboard(response.data);
+      return response.data;
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load dashboard");
-    } finally {
-      setLoading(false);
+      return null;
     }
-  };
+  }, []);
+
+  // Passed down as `onSuccess` / `onAdded` / `onDeposit`, and awaitable so a
+  // caller can hold its own pending state open until the refresh has landed.
+  const fetchDashboard = useCallback(async () => {
+    const data = await loadDashboard();
+
+    if (data) setDashboard(data);
+  }, [loadDashboard]);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -61,15 +66,32 @@ export default function DashboardPage() {
       return;
     }
 
-    // Paint the header from the cookie copy first, then reconcile it with the
-    // server — a cookie written by an older login can be missing fields the
-    // header renders, and the name or photo may have changed elsewhere.
-    setUser(getUser());
+    let active = true;
 
-    refreshUser();
+    getProfile()
+      .then((response) => {
+        if (!active) return;
 
-    fetchDashboard();
-  }, [router]);
+        setUser(response.data);
+        cacheUser(response.data);
+      })
+      .catch(() => {
+        // The cached user is enough to render the header; a genuinely dead
+        // session is caught by the dashboard request's own error handling.
+      });
+
+    loadDashboard().then((data) => {
+      if (!active) return;
+
+      if (data) setDashboard(data);
+      setLoading(false);
+    });
+
+    // Drops responses that arrive after this effect has been superseded.
+    return () => {
+      active = false;
+    };
+  }, [router, loadDashboard]);
 
   if (loading) {
     return (

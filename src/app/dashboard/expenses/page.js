@@ -48,72 +48,101 @@ export default function AllExpensesPage() {
   // back out of order. Only the newest request is allowed to write state.
   const requestId = useRef(0);
 
+  // Fetches and reports failures, but never touches state — that is left to
+  // the caller, which is also what lets the effect below cancel a response it
+  // no longer wants. The request counter still guards the non-effect callers.
+  const loadRecords = useCallback(async (nextPage, nextMonth) => {
+    const id = requestId.current + 1;
+    requestId.current = id;
+
+    try {
+      const response = await getExpenseRecords({
+        page: nextPage,
+        limit: PAGE_SIZE,
+        month: nextMonth,
+      });
+
+      if (requestId.current !== id) return null;
+
+      return response;
+    } catch (error) {
+      if (requestId.current !== id) return null;
+
+      toast.error(
+        error.response?.data?.message || "Failed to load expenses"
+      );
+
+      return null;
+    }
+  }, []);
+
+  // Writes a landed batch to state. Shared by the effect and by `fetchRecords`
+  // so the two paths cannot drift apart.
+  const commitRecords = useCallback((response, nextPage) => {
+    if (response) {
+      setRecords(response.data || []);
+      setMeta(response.meta || null);
+      setRenderKey((k) => k + 1);
+
+      // The API clamps a page past the end (after deleting the last
+      // record on the last page, say); follow it back.
+      const serverPage = response.meta?.pagination?.page;
+
+      if (serverPage && serverPage !== nextPage) {
+        setPage(serverPage);
+      }
+    }
+
+    setFetching(false);
+    setLoading(false);
+  }, []);
+
+  // What the modals and dialogs call after a mutation.
   const fetchRecords = useCallback(
     async (nextPage = page, nextMonth = activeMonth) => {
-      const id = requestId.current + 1;
-      requestId.current = id;
+      setFetching(true);
 
-      try {
-        setFetching(true);
+      const response = await loadRecords(nextPage, nextMonth);
 
-        const response = await getExpenseRecords({
-          page: nextPage,
-          limit: PAGE_SIZE,
-          month: nextMonth,
-        });
-
-        if (requestId.current !== id) return;
-
-        setRecords(response.data || []);
-        setMeta(response.meta || null);
-        setRenderKey((k) => k + 1);
-
-        // The API clamps a page past the end (after deleting the last
-        // record on the last page, say); follow it back.
-        const serverPage = response.meta?.pagination?.page;
-
-        if (serverPage && serverPage !== nextPage) {
-          setPage(serverPage);
-        }
-      } catch (error) {
-        if (requestId.current !== id) return;
-
-        toast.error(
-          error.response?.data?.message || "Failed to load expenses"
-        );
-      } finally {
-        if (requestId.current === id) {
-          setFetching(false);
-          setLoading(false);
-        }
-      }
+      commitRecords(response, nextPage);
     },
-    [page, activeMonth]
+    [page, activeMonth, loadRecords, commitRecords]
   );
 
+  // Refetch whenever the page or the month filter changes.
   useEffect(() => {
     if (!isAuthenticated()) {
       router.replace("/login");
       return;
     }
 
-    fetchRecords(page, activeMonth);
-    // Refetch whenever the page or the month filter changes.
-  }, [router, page, activeMonth]);
+    let active = true;
 
-  // The selected month can disappear underneath us — deleting its last
-  // record drops it from `meta.months`. Fall back to "All", which
-  // refetches through the effect above.
-  useEffect(() => {
-    const knownMonths = meta?.months;
+    loadRecords(page, activeMonth).then((response) => {
+      if (active) commitRecords(response, page);
+    });
 
-    if (!knownMonths || activeMonth === "all") return;
+    return () => {
+      active = false;
+    };
+  }, [router, page, activeMonth, loadRecords, commitRecords]);
 
-    if (!knownMonths.includes(activeMonth)) {
-      setActiveMonth("all");
-      setPage(1);
-    }
-  }, [meta, activeMonth]);
+  // The selected month can disappear underneath us — deleting its last record
+  // drops it from `meta.months`. Falling back to "All" is an adjustment to
+  // state we already have, so it belongs in render rather than in an effect:
+  // React re-runs the component immediately with the corrected value, without
+  // the extra commit-and-repaint an effect would cost. The fetch effect above
+  // then picks the change up as normal.
+  const knownMonths = meta?.months;
+
+  if (
+    knownMonths &&
+    activeMonth !== "all" &&
+    !knownMonths.includes(activeMonth)
+  ) {
+    setActiveMonth("all");
+    setPage(1);
+  }
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -44,34 +44,65 @@ export default function AllTargetsPage() {
   const [enteringId, setEnteringId] = useState(null);
   const [enteringDirection, setEnteringDirection] = useState(null);
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace("/login");
-      return;
-    }
-
-    fetchTargets();
-  }, [router]);
-
-  const fetchTargets = async () => {
+  // Fetches and reports failures, but never touches state — that is left to
+  // the caller. Keeping the commit out of here is what lets the mount effect
+  // below cancel a response it no longer wants.
+  const loadTargets = useCallback(async () => {
     try {
       const [targetsRes, dashboardRes] = await Promise.all([
         getTargets(),
         getDashboard(),
       ]);
 
-      setTargets(targetsRes.data);
-      setAvailableSaving(
-        Number(dashboardRes.data?.extraSaving?.totalExtraSave) || 0
-      );
+      return {
+        targets: targetsRes.data,
+        availableSaving:
+          Number(dashboardRes.data?.extraSaving?.totalExtraSave) || 0,
+      };
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to load targets"
       );
-    } finally {
-      setLoading(false);
+
+      return null;
     }
-  };
+  }, []);
+
+  // What the modals and dialogs call after a mutation. Still awaitable, so
+  // `handleToggleStatus` can keep its animation window in step with the data.
+  const fetchTargets = useCallback(async () => {
+    const data = await loadTargets();
+
+    if (!data) return;
+
+    setTargets(data.targets);
+    setAvailableSaving(data.availableSaving);
+  }, [loadTargets]);
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.replace("/login");
+      return;
+    }
+
+    let active = true;
+
+    loadTargets().then((data) => {
+      if (!active) return;
+
+      if (data) {
+        setTargets(data.targets);
+        setAvailableSaving(data.availableSaving);
+      }
+
+      setLoading(false);
+    });
+
+    // Drops a response that arrives after this effect has been superseded.
+    return () => {
+      active = false;
+    };
+  }, [router, loadTargets]);
 
   const handleToggleStatus = async (target) => {
     const nextStatus =

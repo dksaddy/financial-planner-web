@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 import ThemeToggle from "@/components/common/ThemeToggle";
 
@@ -24,9 +25,11 @@ export default function DashboardHeader({ user }) {
           />
 
           {user?.avatar_url ? (
-            <img
+            <Image
               src={user.avatar_url}
               alt={user?.name || "Profile photo"}
+              width={48}
+              height={48}
               className="relative h-12 w-12 rounded-2xl object-cover shadow-lg shadow-indigo-500/30 ring-1 ring-white/20"
             />
           ) : (
