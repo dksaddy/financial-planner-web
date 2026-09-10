@@ -12,13 +12,20 @@ const notify = () => {
   listeners.forEach((listener) => listener());
 };
 
+// Order the toggle cycles through. Phormism sits last so the two flat
+// themes stay adjacent — one press still gets you between light and dark.
+export const THEMES = ["light", "dark", "phormism"];
+
 const systemTheme = () =>
   window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
 
-export const getTheme = () =>
-  document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+export const getTheme = () => {
+  const current = document.documentElement.dataset.theme;
+
+  return THEMES.includes(current) ? current : "light";
+};
 
 // Rendered on the server, where no attribute exists yet. Light matches the
 // stylesheet default; the store corrects it on the first client render.
@@ -36,8 +43,12 @@ export const setTheme = (theme) => {
   notify();
 };
 
-export const toggleTheme = () => {
-  setTheme(getTheme() === "dark" ? "light" : "dark");
+// Advances one step round THEMES. Named a cycle rather than a toggle
+// because there are three of them now.
+export const cycleTheme = () => {
+  const next = (THEMES.indexOf(getTheme()) + 1) % THEMES.length;
+
+  setTheme(THEMES[next]);
 };
 
 export const subscribe = (listener) => {
@@ -92,7 +103,9 @@ export const THEME_BOOT_SCRIPT = `
       ? "dark"
       : "light";
     document.documentElement.dataset.theme =
-      stored === "dark" || stored === "light" ? stored : system;
+      stored === "dark" || stored === "light" || stored === "phormism"
+        ? stored
+        : system;
   } catch (error) {
     document.documentElement.dataset.theme = "light";
   }

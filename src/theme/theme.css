@@ -167,6 +167,230 @@
   --rose-dot: #fb7185;
 }
 
+/* =========================================================================
+   Phormism — neumorphism, the third mode.
+
+   Neumorphism has one rule everything else follows from: a control is the
+   *same colour as what it sits on*, and exists only because light falls on
+   it. So there are no fills and no borders here — every surface token goes
+   transparent or matches the ground, and shape comes entirely from a paired
+   shadow: cool highlight up-left, warm shade down-right.
+
+   That also means the usual depth cues have to go. The aurora and the grid
+   are switched off (a lit surface needs a matte ground behind it), and the
+   translucent overlay fills that give light/dark their layering would break
+   the single-colour rule outright.
+   ========================================================================= */
+
+:root[data-theme="phormism"] {
+  color-scheme: light;
+
+  /* One ground colour, used by every layer. Mid-tone on purpose: the
+     highlight needs somewhere brighter to go and the shade somewhere
+     darker, which pure white cannot give. */
+  --app: #e6e2d9;
+  --panel: #e6e2d9;
+
+  /* Fills are absent, not tinted. What reads as a "surface" is this same
+     ground with light on it. */
+  --surface: transparent;
+  --surface-hover: rgba(255, 255, 255, 0.28);
+  --inset: transparent;
+  --inset-hover: rgba(255, 255, 255, 0.22);
+
+  /* Borders are what neumorphism replaces. Kept non-zero only where a
+     component leans on one to separate rows. */
+  --line: transparent;
+  --line-soft: rgba(23, 27, 33, 0.05);
+  --line-strong: rgba(255, 255, 255, 0.55);
+  --scrim: rgba(120, 113, 98, 0.32);
+
+  --ink: #45413a;
+  --ink-muted: #6d685e;
+  --ink-faint: #928c80;
+
+  /* Flat ground: no aurora, no grid. */
+  --aurora-1: transparent;
+  --aurora-2: transparent;
+  --aurora-3: transparent;
+  --paper-top: #e6e2d9;
+  --paper-mid: #e6e2d9;
+  --paper-bottom: #e6e2d9;
+  --grid-line: transparent;
+  --grid-opacity: 0;
+
+  /* The two lights every shadow below is built from. */
+  --neu-light: #f7f4ec;
+  --neu-dark: #c2bdb1;
+
+  /* Same highlight, held back. A shadow's spread grows with the element, so
+     the near-solid `--neu-light` that reads as a soft edge on a button turns
+     into a band of glare down the top and left of something modal-sized.
+     Large surfaces use this instead. */
+  --neu-light-soft: rgba(255, 253, 247, 0.4);
+
+  --neu-raised-sm:
+    3px 3px 6px var(--neu-dark),
+    -3px -3px 6px var(--neu-light);
+  --neu-raised:
+    7px 7px 14px var(--neu-dark),
+    -7px -7px 14px var(--neu-light);
+  /* Asymmetric on purpose: the shade keeps the panel lifted off the page
+     while the highlight only needs to hint at an edge. Matching the two at
+     this size is what produced the glare. */
+  --neu-raised-lg:
+    16px 16px 34px var(--neu-dark),
+    -8px -8px 20px var(--neu-light-soft);
+  --neu-pressed:
+    inset 3px 3px 7px var(--neu-dark),
+    inset -3px -3px 7px var(--neu-light);
+  --neu-pressed-deep:
+    inset 5px 5px 10px var(--neu-dark),
+    inset -5px -5px 10px var(--neu-light);
+
+  /* Cards and modals get their depth from the paired shadow, so the
+     existing shadow-card / shadow-panel utilities need no component change. */
+  --shadow-card: var(--neu-raised);
+  --shadow-panel: var(--neu-raised-lg);
+
+  /* Accents keep their hue but darken: a pale tint is invisible against a
+     mid ground, and these sit on it as text rather than on a white card. */
+  --slate-fg: #4a5568;
+  --slate-soft: rgba(100, 116, 139, 0.16);
+  --slate-line: rgba(100, 116, 139, 0.3);
+  --slate-dot: #64748b;
+
+  --indigo-fg: #3f37b8;
+  --indigo-soft: rgba(99, 102, 241, 0.16);
+  --indigo-line: rgba(99, 102, 241, 0.32);
+  --indigo-dot: #5b57e8;
+
+  --emerald-fg: #05674c;
+  --emerald-soft: rgba(16, 185, 129, 0.18);
+  --emerald-line: rgba(16, 185, 129, 0.34);
+  --emerald-dot: #0f9f76;
+
+  --amber-fg: #8d5606;
+  --amber-soft: rgba(245, 158, 11, 0.2);
+  --amber-line: rgba(245, 158, 11, 0.36);
+  --amber-dot: #e08c07;
+
+  --sky-fg: #045c8c;
+  --sky-soft: rgba(14, 165, 233, 0.18);
+  --sky-line: rgba(14, 165, 233, 0.34);
+  --sky-dot: #0d90cc;
+
+  --cyan-fg: #0b6479;
+  --cyan-soft: rgba(6, 182, 212, 0.18);
+  --cyan-line: rgba(6, 182, 212, 0.34);
+  --cyan-dot: #0aa2bd;
+
+  --violet-fg: #61239f;
+  --violet-soft: rgba(139, 92, 246, 0.18);
+  --violet-line: rgba(139, 92, 246, 0.32);
+  --violet-dot: #7c4ee0;
+
+  --fuchsia-fg: #911a9c;
+  --fuchsia-soft: rgba(217, 70, 239, 0.18);
+  --fuchsia-line: rgba(217, 70, 239, 0.32);
+  --fuchsia-dot: #c53fd8;
+
+  --rose-fg: #a8103a;
+  --rose-soft: rgba(244, 63, 94, 0.18);
+  --rose-line: rgba(244, 63, 94, 0.32);
+  --rose-dot: #e03356;
+}
+
+/* -------------------------------------------------------------------------
+   Phormism, part two: the shadows themselves.
+
+   Colour is a token, but depth is not — no component says "raised" or
+   "pressed", they say `shadow-card`, `bg-inset`, `<input>`. These rules map
+   those existing patterns onto the two lighting states, which is what lets
+   the mode reach every component without editing any of them.
+
+   Deliberately outside `@layer`: unlayered rules beat Tailwind's layered
+   utilities in the cascade, so no `!important` is needed anywhere here.
+   Order matters — later rules win, so the broad `.bg-surface` case is
+   stated before the specific card and control cases that override it.
+   ------------------------------------------------------------------------- */
+
+[data-theme="phormism"] .bg-surface,
+[data-theme="phormism"] .bg-panel {
+  box-shadow: var(--neu-raised-sm);
+}
+
+/* A well: anything that was a recessed tint becomes an actual recess. */
+[data-theme="phormism"] .bg-inset {
+  box-shadow: var(--neu-pressed);
+}
+
+/* ...unless you can press it. A recessed button is a contradiction here —
+   in this mode the thing sticking out is the thing you can push, and it
+   sinks on :active below. Covers the frequent-expense tiles and the file
+   pickers, which are buttons wearing a well's styling. */
+[data-theme="phormism"] button.bg-inset,
+[data-theme="phormism"] a.bg-inset {
+  box-shadow: var(--neu-raised-sm);
+}
+
+/* Cards and modals, the two things that were already carrying a shadow. */
+[data-theme="phormism"] .shadow-card {
+  box-shadow: var(--neu-raised);
+}
+
+[data-theme="phormism"] .shadow-panel {
+  box-shadow: var(--neu-raised-lg);
+}
+
+/* Buttons and badges. The coloured glows (`shadow-indigo-500/30` and
+   friends) are replaced wholesale — a tinted halo fights the single light
+   source the whole mode is built on. */
+[data-theme="phormism"] .shadow-md,
+[data-theme="phormism"] .shadow-lg {
+  box-shadow: var(--neu-raised-sm);
+}
+
+/* Form controls read as carved out, which is also the affordance: the one
+   place on screen you put something into. */
+[data-theme="phormism"] input,
+[data-theme="phormism"] textarea,
+[data-theme="phormism"] select {
+  border-color: transparent;
+  box-shadow: var(--neu-pressed);
+}
+
+[data-theme="phormism"] input:focus,
+[data-theme="phormism"] textarea:focus,
+[data-theme="phormism"] select:focus {
+  box-shadow: var(--neu-pressed-deep);
+}
+
+/* Pressing physically pushes a control in. `active:scale-95` elsewhere in
+   the app still applies and reads as part of the same motion. */
+[data-theme="phormism"] button:not(:disabled):active {
+  box-shadow: var(--neu-pressed);
+}
+
+/* A disabled control is flush with the ground — nothing to press. */
+[data-theme="phormism"] button:disabled {
+  box-shadow: none;
+}
+
+/* The hairline sheen along a card's top edge and the blurred accent bloom in
+   its corner are lighting effects borrowed from the flat themes. Against a
+   surface that is already lit they read as smudges — worst on a modal, where
+   both land in the same top-right corner.
+
+   Matched on their own classes rather than on the utilities they happen to
+   be built from: a Tailwind class rename would silently stop hiding them,
+   and the elements are decorative, so nothing would look broken enough to
+   notice. `.edge-sheen` and `.corner-bloom` exist only as this hook. */
+[data-theme="phormism"] .edge-sheen,
+[data-theme="phormism"] .corner-bloom {
+  display: none;
+}
+
 /* Expose every token as a Tailwind utility. `inline` keeps the utilities
    pointing at the raw variables, so flipping data-theme repaints the whole
    app without regenerating any CSS. */
