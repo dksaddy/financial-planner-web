@@ -40,19 +40,9 @@ export default function DashboardHeader({ user }) {
           )}
         </Link>
 
-        <div>
-          <h1 className="text-[20.9px] font-bold uppercase leading-tight sm:text-[29.64px] tracking-[0.06em] text-ink">
-            Dashboard
-          </h1>
-
-          {user?.name && (
-            <p className="flex items-center gap-1.5 text-sm text-ink-muted">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-dot" />
-              Welcome back,
-              <span className="font-bold text-ink">{user.name}</span>
-            </p>
-          )}
-        </div>
+        <h1 className="text-[20.9px] font-bold uppercase leading-tight sm:text-[29.64px] tracking-[0.06em] text-ink">
+          Dashboard
+        </h1>
       </div>
 
       <div className="flex items-center gap-2">
