@@ -9,6 +9,7 @@ import Section from "@/components/dashboard/Section";
 import Button from "@/components/common/Button";
 
 import { isLocalPreview } from "@/lib/image";
+import LogoutButton from "@/components/profile/LogoutButton";
 import { updateAvatar } from "@/services/user.service";
 
 // Matches the multer filter on the API — rejecting here saves a round trip
@@ -22,7 +23,12 @@ const ALLOWED_TYPES = [
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB, same limit as the API.
 
-export default function AvatarCard({ profile, onSuccess }) {
+export default function AvatarCard({
+  profile,
+  onSuccess,
+  onLogout,
+  loggingOut,
+}) {
   // File and its object URL move together in one state value, so the URL is
   // minted and revoked in the handlers rather than in an effect.
   const [selection, setSelection] = useState(null);
@@ -87,7 +93,20 @@ export default function AvatarCard({ profile, onSuccess }) {
   };
 
   return (
-    <Section title="Photo" icon={FiUser} accent="violet">
+    <Section
+      title="Photo"
+      icon={FiUser}
+      accent="violet"
+      // Only below `sm`. The page header owns this at wider widths; here it
+      // fills a header slot that would otherwise sit empty on a phone.
+      actions={
+        <LogoutButton
+          onLogout={onLogout}
+          loggingOut={loggingOut}
+          className="flex sm:hidden"
+        />
+      }
+    >
       <div className="flex flex-col items-center gap-4 py-2">
         <input
           ref={fileInputRef}

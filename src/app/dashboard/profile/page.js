@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { FiArrowLeft, FiLogOut } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 
 import Spinner from "@/components/common/Spinner";
 import AvatarCard from "@/components/profile/AvatarCard";
+import LogoutButton from "@/components/profile/LogoutButton";
 import AvatarAlbum from "@/components/profile/AvatarAlbum";
 import ProfileForm from "@/components/profile/ProfileForm";
 import PasswordForm from "@/components/profile/PasswordForm";
@@ -114,8 +115,12 @@ export default function ProfilePage() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-      <div className="reveal mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-start gap-3.5">
+      {/* No `flex-wrap`: with it the title block took its full content width
+          and pushed Logout onto a row of its own. `min-w-0` lets that block
+          shrink instead — the email and joined date already wrap inside it,
+          so it gives way gracefully and the button stays put. */}
+      <div className="reveal mb-6 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="flex min-w-0 items-start gap-3.5">
           <Link
             href="/dashboard"
             className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
@@ -127,7 +132,10 @@ export default function ProfilePage() {
             />
           </Link>
 
-          <div>
+          {/* `min-w-0` again: a flex item defaults to min-width:auto at every
+              level, so without it this block refuses to shrink and the row
+              overflows rather than compressing. */}
+          <div className="min-w-0">
             <h1 className="text-[20.9px] font-bold uppercase leading-tight sm:text-[29.64px] tracking-[0.06em] text-ink">
               Profile
             </h1>
@@ -136,9 +144,12 @@ export default function ProfilePage() {
                 "·" separators: when the line wraps on a phone the marker
                 stays with its own figure. */}
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
-              <span className="flex items-center gap-1.5">
+              {/* An address has no spaces to break at, so it truncates rather
+                  than pushing the row wider than the screen. */}
+              <span className="flex min-w-0 items-center gap-1.5">
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-violet-dot" />
-                {profile.email}
+
+                <span className="truncate">{profile.email}</span>
               </span>
 
               {memberSince && (
@@ -151,18 +162,13 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleLogout}
-          disabled={loggingOut}
-          className="group flex items-center gap-2 rounded-xl border border-line bg-surface px-4 py-2.5 text-sm font-bold text-ink-muted transition hover:border-rose-line hover:bg-rose-soft hover:text-rose-fg disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <FiLogOut
-            size={15}
-            className="transition-transform group-hover:translate-x-0.5"
-          />
-          Logout
-        </button>
+        {/* Hidden below `sm`, where this header has no room beside the title
+            and the address — the Photo card carries it there instead. */}
+        <LogoutButton
+          onLogout={handleLogout}
+          loggingOut={loggingOut}
+          className="hidden sm:flex"
+        />
       </div>
 
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12">
@@ -170,7 +176,12 @@ export default function ProfilePage() {
           className="reveal space-y-4 lg:col-span-5"
           style={{ animationDelay: "70ms" }}
         >
-          <AvatarCard profile={profile} onSuccess={fetchProfile} />
+          <AvatarCard
+            profile={profile}
+            onSuccess={fetchProfile}
+            onLogout={handleLogout}
+            loggingOut={loggingOut}
+          />
 
           <AvatarAlbum profile={profile} onSuccess={fetchProfile} />
         </div>
