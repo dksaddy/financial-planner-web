@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { FiHome } from "react-icons/fi";
 
 import ThemeToggle from "@/components/common/ThemeToggle";
 
@@ -55,6 +56,17 @@ export default function DashboardHeader({ user }) {
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Way back out to the landing page. Icon-only below `sm`, where the
+            header already carries the avatar, the title and the toggle. */}
+        <Link
+          href="/"
+          className="group flex h-10 items-center gap-2 rounded-xl border border-line bg-surface px-3 text-xs font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink sm:px-3.5"
+          aria-label="Go to home page"
+        >
+          <FiHome size={15} strokeWidth={2.2} />
+          <span className="hidden sm:inline">Home</span>
+        </Link>
+
         <ThemeToggle />
       </div>
     </header>
