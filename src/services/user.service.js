@@ -33,6 +33,11 @@ export const getAvatarAlbum = async () => {
   return response.data;
 };
 
+export const selectAvatarImage = async (name) => {
+  const response = await api.put("/users/avatar/select", { name });
+  return response.data;
+};
+
 export const deleteAvatarImage = async (name) => {
   // The API rebuilds the path as `<userId>/<name>`, so only the bare file
   // name travels — encoded, since it ends up as a URL segment.

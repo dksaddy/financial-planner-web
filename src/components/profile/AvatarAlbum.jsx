@@ -9,13 +9,18 @@ import Section from "@/components/dashboard/Section";
 import Modal from "@/components/common/Modal";
 import Spinner from "@/components/common/Spinner";
 
-import { getAvatarAlbum, deleteAvatarImage } from "@/services/user.service";
+import {
+  getAvatarAlbum,
+  selectAvatarImage,
+  deleteAvatarImage,
+} from "@/services/user.service";
 
 export default function AvatarAlbum({ profile, onSuccess }) {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [selectingName, setSelectingName] = useState(null);
   // Bumped by the delete handler to ask the effect below for a fresh list.
   // Keeping the fetch in one place — the effect — is what lets it own its own
   // cancellation; a second fetch path could not be cancelled by it.
@@ -49,6 +54,28 @@ export default function AvatarAlbum({ profile, onSuccess }) {
     };
   }, [reloadToken, profile?.avatar_url]);
 
+  // No confirm step: picking a different photo is reversible in one click, and
+  // the old one stays in the album either way.
+  const handleSelect = async (photo) => {
+    try {
+      setSelectingName(photo.name);
+
+      const response = await selectAvatarImage(photo.name);
+
+      toast.success(response.message);
+
+      // Changes `avatar_url`, which the effect above is keyed on — so the
+      // album refetches and `is_current` moves on its own.
+      onSuccess?.();
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to use this photo"
+      );
+    } finally {
+      setSelectingName(null);
+    }
+  };
+
   const handleDelete = async () => {
     if (!pending) return;
 
@@ -75,6 +102,10 @@ export default function AvatarAlbum({ profile, onSuccess }) {
       setDeleting(false);
     }
   };
+
+  // One request at a time across the whole grid: both actions refetch the
+  // album, so letting a second start would race the list out from under it.
+  const busy = deleting || Boolean(selectingName);
 
   return (
     <Section title="Photo Album" icon={FiImage} accent="violet">
@@ -108,21 +139,44 @@ export default function AvatarAlbum({ profile, onSuccess }) {
               />
 
               {photo.is_current ? (
+                // The photo in use is inert: it is already the avatar, and the
+                // API rejects deleting it, so neither control would do
+                // anything.
                 <span className="absolute inset-x-0 bottom-0 bg-scrim py-1 text-center text-[10px] font-bold uppercase tracking-wider text-white">
                   In use
                 </span>
               ) : (
-                // Only non-current photos get a delete control, because the
-                // API rejects deleting the one in use — better to not offer
-                // the button than to offer it and fail.
-                <button
-                  type="button"
-                  onClick={() => setPending(photo)}
-                  aria-label="Delete this photo"
-                  className="absolute inset-0 flex items-center justify-center bg-scrim text-white opacity-0 transition hover:text-rose-300 focus-visible:opacity-100 group-hover/tile:opacity-100"
-                >
-                  <FiTrash2 size={16} strokeWidth={2.2} />
-                </button>
+                // Two sibling buttons rather than one nested in the other —
+                // a button inside a button is invalid markup and browsers
+                // resolve the click unpredictably. Delete is painted over
+                // select and takes the corner it occupies.
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleSelect(photo)}
+                    disabled={busy}
+                    aria-label="Use this photo"
+                    className="absolute inset-0 flex items-center justify-center bg-scrim text-white opacity-0 transition focus-visible:opacity-100 disabled:cursor-not-allowed group-hover/tile:opacity-100"
+                  >
+                    {selectingName === photo.name ? (
+                      <Spinner size={16} />
+                    ) : (
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        Use
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPending(photo)}
+                    disabled={busy}
+                    aria-label="Delete this photo"
+                    className="absolute right-1 top-1 z-10 rounded-lg bg-scrim p-1.5 text-white opacity-0 transition hover:text-rose-300 focus-visible:opacity-100 disabled:cursor-not-allowed group-hover/tile:opacity-100"
+                  >
+                    <FiTrash2 size={13} strokeWidth={2.2} />
+                  </button>
+                </>
               )}
             </div>
           ))}

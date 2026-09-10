@@ -19,6 +19,23 @@ export const updateProfileSchema = z.object({
     .min(0, "Salary cannot be negative"),
 });
 
+// Mirrors the API's selectAvatarSchema. Nothing on the page types this — the
+// name comes from a tile the user clicked — so it is a guard against a stale
+// album entry rather than user input.
+export const selectAvatarSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Photo is required")
+    .refine(
+      (value) =>
+        !value.includes("/") &&
+        !value.includes("\\") &&
+        !value.includes(".."),
+      { message: "Invalid photo" }
+    ),
+});
+
 export const changePasswordSchema = z
   .object({
     oldPassword: z
