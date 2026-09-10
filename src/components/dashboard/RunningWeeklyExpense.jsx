@@ -83,7 +83,7 @@ export default function RunningWeeklyExpense({
                       <span className="text-ink-faint">—</span>
                     ) : (
                       <span className="num rounded-full bg-emerald-soft px-2 py-0.5 font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
-                        +{Number(record.extraSave).toFixed(2)}
+                        {Number(record.extraSave).toFixed(2)}
                       </span>
                     )}
                   </span>
