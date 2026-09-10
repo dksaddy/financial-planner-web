@@ -74,12 +74,12 @@ export default function Features() {
             >
               <span
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
+                className="edge-sheen pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
               />
 
               <span
                 aria-hidden
-                className={`pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br ${tone.grad} opacity-[0.12] blur-2xl`}
+                className={`corner-bloom pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br ${tone.grad} opacity-[0.12] blur-2xl`}
               />
 
               <span

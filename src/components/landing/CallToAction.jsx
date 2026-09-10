@@ -9,17 +9,17 @@ export default function CallToAction() {
       <div className="reveal relative overflow-hidden rounded-2xl border border-line bg-panel px-6 py-12 text-center shadow-panel sm:px-12">
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
+          className="edge-sheen pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
         />
 
         <span
           aria-hidden
-          className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 opacity-[0.16] blur-3xl"
+          className="corner-bloom pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 opacity-[0.16] blur-3xl"
         />
 
         <span
           aria-hidden
-          className="pointer-events-none absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-fuchsia-400 to-emerald-500 opacity-[0.14] blur-3xl"
+          className="corner-bloom pointer-events-none absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-fuchsia-400 to-emerald-500 opacity-[0.14] blur-3xl"
         />
 
         <h2 className="relative text-3xl font-bold uppercase tracking-[0.03em] text-ink sm:text-4xl">

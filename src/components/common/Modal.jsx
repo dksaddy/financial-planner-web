@@ -61,12 +61,12 @@ export default function Modal({
       } overflow-y-auto overflow-x-hidden rounded-2xl border border-line bg-panel p-4 shadow-panel sm:p-5`}>
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
+          className="edge-sheen pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
         />
 
         <span
           aria-hidden
-          className="pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 opacity-[0.12] blur-2xl"
+          className="corner-bloom pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 opacity-[0.12] blur-2xl"
         />
 
         <div className="relative mb-4 flex items-center justify-between gap-3">

@@ -20,7 +20,7 @@ export default function SavingPlanCard({
     <div className="group/plan relative overflow-hidden rounded-xl border border-line-soft bg-inset p-4 transition-[background-color,border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-line-strong hover:bg-surface hover:shadow-card">
       <span
         aria-hidden
-        className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-[0.12] blur-2xl"
+        className="corner-bloom pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-[0.12] blur-2xl"
       />
 
       {/* Header */}

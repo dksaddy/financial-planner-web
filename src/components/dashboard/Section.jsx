@@ -25,7 +25,7 @@ export default function Section({
       {/* Top hairline — catches the light along the card edge. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
+        className="edge-sheen pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
       />
 
       {/* Accent bloom in the corner. Held at a fixed opacity: animating a
@@ -33,7 +33,7 @@ export default function Section({
           whole card on hover, which reads as a flash. */}
       <span
         aria-hidden
-        className={`pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full
+        className={`corner-bloom pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full
         bg-gradient-to-br ${tone.grad} opacity-[0.12] blur-2xl`}
       />
 
