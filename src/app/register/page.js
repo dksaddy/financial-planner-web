@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -13,9 +13,18 @@ import Button from "@/components/common/Button";
 
 import { registerSchema } from "@/validations/auth.validation";
 import { register as registerUser } from "@/services/auth.service";
+import { useIsAuthenticated } from "@/lib/useIsAuthenticated";
 
 export default function RegisterPage() {
   const router = useRouter();
+
+  // Already signed in: this page has nothing to offer, so bounce to the
+  // dashboard. `replace` rather than `push` so Back does not land here again.
+  const authenticated = useIsAuthenticated();
+
+  useEffect(() => {
+    if (authenticated) router.replace("/dashboard");
+  }, [authenticated, router]);
 
   const [loading, setLoading] = useState(false);
 
@@ -53,6 +62,10 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
+
+  // Nothing to show while the redirect above is in flight — rendering the form
+  // would flash a signup box at someone who is already signed in.
+  if (authenticated) return null;
 
   return (
     <AuthLayout title="Create Account">

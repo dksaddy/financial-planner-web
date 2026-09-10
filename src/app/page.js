@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import AuthSwitch from "@/components/landing/AuthSwitch";
 import LandingNav from "@/components/landing/LandingNav";
 import Hero from "@/components/landing/Hero";
 import Features from "@/components/landing/Features";
@@ -35,19 +36,33 @@ export default function LandingPage() {
           <p className="uppercase tracking-[0.16em]">Financial Planner</p>
 
           <div className="flex items-center gap-4">
-            <Link
-              href="/login"
-              className="uppercase tracking-wider transition hover:text-ink"
-            >
-              Login
-            </Link>
+            <AuthSwitch
+              loggedOut={
+                <>
+                  <Link
+                    href="/login"
+                    className="uppercase tracking-wider transition hover:text-ink"
+                  >
+                    Login
+                  </Link>
 
-            <Link
-              href="/register"
-              className="uppercase tracking-wider transition hover:text-ink"
-            >
-              Register
-            </Link>
+                  <Link
+                    href="/register"
+                    className="uppercase tracking-wider transition hover:text-ink"
+                  >
+                    Register
+                  </Link>
+                </>
+              }
+              loggedIn={
+                <Link
+                  href="/dashboard"
+                  className="uppercase tracking-wider transition hover:text-ink"
+                >
+                  Dashboard
+                </Link>
+              }
+            />
           </div>
         </div>
       </footer>

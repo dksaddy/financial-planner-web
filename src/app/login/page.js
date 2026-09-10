@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -14,9 +14,18 @@ import Button from "@/components/common/Button";
 import { loginSchema } from "@/validations/auth.validation";
 import { login as loginUser } from "@/services/auth.service";
 import { setToken, setUser } from "@/lib/auth";
+import { useIsAuthenticated } from "@/lib/useIsAuthenticated";
 
 export default function LoginPage() {
   const router = useRouter();
+
+  // Already signed in: this page has nothing to offer, so bounce to the
+  // dashboard. `replace` rather than `push` so Back does not land here again.
+  const authenticated = useIsAuthenticated();
+
+  useEffect(() => {
+    if (authenticated) router.replace("/dashboard");
+  }, [authenticated, router]);
 
   const [loading, setLoading] = useState(false);
 
@@ -53,6 +62,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  // Nothing to show while the redirect above is in flight — rendering the form
+  // would flash a login box at someone who is already signed in.
+  if (authenticated) return null;
 
   return (
     <AuthLayout title="Welcome Back">

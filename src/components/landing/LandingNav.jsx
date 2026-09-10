@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { FiGrid } from "react-icons/fi";
 
 import ThemeToggle from "@/components/common/ThemeToggle";
+import AuthSwitch from "@/components/landing/AuthSwitch";
 
 export default function LandingNav() {
   return (
@@ -23,19 +25,34 @@ export default function LandingNav() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
 
-          <Link
-            href="/login"
-            className="hidden h-10 items-center rounded-xl border border-line bg-surface px-4 text-xs font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink sm:flex"
-          >
-            Login
-          </Link>
+          <AuthSwitch
+            loggedOut={
+              <>
+                <Link
+                  href="/login"
+                  className="hidden h-10 items-center rounded-xl border border-line bg-surface px-4 text-xs font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink sm:flex"
+                >
+                  Login
+                </Link>
 
-          <Link
-            href="/register"
-            className="flex h-10 items-center rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:brightness-110 hover:shadow-indigo-500/50 active:scale-[0.98]"
-          >
-            Get Started
-          </Link>
+                <Link
+                  href="/register"
+                  className="flex h-10 items-center rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:brightness-110 hover:shadow-indigo-500/50 active:scale-[0.98]"
+                >
+                  Get Started
+                </Link>
+              </>
+            }
+            loggedIn={
+              <Link
+                href="/dashboard"
+                className="group flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:brightness-110 hover:shadow-indigo-500/50 active:scale-[0.98]"
+              >
+                <FiGrid size={14} strokeWidth={2.4} />
+                Dashboard
+              </Link>
+            }
+          />
         </div>
       </nav>
     </header>

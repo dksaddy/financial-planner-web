@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FiArrowRight, FiZap } from "react-icons/fi";
 
+import AuthSwitch from "@/components/landing/AuthSwitch";
 import BudgetPreview from "@/components/landing/BudgetPreview";
 
 export default function Hero() {
@@ -28,23 +29,41 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/register"
-              className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:brightness-110 hover:shadow-indigo-500/50 active:scale-[0.98]"
-            >
-              Create Free Account
-              <FiArrowRight
-                size={15}
-                className="transition-transform group-hover:translate-x-0.5"
-              />
-            </Link>
+            <AuthSwitch
+              loggedOut={
+                <>
+                  <Link
+                    href="/register"
+                    className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:brightness-110 hover:shadow-indigo-500/50 active:scale-[0.98]"
+                  >
+                    Create Free Account
+                    <FiArrowRight
+                      size={15}
+                      className="transition-transform group-hover:translate-x-0.5"
+                    />
+                  </Link>
 
-            <Link
-              href="/login"
-              className="flex items-center justify-center rounded-xl border border-line bg-surface px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
-            >
-              I already have one
-            </Link>
+                  <Link
+                    href="/login"
+                    className="flex items-center justify-center rounded-xl border border-line bg-surface px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+                  >
+                    I already have one
+                  </Link>
+                </>
+              }
+              loggedIn={
+                <Link
+                  href="/dashboard"
+                  className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30 transition hover:brightness-110 hover:shadow-indigo-500/50 active:scale-[0.98]"
+                >
+                  Go to Dashboard
+                  <FiArrowRight
+                    size={15}
+                    className="transition-transform group-hover:translate-x-0.5"
+                  />
+                </Link>
+              }
+            />
           </div>
 
           <dl className="mt-10 grid grid-cols-3 gap-4 border-t border-line-soft pt-6">
