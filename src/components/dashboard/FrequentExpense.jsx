@@ -54,7 +54,7 @@ export default function FrequentExpense({
               aria-label={`View ${expense.name} details`}
               className="group/tile relative overflow-hidden rounded-xl border border-line-soft bg-inset p-4 text-left transition hover:-translate-y-0.5 hover:border-line-strong hover:bg-inset-hover focus:outline-none focus-visible:border-line-strong focus-visible:ring-2 focus-visible:ring-amber-line"
             >
-              <div className="mb-2.5 flex flex-col-reverse items-end gap-1.5 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
+              <div className="mb-2.5 flex flex-col-reverse items-start gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
                 <p className="w-full truncate text-sm font-bold text-ink sm:w-auto">
                   {expense.name}
                 </p>
