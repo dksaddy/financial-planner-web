@@ -90,7 +90,10 @@ export default function ExpenseTypeDetailsModal({
             </p>
           )}
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {/* Three across at every width. Two columns wrapped Total onto a
+              row of its own, where it read as a separate fact rather than
+              the third figure in one line of thought. */}
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
             <Stat
               label="Per use"
               value={perUse.toFixed(2)}
@@ -162,12 +165,15 @@ export default function ExpenseTypeDetailsModal({
 
 function Stat({ label, value }) {
   return (
-    <div className="rounded-xl border border-line-soft bg-inset px-3 py-2.5">
-      <p className="text-[11.4px] uppercase tracking-[0.12em] text-ink-faint">
+    // Padding, type and letter-spacing tighten below `sm` only, so three
+    // tiles clear a 360px phone. Every mobile value has an `sm:` override
+    // restoring what it was, so the wide layout is unchanged.
+    <div className="rounded-xl border border-line-soft bg-inset px-2 py-2 sm:px-3 sm:py-2.5">
+      <p className="truncate text-[10px] uppercase tracking-[0.06em] text-ink-faint sm:text-[11.4px] sm:tracking-[0.12em]">
         {label}
       </p>
 
-      <p className="num mt-1 text-base font-bold text-ink">
+      <p className="num mt-1 text-sm font-bold text-ink sm:text-base">
         {value}
       </p>
     </div>
