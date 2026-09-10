@@ -12,12 +12,14 @@ import {
   FiEdit2,
   FiEyeOff,
   FiEye,
+  FiTrash2,
 } from "react-icons/fi";
 
 import Section from "@/components/dashboard/Section";
 import Spinner from "@/components/common/Spinner";
 import AddExpenseTypeModal from "@/components/dashboard/AddExpenseTypeModal";
 import EditExpenseTypeModal from "@/components/dashboard/EditExpenseTypeModal";
+import DeleteExpenseTypeDialog from "@/components/dashboard/DeleteExpenseTypeDialog";
 
 import {
   getExpenseTypes,
@@ -38,6 +40,7 @@ export default function AllExpenseTypesPage() {
   const [expandedId, setExpandedId] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [deleting, setDeleting] = useState(null);
   const [statusPendingId, setStatusPendingId] = useState(null);
 
   // Fetches and reports failures, but never touches state — that is left to
@@ -189,6 +192,13 @@ export default function AllExpenseTypesPage() {
         onSuccess={fetchTypes}
       />
 
+      <DeleteExpenseTypeDialog
+        open={Boolean(deleting)}
+        onClose={() => setDeleting(null)}
+        expenseType={deleting}
+        onSuccess={fetchTypes}
+      />
+
       <div className="reveal" style={{ animationDelay: "70ms" }}>
         <Section
           title="Expense Types"
@@ -299,34 +309,58 @@ export default function AllExpenseTypesPage() {
                           </ul>
                         )}
 
-                        <div className="mt-3 flex items-center gap-2 border-t border-line-soft pt-3">
-                          <button
-                            type="button"
-                            onClick={() => setEditing(type)}
-                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
-                          >
-                            <FiEdit2 size={12} />
-                            Edit
-                          </button>
+                        {/* Two rows, not one. Three buttons abreast overflow
+                            the card — which is `overflow-hidden`, so the last
+                            one gets clipped rather than wrapping — and `flex-1`
+                            will not shrink them past their own labels. The
+                            split also keeps the destructive action off the row
+                            you reach for by habit. */}
+                        <div className="mt-3 space-y-2 border-t border-line-soft pt-3">
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setEditing(type)}
+                              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+                            >
+                              <FiEdit2 size={12} />
+                              Edit
+                            </button>
 
-                          <button
-                            type="button"
-                            disabled={statusPendingId === type.id}
-                            onClick={() => toggleStatus(type)}
-                            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            {isActive ? (
-                              <>
-                                <FiEyeOff size={12} />
-                                Deactivate
-                              </>
-                            ) : (
-                              <>
-                                <FiEye size={12} />
-                                Activate
-                              </>
-                            )}
-                          </button>
+                            <button
+                              type="button"
+                              disabled={statusPendingId === type.id}
+                              onClick={() => toggleStatus(type)}
+                              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              {isActive ? (
+                                <>
+                                  <FiEyeOff size={12} />
+                                  Deactivate
+                                </>
+                              ) : (
+                                <>
+                                  <FiEye size={12} />
+                                  Activate
+                                </>
+                              )}
+                            </button>
+                          </div>
+
+                          {/* `is_used` comes from the list query. A type an
+                              expense record points at can never be deleted, so
+                              the button is not offered at all rather than
+                              offered and refused. The API still answers 409 —
+                              the flag can go stale between load and click. */}
+                          {!type.is_used && (
+                            <button
+                              type="button"
+                              onClick={() => setDeleting(type)}
+                              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-faint transition hover:border-rose-line hover:bg-rose-soft hover:text-rose-fg"
+                            >
+                              <FiTrash2 size={12} />
+                              Delete
+                            </button>
+                          )}
                         </div>
                       </div>
                     )}

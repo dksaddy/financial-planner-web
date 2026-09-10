@@ -36,6 +36,13 @@ export const updateExpenseType = async (id, { name, categories }) => {
   return response.data;
 };
 
+// Only ever succeeds while no expense record points at the type; the API
+// answers 409 once one does, and deactivating is the fallback.
+export const deleteExpenseType = async (id) => {
+  const response = await api.delete(`/expense-types/${id}`);
+  return response.data;
+};
+
 export const setExpenseTypeStatus = async (id, isActive) => {
   const response = await api.patch(`/expense-types/${id}/status`, {
     is_active: isActive,
