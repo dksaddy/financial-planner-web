@@ -128,8 +128,9 @@ export default function AvatarCard({
               alt={profile?.name || "Profile photo"}
               fill
               sizes="128px"
-              unoptimized={isLocalPreview(displayed)}
+              //unoptimized={isLocalPreview(displayed)}
               className="object-cover"
+              unoptimized // preserves gif animation
             />
           ) : (
             <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-400 to-purple-500 text-4xl font-bold text-white">

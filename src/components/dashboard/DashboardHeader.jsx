@@ -31,6 +31,7 @@ export default function DashboardHeader({ user }) {
               alt={user?.name || "Profile photo"}
               width={48}
               height={48}
+              unoptimized // preserves gif animation
               className="relative h-12 w-12 rounded-2xl object-cover shadow-lg shadow-indigo-500/30 ring-1 ring-white/20"
             />
           ) : (

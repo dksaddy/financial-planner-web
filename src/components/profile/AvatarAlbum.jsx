@@ -136,6 +136,7 @@ export default function AvatarAlbum({ profile, onSuccess }) {
                 // largest a tile ever gets is roughly a third of it.
                 sizes="(min-width: 1024px) 150px, 33vw"
                 className="object-cover"
+                unoptimized // preserves gif animation
               />
 
               {photo.is_current ? (

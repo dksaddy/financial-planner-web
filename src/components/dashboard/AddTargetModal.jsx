@@ -201,7 +201,7 @@ export default function AddTargetModal({
                     alt="Target preview"
                     fill
                     sizes="(min-width: 640px) 448px, 90vw"
-                    unoptimized={isLocalPreview(displayedPreview)}
+                    unoptimized // preserves gif animation
                     className="object-cover"
                   />
                   <span className="absolute inset-0 flex items-center justify-center bg-scrim text-[11.4px] font-bold uppercase tracking-wider text-white opacity-0 transition group-hover:opacity-100">
@@ -267,6 +267,7 @@ export default function AddTargetModal({
                         alt={img.name}
                         width={48}
                         height={48}
+                        unoptimized // preserves gif animation
                         className="h-full w-full object-cover"
                       />
 
