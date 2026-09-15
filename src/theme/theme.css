@@ -14,6 +14,10 @@
   /* --- Type & toasts --------------------------------------------------- */
   /* The face the whole app is set in; a surface style may swap it. */
   --font-app: var(--font-receipt);
+  /* Courier Prime's x-height is 0.451em against Space Mono's 0.496em, so the
+     same font-size reads ~10% smaller than Brutal. Scaling the face to Space
+     Mono's x-height makes every style set text at the same apparent size. */
+  --font-size-adjust: ex-height 0.496;
   --toast-radius: 12px;
   --toast-border-width: 1px;
 
@@ -534,6 +538,7 @@
 
 :root[data-theme^="brutal"] {
   --font-app: var(--font-brutal), var(--font-receipt);
+  --font-size-adjust: none;
 
   --aurora-1: transparent;
   --aurora-2: transparent;
