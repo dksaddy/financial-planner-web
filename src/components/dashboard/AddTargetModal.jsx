@@ -1,22 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { FiImage, FiX, FiCheck } from "react-icons/fi";
+import { FiImage, FiX } from "react-icons/fi";
 
 import Modal from "@/components/common/Modal";
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 
-import { isLocalPreview } from "@/lib/image";
 import { createTargetSchema } from "@/validations/targets.validation";
-import {
-  createTarget,
-  getTargetImages,
-} from "@/services/targets.service";
+import { createTarget } from "@/services/targets.service";
 
 export default function AddTargetModal({
   open,
@@ -31,13 +27,6 @@ export default function AddTargetModal({
   const [selection, setSelection] = useState(null);
   const fileInputRef = useRef(null);
 
-  const [existingImages, setExistingImages] = useState([]);
-  // Starts true so the first open shows the loading line. A reopen keeps the
-  // list already on screen and refreshes it underneath, rather than flashing
-  // the spinner again.
-  const [loadingImages, setLoadingImages] = useState(true);
-  const [selectedExistingUrl, setSelectedExistingUrl] = useState(null);
-
   const {
     register,
     handleSubmit,
@@ -51,58 +40,22 @@ export default function AddTargetModal({
     },
   });
 
-  // Refetched on every open so a picture added since last time shows up.
-  useEffect(() => {
-    if (!open) return;
-
-    let active = true;
-
-    getTargetImages()
-      .then((response) => {
-        if (active) setExistingImages(response.data ?? []);
-      })
-      .catch(() => {
-        // Picking a past picture is a bonus feature — if it fails to
-        // load, uploading a new image still works fine.
-        if (active) setExistingImages([]);
-      })
-      .finally(() => {
-        if (active) setLoadingImages(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [open]);
-
   const revokeSelection = () => {
     if (selection) URL.revokeObjectURL(selection.url);
   };
 
-  // Uploading a new file and picking an existing picture are mutually
-  // exclusive — choosing one clears the other.
   const handleNewFile = (file) => {
     revokeSelection();
 
     setSelection(
       file ? { file, url: URL.createObjectURL(file) } : null
     );
-    setSelectedExistingUrl(null);
-  };
-
-  const handleSelectExisting = (url) => {
-    revokeSelection();
-
-    setSelectedExistingUrl((current) => (current === url ? null : url));
-    setSelection(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const clearPicture = () => {
     revokeSelection();
 
     setSelection(null);
-    setSelectedExistingUrl(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -116,12 +69,11 @@ export default function AddTargetModal({
     revokeSelection();
 
     setSelection(null);
-    setSelectedExistingUrl(null);
     reset({ name: "", target_amount: "" });
     onClose();
   };
 
-  const displayedPreview = selection?.url || selectedExistingUrl;
+  const displayedPreview = selection?.url;
 
   const onSubmit = async (data) => {
     try {
@@ -130,7 +82,6 @@ export default function AddTargetModal({
       const response = await createTarget({
         ...data,
         image: selection?.file ?? null,
-        existingImageUrl: selectedExistingUrl,
       });
 
       toast.success(response.message);
@@ -232,60 +183,6 @@ export default function AddTargetModal({
               </button>
             )}
           </div>
-
-          {loadingImages && (
-            <p className="pt-1 text-[11.4px] font-bold uppercase tracking-wider text-ink-faint">
-              Loading past pictures…
-            </p>
-          )}
-
-          {!loadingImages && existingImages.length > 0 && (
-            <div className="space-y-1.5 pt-1">
-              <span className="block text-[11.4px] font-bold uppercase tracking-wider text-ink-faint">
-                Or reuse an existing picture
-              </span>
-
-              <div className="flex flex-wrap gap-2">
-                {existingImages.map((img) => {
-                  const isSelected =
-                    selectedExistingUrl === img.image_url;
-
-                  return (
-                    <button
-                      key={img.image_url}
-                      type="button"
-                      title={img.name}
-                      onClick={() => handleSelectExisting(img.image_url)}
-                      className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border transition ${
-                        isSelected
-                          ? "border-indigo-dot ring-2 ring-indigo-line"
-                          : "border-line hover:border-line-strong"
-                      }`}
-                    >
-                      <Image
-                        src={img.image_url}
-                        alt={img.name}
-                        width={48}
-                        height={48}
-                        unoptimized // preserves gif animation
-                        className="h-full w-full object-cover"
-                      />
-
-                      {isSelected && (
-                        <span className="absolute inset-0 flex items-center justify-center bg-scrim">
-                          <FiCheck
-                            size={16}
-                            strokeWidth={3}
-                            className="text-white"
-                          />
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
 
         <Button
