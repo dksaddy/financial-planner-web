@@ -56,7 +56,7 @@ export default function Modal({
         onClick={onClose}
       />
 
-      <div className={`panel-in relative max-h-[90vh] w-full ${
+      <div className={`modal-panel panel-in relative max-h-[90vh] w-full ${
         SIZES[size] || SIZES.md
       } overflow-y-auto overflow-x-hidden rounded-2xl border border-line bg-panel p-4 shadow-panel sm:p-5`}>
         <span

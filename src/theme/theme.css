@@ -456,6 +456,14 @@
   box-shadow: var(--neu-raised-lg);
 }
 
+/* A modal floats over a dark scrim rather than sitting on the ground, so in
+   the dark variant its highlight has nothing to catch on and shows up as a
+   grey haze along the top and left edges. It keeps only the shade.
+   `.modal-panel` exists only as this hook, like `.edge-sheen` below. */
+[data-theme="phormism-dark"] .modal-panel {
+  box-shadow: 16px 16px 34px var(--neu-dark);
+}
+
 /* Buttons and badges. The coloured glows (`shadow-indigo-500/30` and
    friends) are replaced wholesale — a tinted halo fights the single light
    source the whole mode is built on. */
