@@ -1,17 +1,25 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { FiCircle, FiMoon, FiSquare, FiSun } from "react-icons/fi";
+import { FiCircle, FiGrid, FiMoon, FiSquare, FiSun } from "react-icons/fi";
 
 import {
   brightnessOf,
   getServerTheme,
   getTheme,
-  styleOf,
+  nextStyleOf,
   subscribe,
   toggleBrightness,
   toggleStyle,
 } from "@/theme/mode";
+
+// Icon and name for each surface style, shown for the style the switch
+// will move to next.
+const STYLE_META = {
+  normal: { Icon: FiSquare, label: "Normal" },
+  morphism: { Icon: FiCircle, label: "Morphism" },
+  brutal: { Icon: FiGrid, label: "Brutal" },
+};
 
 export function useTheme() {
   return useSyncExternalStore(subscribe, getTheme, getServerTheme);
@@ -21,10 +29,10 @@ const BUTTON_CLASS =
   "flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-surface text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink active:scale-95";
 
 /**
- * Two independent switches, not one cycle: surface style on the left,
- * brightness on the right. They are separate because they are separate
- * choices — wanting dark should not cost you morphism, and a cycle made
- * reaching three of the four combinations a guessing game.
+ * Two independent switches: surface style on the left (stepping through
+ * normal, morphism and brutal), brightness on the right. They are separate
+ * because they are separate choices — wanting dark should not cost you your
+ * style, and one cycle through all six themes would be a guessing game.
  *
  * Each icon shows the state the button will move *to*, which is how the
  * original single toggle read.
@@ -35,10 +43,10 @@ export default function ThemeToggle({ className = "" }) {
   // the server.
   const theme = useTheme();
 
-  const morphism = styleOf(theme) === "morphism";
+  const nextStyle = STYLE_META[nextStyleOf(theme)];
   const dark = brightnessOf(theme) === "dark";
 
-  const StyleIcon = morphism ? FiSquare : FiCircle;
+  const StyleIcon = nextStyle.Icon;
   const BrightnessIcon = dark ? FiSun : FiMoon;
 
   return (
@@ -46,9 +54,8 @@ export default function ThemeToggle({ className = "" }) {
       <button
         type="button"
         onClick={toggleStyle}
-        aria-pressed={morphism}
-        aria-label={`Switch to ${morphism ? "normal" : "morphism"} style`}
-        title={morphism ? "Normal style" : "Morphism style"}
+        aria-label={`Switch to ${nextStyle.label.toLowerCase()} style`}
+        title={`${nextStyle.label} style`}
         className={BUTTON_CLASS}
       >
         <StyleIcon size={16} />

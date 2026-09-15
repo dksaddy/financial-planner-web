@@ -94,6 +94,15 @@ each card a named hue (`accent("emerald")`) with roles `grad`/`glow`/`text`/`dot
 The visual language is a thermal receipt: Courier Prime mono throughout, 15px root font, paper-toned
 background with a fixed aurora backdrop.
 
+There are six themes: a surface style (`normal`, `morphism` = `phormism*`, `brutal` = `brutal*`) crossed
+with light/dark. `THEMES`, `STYLES` and `THEME_BY_AXES` in `mode.js` are the only place that mapping
+lives; the style switch steps through `STYLES` in order. Phormism and Brutal each restyle the app
+without touching components: tokens under `:root[data-theme^="…"]`, then unlayered rules in
+`theme.css` that re-map existing utilities (`shadow-card`, `shadow-lg`, `rounded-xl`, `bg-gradient-*`,
+`.edge-sheen`/`.corner-bloom`). Brutal also swaps the face through `--font-app` to Space Mono (loaded
+in `layout.js` with `preload: false`); anything that sets a font or a toast border must go through
+`--font-app` / `--toast-*` rather than naming Courier Prime or a radius directly.
+
 ## Note on the README
 
 `README.md` is still the untouched `create-next-app` boilerplate and describes Geist fonts and

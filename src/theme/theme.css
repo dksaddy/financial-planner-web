@@ -11,6 +11,12 @@
 :root {
   color-scheme: light;
 
+  /* --- Type & toasts --------------------------------------------------- */
+  /* The face the whole app is set in; a surface style may swap it. */
+  --font-app: var(--font-receipt);
+  --toast-radius: 12px;
+  --toast-border-width: 1px;
+
   /* --- Chrome ---------------------------------------------------------- */
   --app: #efece3;
   --panel: #fbf9f3;
@@ -512,12 +518,277 @@
   display: none;
 }
 
+/* =========================================================================
+   Brutal — neo-brutalism, the third surface style.
+
+   The opposite bet to Phormism: instead of hiding the edges, it shouts them.
+   Every card and control gets a thick ink border and a hard, unblurred
+   shadow knocked down-right, corners go square, gradients flatten to their
+   first colour, and nothing glows or blurs. Colour comes back as flat
+   pastel blocks with ink text on top.
+
+   Same mechanism as Phormism: tokens first, then unlayered rules that map
+   the existing utilities (`shadow-card`, `rounded-xl`, `bg-gradient-*`) onto
+   the look, so no component needs to know the mode exists.
+   ========================================================================= */
+
+:root[data-theme^="brutal"] {
+  --font-app: var(--font-brutal), var(--font-receipt);
+
+  --aurora-1: transparent;
+  --aurora-2: transparent;
+  --aurora-3: transparent;
+  --grid-opacity: 1;
+
+  --shadow-card: 4px 4px 0 0 var(--edge);
+  --shadow-panel: 8px 8px 0 0 var(--edge);
+  --shadow-press: 2px 2px 0 0 var(--edge);
+
+  --toast-radius: 0;
+  --toast-border-width: 2px;
+}
+
+/* --- Brutal, light ------------------------------------------------------- */
+
+:root[data-theme="brutal"] {
+  color-scheme: light;
+
+  /* The ink every border and shadow is drawn in. */
+  --edge: #111111;
+
+  --app: #fbefd0;
+  --panel: #ffffff;
+  --paper-top: #fbefd0;
+  --paper-mid: #fbefd0;
+  --paper-bottom: #fbefd0;
+  --grid-line: rgba(17, 17, 17, 0.07);
+
+  --surface: #ffffff;
+  --surface-hover: #fff8e1;
+  --inset: #fffbef;
+  --inset-hover: #fff1c2;
+  --line: var(--edge);
+  --line-soft: rgba(17, 17, 17, 0.28);
+  --line-strong: var(--edge);
+  --scrim: rgba(17, 17, 17, 0.55);
+
+  --ink: #111111;
+  --ink-muted: #3b3b3b;
+  --ink-faint: #6b6b6b;
+
+  /* Soft fills are solid pastel blocks, hairlines are the ink itself, and
+     text darkens far enough to read on either the block or white. */
+  --slate-fg: #1f2937;
+  --slate-soft: #e5e7eb;
+  --slate-line: var(--edge);
+  --slate-dot: #4b5563;
+
+  --indigo-fg: #3730a3;
+  --indigo-soft: #c7d2fe;
+  --indigo-line: var(--edge);
+  --indigo-dot: #4f46e5;
+
+  --emerald-fg: #065f46;
+  --emerald-soft: #a7f3d0;
+  --emerald-line: var(--edge);
+  --emerald-dot: #10b981;
+
+  --amber-fg: #78350f;
+  --amber-soft: #fde68a;
+  --amber-line: var(--edge);
+  --amber-dot: #f59e0b;
+
+  --sky-fg: #075985;
+  --sky-soft: #bae6fd;
+  --sky-line: var(--edge);
+  --sky-dot: #0ea5e9;
+
+  --cyan-fg: #155e75;
+  --cyan-soft: #a5f3fc;
+  --cyan-line: var(--edge);
+  --cyan-dot: #06b6d4;
+
+  --violet-fg: #5b21b6;
+  --violet-soft: #ddd6fe;
+  --violet-line: var(--edge);
+  --violet-dot: #8b5cf6;
+
+  --fuchsia-fg: #86198f;
+  --fuchsia-soft: #f5d0fe;
+  --fuchsia-line: var(--edge);
+  --fuchsia-dot: #d946ef;
+
+  --rose-fg: #9f1239;
+  --rose-soft: #fecdd3;
+  --rose-line: var(--edge);
+  --rose-dot: #f43f5e;
+}
+
+/* --- Brutal, dark --------------------------------------------------------
+   The ink inverts to bone white, so borders and shadows stay the loudest
+   thing on screen. Blocks become deep saturated fills under pale text.
+   ------------------------------------------------------------------------- */
+
+:root[data-theme="brutal-dark"] {
+  color-scheme: dark;
+
+  --edge: #f5f1e6;
+
+  --app: #141414;
+  --panel: #1f1f1f;
+  --paper-top: #141414;
+  --paper-mid: #141414;
+  --paper-bottom: #141414;
+  --grid-line: rgba(245, 241, 230, 0.05);
+
+  --surface: #1f1f1f;
+  --surface-hover: #292929;
+  --inset: #181818;
+  --inset-hover: #262626;
+  --line: var(--edge);
+  --line-soft: rgba(245, 241, 230, 0.25);
+  --line-strong: var(--edge);
+  --scrim: rgba(0, 0, 0, 0.72);
+
+  --ink: #f5f1e6;
+  --ink-muted: #c9c4b6;
+  --ink-faint: #8f8a7d;
+
+  --slate-fg: #e2e8f0;
+  --slate-soft: #334155;
+  --slate-line: var(--edge);
+  --slate-dot: #94a3b8;
+
+  --indigo-fg: #c7d2fe;
+  --indigo-soft: #312e81;
+  --indigo-line: var(--edge);
+  --indigo-dot: #818cf8;
+
+  --emerald-fg: #a7f3d0;
+  --emerald-soft: #065f46;
+  --emerald-line: var(--edge);
+  --emerald-dot: #34d399;
+
+  --amber-fg: #fde68a;
+  --amber-soft: #78350f;
+  --amber-line: var(--edge);
+  --amber-dot: #fbbf24;
+
+  --sky-fg: #bae6fd;
+  --sky-soft: #075985;
+  --sky-line: var(--edge);
+  --sky-dot: #38bdf8;
+
+  --cyan-fg: #a5f3fc;
+  --cyan-soft: #155e75;
+  --cyan-line: var(--edge);
+  --cyan-dot: #22d3ee;
+
+  --violet-fg: #ddd6fe;
+  --violet-soft: #4c1d95;
+  --violet-line: var(--edge);
+  --violet-dot: #a78bfa;
+
+  --fuchsia-fg: #f5d0fe;
+  --fuchsia-soft: #701a75;
+  --fuchsia-line: var(--edge);
+  --fuchsia-dot: #e879f9;
+
+  --rose-fg: #fecdd3;
+  --rose-soft: #881337;
+  --rose-line: var(--edge);
+  --rose-dot: #fb7185;
+}
+
+/* --- Brutal, the shapes --------------------------------------------------- */
+
+/* Square corners. `rounded-full` is left alone: it draws the donut charts,
+   the avatar and the status dots, which are circles by meaning, not style. */
+[data-theme^="brutal"] .rounded-md,
+[data-theme^="brutal"] .rounded-lg,
+[data-theme^="brutal"] .rounded-xl,
+[data-theme^="brutal"] .rounded-2xl,
+[data-theme^="brutal"] .rounded-r-xl {
+  border-radius: 0;
+}
+
+/* Full borders thicken; the one-sided `border-t` separators inside cards
+   stay hairlines, or every card would read as a stack of boxes. */
+[data-theme^="brutal"] .border {
+  border-width: 2px;
+}
+
+/* Gradients flatten to their starting colour — Tailwind keeps it in
+   `--tw-gradient-from`, so every icon chip, button and progress fill keeps
+   its hue without a component change. */
+[data-theme^="brutal"] .bg-gradient-to-r,
+[data-theme^="brutal"] .bg-gradient-to-br,
+[data-theme^="brutal"] .bg-gradient-to-b,
+[data-theme^="brutal"] .bg-gradient-to-t {
+  background-image: linear-gradient(
+    var(--tw-gradient-from),
+    var(--tw-gradient-from)
+  );
+}
+
+/* Icon chips and primary buttons: the coloured glow becomes an ink outline
+   plus a hard shadow, drawn together in one box-shadow. */
+[data-theme^="brutal"] .shadow-md,
+[data-theme^="brutal"] .shadow-lg {
+  box-shadow:
+    0 0 0 2px var(--edge),
+    3px 3px 0 2px var(--edge);
+}
+
+/* Pressing a raised control knocks it into its shadow. */
+[data-theme^="brutal"] .shadow-md:not(:disabled):active,
+[data-theme^="brutal"] .shadow-lg:not(:disabled):active {
+  translate: 2px 2px;
+  box-shadow:
+    0 0 0 2px var(--edge),
+    1px 1px 0 2px var(--edge);
+}
+
+[data-theme^="brutal"] input,
+[data-theme^="brutal"] textarea,
+[data-theme^="brutal"] select {
+  border-width: 2px;
+}
+
+[data-theme^="brutal"] input:focus,
+[data-theme^="brutal"] textarea:focus,
+[data-theme^="brutal"] select:focus {
+  box-shadow: var(--shadow-press);
+}
+
+/* Nothing glows or blurs: the sheen, the corner blooms, the halos behind
+   the donuts and the avatar are all soft light, which this mode has none
+   of. `.blur-*` only ever marks those decorative halos in this app. */
+[data-theme^="brutal"] .edge-sheen,
+[data-theme^="brutal"] .corner-bloom,
+[data-theme^="brutal"] .blur-md,
+[data-theme^="brutal"] .blur-xl,
+[data-theme^="brutal"] .blur-2xl {
+  display: none;
+}
+
+[data-theme^="brutal"] .backdrop-blur-sm,
+[data-theme^="brutal"] .backdrop-blur-md {
+  backdrop-filter: none;
+}
+
+/* A hard, flat selection to match. */
+[data-theme^="brutal"] ::selection {
+  background: var(--amber-dot);
+  color: #111111;
+}
+
 /* Expose every token as a Tailwind utility. `inline` keeps the utilities
    pointing at the raw variables, so flipping data-theme repaints the whole
    app without regenerating any CSS. */
 @theme inline {
-  --font-sans: var(--font-receipt);
-  --font-mono: var(--font-receipt);
+  --font-sans: var(--font-app);
+  --font-mono: var(--font-app);
 
   /* Type scale, Tailwind's defaults × 1.14. Overriding the scale rather than
      the root font size keeps padding, gaps and widths — all rem-based in

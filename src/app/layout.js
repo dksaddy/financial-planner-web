@@ -1,4 +1,4 @@
-import { Courier_Prime } from "next/font/google";
+import { Courier_Prime, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
@@ -13,6 +13,16 @@ const receipt = Courier_Prime({
   subsets: ["latin"],
 });
 
+// Space Mono is the Brutal theme's face — a heavy, geometric mono that keeps
+// the tabular figures. Not preloaded: only the Brutal themes use it, so the
+// other themes never pay for the download.
+const brutal = Space_Mono({
+  variable: "--font-brutal",
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  preload: false,
+});
+
 export const metadata = {
   title: "Financial Planner",
   description: "Track savings, spending and targets in one dashboard.",
@@ -25,7 +35,7 @@ export default function RootLayout({ children }) {
       // The boot script writes data-theme before hydration, so the server
       // markup and the client markup differ on <html> by design.
       suppressHydrationWarning
-      className={`${receipt.variable} h-full antialiased`}
+      className={`${receipt.variable} ${brutal.variable} h-full antialiased`}
     >
       <head>
         {/* Must run before the stylesheet paints anything, so it sits in the
@@ -43,10 +53,10 @@ export default function RootLayout({ children }) {
             style: {
               background: "var(--panel)",
               color: "var(--ink)",
-              border: "1px solid var(--line)",
-              borderRadius: "12px",
+              border: "var(--toast-border-width) solid var(--line)",
+              borderRadius: "var(--toast-radius)",
               fontSize: "13px",
-              fontFamily: "var(--font-receipt), ui-monospace, monospace",
+              fontFamily: "var(--font-app), ui-monospace, monospace",
               boxShadow: "var(--shadow-card)",
             },
           }}

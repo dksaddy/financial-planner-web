@@ -12,17 +12,29 @@ const notify = () => {
   listeners.forEach((listener) => listener());
 };
 
-// The four themes are really a 2x2: a surface style crossed with a
+// The six themes are really a 3x2: a surface style crossed with a
 // brightness. `data-theme` stays a single attribute because the stylesheet
 // and the boot script both want one value, but nothing outside this file
-// should have to know which of the four names encodes which pair.
-export const THEMES = ["light", "dark", "phormism", "phormism-dark"];
+// should have to know which of the names encodes which pair.
+export const THEMES = [
+  "light",
+  "dark",
+  "phormism",
+  "phormism-dark",
+  "brutal",
+  "brutal-dark",
+];
+
+// The order the style switch steps through.
+export const STYLES = ["normal", "morphism", "brutal"];
 
 const THEME_BY_AXES = {
   "normal:light": "light",
   "normal:dark": "dark",
   "morphism:light": "phormism",
   "morphism:dark": "phormism-dark",
+  "brutal:light": "brutal",
+  "brutal:dark": "brutal-dark",
 };
 
 const systemTheme = () =>
@@ -58,8 +70,18 @@ export const setTheme = (theme) => {
 
 // Pure, so a component can pass the value it already subscribed to instead
 // of reading the DOM again — which it must not do during a server render.
-export const styleOf = (theme) =>
-  String(theme).startsWith("phormism") ? "morphism" : "normal";
+export const styleOf = (theme) => {
+  const name = String(theme);
+
+  if (name.startsWith("phormism")) return "morphism";
+  if (name.startsWith("brutal")) return "brutal";
+
+  return "normal";
+};
+
+// The style one press of the switch moves to, wrapping back to the start.
+export const nextStyleOf = (theme) =>
+  STYLES[(STYLES.indexOf(styleOf(theme)) + 1) % STYLES.length];
 
 export const brightnessOf = (theme) =>
   String(theme).endsWith("dark") ? "dark" : "light";
@@ -70,11 +92,9 @@ export const getBrightness = () => brightnessOf(getTheme());
 
 // Flipping one axis leaves the other where it was — which is the whole point
 // of splitting them: switching to dark should not also drop you out of
-// morphism, and vice versa.
+// morphism, and vice versa. Style steps normal → morphism → brutal → normal.
 export const toggleStyle = () => {
-  const next = getStyle() === "morphism" ? "normal" : "morphism";
-
-  setTheme(THEME_BY_AXES[`${next}:${getBrightness()}`]);
+  setTheme(THEME_BY_AXES[`${nextStyleOf(getTheme())}:${getBrightness()}`]);
 };
 
 export const toggleBrightness = () => {
@@ -134,7 +154,7 @@ export const THEME_BOOT_SCRIPT = `
     var system = window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
-    var known = ["light", "dark", "phormism", "phormism-dark"];
+    var known = ${JSON.stringify(THEMES)};
 
     document.documentElement.dataset.theme =
       known.indexOf(stored) !== -1 ? stored : system;
