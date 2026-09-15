@@ -9,6 +9,7 @@ import { FiArrowLeft, FiPlus, FiTrendingUp } from "react-icons/fi";
 import Section from "@/components/dashboard/Section";
 import Spinner from "@/components/common/Spinner";
 import SavingPlanCard from "@/components/dashboard/SavingPlanCard";
+import SavingPlansSummary from "@/components/dashboard/SavingPlansSummary";
 import AddSavingPlanModal from "@/components/dashboard/AddSavingPlanModal";
 import EditSavingPlanModal from "@/components/dashboard/EditSavingPlanModal";
 import DeleteSavingPlanDialog from "@/components/dashboard/DeleteSavingPlanDialog";
@@ -196,6 +197,10 @@ export default function AllSavingPlansPage() {
         plan={depositPlan}
         onSuccess={fetchPlans}
       />
+
+      <div className="reveal mb-4" style={{ animationDelay: "35ms" }}>
+        <SavingPlansSummary plans={plans} />
+      </div>
 
       <div className="reveal" style={{ animationDelay: "70ms" }}>
         <Section

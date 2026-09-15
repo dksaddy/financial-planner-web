@@ -1,5 +1,12 @@
 export const SAVING_PLAN_STATUSES = ["active", "completed", "withdrawn"];
 
+// Tax taken from a plan's profit. Charged per plan and only on a gain, so a
+// plan that loses money pays nothing and does not offset another plan's tax.
+export const PROFIT_TAX_RATE = 0.15;
+
+export const profitTax = (profit) =>
+  Math.max(Number(profit) || 0, 0) * PROFIT_TAX_RATE;
+
 // Mirrors `assertStatusTransition` in the API's savingPlans.service.js, so
 // the card only offers moves the server will accept:
 // active → completed, completed → active while money is still owed,
