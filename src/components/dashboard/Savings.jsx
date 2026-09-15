@@ -37,7 +37,7 @@ export default function Savings({ plans }) {
           No active saving plans.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,30rem),1fr))] gap-5">
           {savingPlans.map((plan) => (
             <SavingPlanCard key={plan.id} plan={plan} />
           ))}

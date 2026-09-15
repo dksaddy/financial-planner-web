@@ -17,7 +17,7 @@ export default function SavingPlanCard({
   statusPending = false,
 }) {
   return (
-    <div className="group/plan relative overflow-hidden rounded-xl border border-line-soft bg-inset p-4 transition-[background-color,border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-line-strong hover:bg-surface hover:shadow-card">
+    <div className="group/plan relative overflow-hidden rounded-xl border border-line-soft bg-inset px-6 py-4 transition-[background-color,border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-line-strong hover:bg-surface hover:shadow-card">
       <span
         aria-hidden
         className="corner-bloom pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-[0.12] blur-2xl"
@@ -60,7 +60,7 @@ export default function SavingPlanCard({
       </div>
 
       {/* Details */}
-      <div className="relative mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-t border-line-soft pt-3.5">
+      <div className="relative mt-4 grid grid-cols-2 gap-x-8 gap-y-3 border-t border-line-soft pt-3.5">
         <Stat
           label="Deposit Amount"
           value={`${Number(plan.amount).toFixed(2)} / ${frequencyLabel(plan.frequency)}`}
@@ -129,7 +129,7 @@ export default function SavingPlanCard({
       )}
 
       {(onEdit || onDelete) && (
-        <div className="relative mt-2 flex items-center gap-2">
+        <div className="relative mt-2 flex items-center gap-3">
           {onEdit && (
             <button
               type="button"
@@ -160,7 +160,7 @@ export default function SavingPlanCard({
             Status
           </p>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {SAVING_PLAN_STATUSES.map((status) => {
               const isCurrent = plan.status === status;
 
@@ -195,11 +195,11 @@ export default function SavingPlanCard({
 function Stat({ label, value }) {
   return (
     <div className="min-w-0">
-      <p className="truncate text-[11.4px] uppercase tracking-wider text-ink-faint">
+      <p className="break-words text-[11.4px] uppercase tracking-wider text-ink-faint">
         {label}
       </p>
 
-      <p className="num truncate text-sm font-bold text-ink">
+      <p className="num break-words text-sm font-bold text-ink">
         {value}
       </p>
     </div>
