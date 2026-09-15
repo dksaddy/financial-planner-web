@@ -183,7 +183,6 @@ export default function DashboardPage() {
         <div className="reveal" style={stagger(10)}>
           <LastFourWeeksExpense
             lastFourWeeks={expenses.lastFourWeeks}
-            weeklyBudget={spending.weekly}
             dailyBudget={spending.daily}
           />
         </div>

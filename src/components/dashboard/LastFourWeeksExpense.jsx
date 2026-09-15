@@ -16,13 +16,11 @@ const WEEK_LABELS = {
 
 export default function LastFourWeeksExpense({
   lastFourWeeks = {},
-  weeklyBudget = 0,
   dailyBudget = 0,
 }) {
   const router = useRouter();
   const [activeWeek, setActiveWeek] = useState(null);
 
-  const budget = Number(weeklyBudget || 0);
   const daily = Number(dailyBudget || 0);
 
   const activeItems = activeWeek
@@ -58,24 +56,29 @@ export default function LastFourWeeksExpense({
       0
     );
 
+    // Sum of the per-day `budget` figures stored in daily_extra_savings —
+    // the budget each of the week's (up to six) days was actually held to.
+    const budget = items.reduce(
+      (sum, item) =>
+        item.budget === null ? sum : sum + Number(item.budget),
+      0
+    );
+
     return {
       weekKey,
       label,
       items,
       total,
       dailySaved,
+      budget,
     };
   });
 
-  // Display-only: the bar's full width is the weekly budget itself, fixed
-  // for every card — not whichever week happens to be busiest. A week
-  // under budget fills proportionally in blue; a week over budget caps
-  // out the bar and turns it red. Falls back to the busiest week when
-  // there's no budget to scale by. Does not affect any figure.
-  const scaleMax =
-    budget > 0
-      ? budget
-      : Math.max(...weeks.map((week) => week.total), 0);
+  // Display-only: each bar's full width is its own week's stored budget. A
+  // week under budget fills proportionally in blue; a week over budget caps
+  // out the bar and turns it red. A week with no stored budget falls back to
+  // the busiest week. Does not affect any figure.
+  const busiestWeek = Math.max(...weeks.map((week) => week.total), 0);
 
   return (
     <Section
@@ -94,12 +97,13 @@ export default function LastFourWeeksExpense({
       }
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {weeks.map(({ weekKey, label, items, total, dailySaved }) => {
+        {weeks.map(({ weekKey, label, items, total, dailySaved, budget }) => {
           const overBudget = budget > 0 && total > budget;
           const overPercent = overBudget
             ? ((total - budget) / budget) * 100
             : 0;
           const usedPercent = budget > 0 ? (total / budget) * 100 : 0;
+          const scaleMax = budget > 0 ? budget : busiestWeek;
 
           return (
           <button
