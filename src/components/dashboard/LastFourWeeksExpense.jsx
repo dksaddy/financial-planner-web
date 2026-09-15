@@ -16,12 +16,9 @@ const WEEK_LABELS = {
 
 export default function LastFourWeeksExpense({
   lastFourWeeks = {},
-  dailyBudget = 0,
 }) {
   const router = useRouter();
   const [activeWeek, setActiveWeek] = useState(null);
-
-  const daily = Number(dailyBudget || 0);
 
   const activeItems = activeWeek
     ? lastFourWeeks[activeWeek] || []
@@ -37,6 +34,15 @@ export default function LastFourWeeksExpense({
     (sum, item) =>
       item.extraSave === null ? sum : sum + Number(item.extraSave),
     0
+  );
+
+  // The daily budget each day was actually held to, read from its stored
+  // daily_extra_savings row rather than today's salary settings — a salary
+  // change must not rewrite what a past week was measured against.
+  const activeDailyBudget = formatBudgetRange(
+    activeItems
+      .filter((item) => item.budget !== null)
+      .map((item) => Number(item.budget))
   );
 
   const weeks = Object.entries(WEEK_LABELS).map(([weekKey, label]) => {
@@ -254,9 +260,11 @@ export default function LastFourWeeksExpense({
             {activeItems.length} Records
           </span>
 
-          <span className="num rounded-full bg-indigo-soft px-2.5 py-1 text-[12.54px] font-medium text-indigo-fg ring-1 ring-inset ring-indigo-line">
-            Daily Budget {daily.toFixed(2)}
-          </span>
+          {activeDailyBudget && (
+            <span className="num rounded-full bg-indigo-soft px-2.5 py-1 text-[12.54px] font-medium text-indigo-fg ring-1 ring-inset ring-indigo-line">
+              Daily Budget {activeDailyBudget}
+            </span>
+          )}
 
           <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
             Spent {activeTotal.toFixed(2)}
@@ -275,6 +283,20 @@ export default function LastFourWeeksExpense({
       </Modal>
     </Section>
   );
+}
+
+// One figure when every day shared a budget, a "low–high" range when the
+// salary or saving plans changed partway through the week, and null when no
+// day has a stored budget to show.
+function formatBudgetRange(budgets) {
+  if (budgets.length === 0) return null;
+
+  const low = Math.min(...budgets);
+  const high = Math.max(...budgets);
+
+  return low === high
+    ? low.toFixed(2)
+    : `${low.toFixed(2)}–${high.toFixed(2)}`;
 }
 
 function formatDate(date) {
