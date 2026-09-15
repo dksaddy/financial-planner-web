@@ -1,3 +1,19 @@
+export const SAVING_PLAN_STATUSES = ["active", "completed", "withdrawn"];
+
+// Mirrors `assertStatusTransition` in the API's savingPlans.service.js, so
+// the card only offers moves the server will accept:
+// active → completed, completed → active while money is still owed,
+// completed → withdrawn, and withdrawn is final.
+export const canChangeStatus = (plan, status) => {
+  if (plan.status === status || plan.status === "withdrawn") return false;
+
+  if (status === "withdrawn") return plan.status === "completed";
+
+  if (status === "active") return plan.remaining > 0;
+
+  return true;
+};
+
 // `GET /saving-plans` returns raw snake_case rows, while `/dashboard` returns
 // plans the API has already derived (percentage, remaining, profit). Both feed
 // the same card, so normalize either shape here — the maths mirrors

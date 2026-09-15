@@ -24,6 +24,7 @@ export default function DepositModal({
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(depositSavingPlanSchema),
@@ -40,7 +41,18 @@ export default function DepositModal({
 
   if (!plan) return null;
 
+  const remaining = Number(plan.remaining ?? 0);
+
   const onSubmit = async (data) => {
+    // Same cap the API enforces, compared in cents; checked here so the
+    // mistake shows on the field instead of only as a toast.
+    if (Math.round(data.amount * 100) > Math.round(remaining * 100)) {
+      setError("amount", {
+        message: `Deposit exceeds the remaining ${remaining.toFixed(2)}`,
+      });
+      return;
+    }
+
     try {
       setSubmitting(true);
 
@@ -79,6 +91,13 @@ export default function DepositModal({
             Deposited{" "}
             <span className="font-bold text-emerald-fg">
               {Number(plan.currentlyDeposited).toFixed(2)}
+            </span>
+          </span>
+
+          <span className="num">
+            Remaining{" "}
+            <span className="font-bold text-ink">
+              {remaining.toFixed(2)}
             </span>
           </span>
 

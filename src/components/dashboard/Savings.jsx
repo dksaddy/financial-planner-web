@@ -9,10 +9,9 @@ import SavingPlanCard from "./SavingPlanCard";
 export default function Savings({ plans }) {
   const router = useRouter();
 
-  // The dashboard payload carries everything except completed plans; only
-  // active ones belong on the dashboard, so cancelled plans are filtered out
-  // here too. The all-plans page is where the rest live, along with adding,
-  // editing and deleting.
+  // The dashboard payload already carries active plans only; the filter stays
+  // as a guard. The all-plans page is where completed and withdrawn plans
+  // live, along with adding, editing and deleting.
   const savingPlans = (plans || []).filter(
     (plan) => plan.status === "active"
   );

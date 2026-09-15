@@ -1,9 +1,9 @@
 import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
 
-// A plan is either running or finished. The column and the API still accept
-// "cancelled", so `statusStyles` keeps rendering it for any older row, but it
-// is not something you can set from here any more.
-const STATUSES = ["active", "completed"];
+import {
+  SAVING_PLAN_STATUSES,
+  canChangeStatus,
+} from "@/lib/savingPlan";
 
 // The plan tile the dashboard's Savings section and the all-plans page both
 // render, so a change to a plan's presentation lands in one place. The
@@ -161,14 +161,18 @@ export default function SavingPlanCard({
           </p>
 
           <div className="flex items-center gap-1.5">
-            {STATUSES.map((status) => {
+            {SAVING_PLAN_STATUSES.map((status) => {
               const isCurrent = plan.status === status;
 
               return (
                 <button
                   key={status}
                   type="button"
-                  disabled={isCurrent || statusPending}
+                  disabled={
+                    isCurrent ||
+                    statusPending ||
+                    !canChangeStatus(plan, status)
+                  }
                   onClick={() => onStatusChange(plan, status)}
                   aria-pressed={isCurrent}
                   className={`flex-1 rounded-lg border px-2 py-1.5 text-[11.4px] font-bold uppercase tracking-wider transition disabled:cursor-not-allowed ${
@@ -217,8 +221,8 @@ function statusStyles(status) {
       return "bg-emerald-soft text-emerald-fg ring-emerald-line";
     case "completed":
       return "bg-sky-soft text-sky-fg ring-sky-line";
-    case "cancelled":
-      return "bg-slate-soft text-ink-muted ring-slate-line";
+    case "withdrawn":
+      return "bg-violet-soft text-violet-fg ring-violet-line";
     default:
       return "bg-slate-soft text-ink-muted ring-slate-line";
   }
