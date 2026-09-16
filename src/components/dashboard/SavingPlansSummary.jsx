@@ -4,6 +4,7 @@ import Section from "./Section";
 import Row from "./Row";
 
 import { PROFIT_TAX_RATE, profitTax } from "@/lib/savingPlan";
+import { SAVING_PLAN_STATUS } from "@/constants/status";
 
 const TAX_PERCENT = `${PROFIT_TAX_RATE * 100}%`;
 
@@ -32,11 +33,15 @@ const summarize = (plans) => {
 // paid out after tax, and what active and completed plans will pay out once
 // they are withdrawn and taxed.
 export default function SavingPlansSummary({ plans = [] }) {
-  const withdrawnPlans = plans.filter((plan) => plan.status === "withdrawn");
-  const upcomingPlans = plans.filter((plan) => plan.status !== "withdrawn");
+  const withdrawnPlans = plans.filter(
+    (plan) => plan.status === SAVING_PLAN_STATUS.WITHDRAWN
+  );
+  const upcomingPlans = plans.filter(
+    (plan) => plan.status !== SAVING_PLAN_STATUS.WITHDRAWN
+  );
 
   const completedCount = upcomingPlans.filter(
-    (plan) => plan.status === "completed"
+    (plan) => plan.status === SAVING_PLAN_STATUS.COMPLETED
   ).length;
 
   const earned = summarize(withdrawnPlans);

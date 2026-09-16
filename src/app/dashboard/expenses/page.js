@@ -22,6 +22,7 @@ import Pagination from "@/components/common/Pagination";
 
 import { getExpenseRecords } from "@/services/expenseRecords.service";
 import { isAuthenticated } from "@/lib/auth";
+import { FILTER_ALL } from "@/constants/status";
 
 const PAGE_SIZE = 10;
 
@@ -36,7 +37,7 @@ export default function AllExpensesPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editRecord, setEditRecord] = useState(null);
   const [deleteRecord, setDeleteRecord] = useState(null);
-  const [activeMonth, setActiveMonth] = useState("all");
+  const [activeMonth, setActiveMonth] = useState(FILTER_ALL);
   const [page, setPage] = useState(1);
 
   // Bumped every time a fresh batch of records lands. Used as a `key` on
@@ -137,10 +138,10 @@ export default function AllExpensesPage() {
 
   if (
     knownMonths &&
-    activeMonth !== "all" &&
+    activeMonth !== FILTER_ALL &&
     !knownMonths.includes(activeMonth)
   ) {
-    setActiveMonth("all");
+    setActiveMonth(FILTER_ALL);
     setPage(1);
   }
 
@@ -162,16 +163,16 @@ export default function AllExpensesPage() {
   const monthKeys = meta?.months || [];
 
   const months = [
-    { key: "all", label: "All" },
+    { key: FILTER_ALL, label: "All" },
     ...monthKeys.map((key) => ({ key, label: formatMonthLabel(key) })),
   ];
 
   // If the active month has no records left (e.g. after deleting the last
   // one), fall back to "All" rather than showing a tab that is now gone.
   const selectedMonth =
-    activeMonth === "all" || monthKeys.includes(activeMonth)
+    activeMonth === FILTER_ALL || monthKeys.includes(activeMonth)
       ? activeMonth
-      : "all";
+      : FILTER_ALL;
 
   const pagination = meta?.pagination;
 
@@ -333,7 +334,7 @@ export default function AllExpensesPage() {
           >
           {groups.length === 0 ? (
             <p className="fade-in py-6 text-center text-sm text-ink-faint">
-              {selectedMonth === "all"
+              {selectedMonth === FILTER_ALL
                 ? "No expenses recorded yet."
                 : "No expenses recorded for this month."}
             </p>

@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { FILTER_ALL } from "@/constants/status";
 
 export const createExpenseRecord = async (data) => {
   const response = await api.post("/expense-records", data);
@@ -13,7 +14,7 @@ export const getExpenseRecords = async ({ page, limit, month } = {}) => {
     params: {
       ...(page ? { page } : {}),
       ...(limit ? { limit } : {}),
-      ...(month && month !== "all" ? { month } : {}),
+      ...(month && month !== FILTER_ALL ? { month } : {}),
     },
   });
 

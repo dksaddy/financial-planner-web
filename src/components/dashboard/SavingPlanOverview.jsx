@@ -6,6 +6,8 @@ import { FiCreditCard, FiPlus } from "react-icons/fi";
 import Section from "./Section";
 import DepositModal from "./DepositModal";
 
+import { SAVING_PLAN_STATUS } from "@/constants/status";
+
 export default function SavingPlanOverview({
   plans,
   onDeposit,
@@ -13,7 +15,7 @@ export default function SavingPlanOverview({
   const [activePlan, setActivePlan] = useState(null);
 
   const activePlans = (plans || []).filter(
-    (plan) => plan.status === "active"
+    (plan) => plan.status === SAVING_PLAN_STATUS.ACTIVE
   );
 
   return (

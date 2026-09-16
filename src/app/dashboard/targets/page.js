@@ -23,6 +23,7 @@ import Spinner from "@/components/common/Spinner";
 import { getTargets, updateTargetStatus } from "@/services/targets.service";
 import { getDashboard } from "@/services/dashboard.service";
 import { isAuthenticated } from "@/lib/auth";
+import { TARGET_STATUS } from "@/constants/status";
 
 export default function AllTargetsPage() {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function AllTargetsPage() {
   // switches sections) and item currently playing its arrival glow
   // (right after it lands in the new section).
   const [exitingId, setExitingId] = useState(null);
-  const [exitingDirection, setExitingDirection] = useState(null); // "completed" | "pending"
+  const [exitingDirection, setExitingDirection] = useState(null); // a TARGET_STATUS value
   const [enteringId, setEnteringId] = useState(null);
   const [enteringDirection, setEnteringDirection] = useState(null);
 
@@ -106,7 +107,9 @@ export default function AllTargetsPage() {
 
   const handleToggleStatus = async (target) => {
     const nextStatus =
-      target.status === "completed" ? "pending" : "completed";
+      target.status === TARGET_STATUS.COMPLETED
+        ? TARGET_STATUS.PENDING
+        : TARGET_STATUS.COMPLETED;
 
     try {
       setStatusUpdatingId(target.id);
@@ -152,8 +155,12 @@ export default function AllTargetsPage() {
     );
   }
 
-  const pending = (targets || []).filter((t) => t.status === "pending");
-  const completed = (targets || []).filter((t) => t.status === "completed");
+  const pending = (targets || []).filter(
+    (t) => t.status === TARGET_STATUS.PENDING
+  );
+  const completed = (targets || []).filter(
+    (t) => t.status === TARGET_STATUS.COMPLETED
+  );
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
@@ -248,7 +255,8 @@ export default function AllTargetsPage() {
 
                 const isExiting = exitingId === target.id;
                 const isEntering =
-                  enteringId === target.id && enteringDirection === "pending";
+                  enteringId === target.id &&
+                  enteringDirection === TARGET_STATUS.PENDING;
 
                 return (
                   <div
@@ -348,7 +356,7 @@ export default function AllTargetsPage() {
                 const isExiting = exitingId === target.id;
                 const isEntering =
                   enteringId === target.id &&
-                  enteringDirection === "completed";
+                  enteringDirection === TARGET_STATUS.COMPLETED;
 
                 return (
                   <div

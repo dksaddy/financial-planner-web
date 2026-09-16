@@ -6,6 +6,8 @@ import { FiTrendingUp, FiArrowUpRight } from "react-icons/fi";
 import Section from "./Section";
 import SavingPlanCard from "./SavingPlanCard";
 
+import { SAVING_PLAN_STATUS } from "@/constants/status";
+
 export default function Savings({ plans }) {
   const router = useRouter();
 
@@ -13,7 +15,7 @@ export default function Savings({ plans }) {
   // as a guard. The all-plans page is where completed and withdrawn plans
   // live, along with adding, editing and deleting.
   const savingPlans = (plans || []).filter(
-    (plan) => plan.status === "active"
+    (plan) => plan.status === SAVING_PLAN_STATUS.ACTIVE
   );
 
   return (

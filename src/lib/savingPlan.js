@@ -1,4 +1,4 @@
-export const SAVING_PLAN_STATUSES = ["active", "completed", "withdrawn"];
+import { SAVING_PLAN_STATUS } from "@/constants/status";
 
 // Tax taken from a plan's profit. Charged per plan and only on a gain, so a
 // plan that loses money pays nothing and does not offset another plan's tax.
@@ -12,11 +12,18 @@ export const profitTax = (profit) =>
 // active → completed, completed → active while money is still owed,
 // completed → withdrawn, and withdrawn is final.
 export const canChangeStatus = (plan, status) => {
-  if (plan.status === status || plan.status === "withdrawn") return false;
+  if (
+    plan.status === status ||
+    plan.status === SAVING_PLAN_STATUS.WITHDRAWN
+  ) {
+    return false;
+  }
 
-  if (status === "withdrawn") return plan.status === "completed";
+  if (status === SAVING_PLAN_STATUS.WITHDRAWN) {
+    return plan.status === SAVING_PLAN_STATUS.COMPLETED;
+  }
 
-  if (status === "active") return plan.remaining > 0;
+  if (status === SAVING_PLAN_STATUS.ACTIVE) return plan.remaining > 0;
 
   return true;
 };

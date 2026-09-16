@@ -1,9 +1,10 @@
 import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
 
+import { canChangeStatus } from "@/lib/savingPlan";
 import {
+  SAVING_PLAN_STATUS,
   SAVING_PLAN_STATUSES,
-  canChangeStatus,
-} from "@/lib/savingPlan";
+} from "@/constants/status";
 
 // The plan tile the dashboard's Savings section and the all-plans page both
 // render, so a change to a plan's presentation lands in one place. The
@@ -113,7 +114,7 @@ export default function SavingPlanCard({
 
       {/* Deposits are only accepted on active plans, so the button follows
           the same rule the API enforces. */}
-      {onDeposit && plan.status === "active" && (
+      {onDeposit && plan.status === SAVING_PLAN_STATUS.ACTIVE && (
         <button
           type="button"
           onClick={() => onDeposit(plan)}
@@ -217,11 +218,11 @@ function frequencyLabel(frequency) {
 
 function statusStyles(status) {
   switch (status) {
-    case "active":
+    case SAVING_PLAN_STATUS.ACTIVE:
       return "bg-emerald-soft text-emerald-fg ring-emerald-line";
-    case "completed":
+    case SAVING_PLAN_STATUS.COMPLETED:
       return "bg-sky-soft text-sky-fg ring-sky-line";
-    case "withdrawn":
+    case SAVING_PLAN_STATUS.WITHDRAWN:
       return "bg-violet-soft text-violet-fg ring-violet-line";
     default:
       return "bg-slate-soft text-ink-muted ring-slate-line";

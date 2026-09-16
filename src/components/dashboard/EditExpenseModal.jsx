@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
+import { EXPENSE_TYPE_STATUS } from "@/constants/status";
 
 import { createExpenseRecordSchema } from "@/validations/expenseRecords.validation";
 import { updateExpenseRecord } from "@/services/expenseRecords.service";
@@ -55,7 +56,7 @@ export default function EditExpenseModal({
         // Only active types are selectable, but keep the record's own
         // type in the list when it has since been deactivated — otherwise
         // the select would silently show no selection at all.
-        const response = await getExpenseTypes("active");
+        const response = await getExpenseTypes(EXPENSE_TYPE_STATUS.ACTIVE);
 
         const types = response.data || [];
 

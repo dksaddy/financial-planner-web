@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
+import { EXPENSE_TYPE_STATUS } from "@/constants/status";
 
 import { createExpenseRecordSchema } from "@/validations/expenseRecords.validation";
 import { createExpenseRecord } from "@/services/expenseRecords.service";
@@ -63,7 +64,7 @@ export default function AddExpenseModal({
 
         // Only active types: the API rejects a record against a
         // deactivated one.
-        const response = await getExpenseTypes("active");
+        const response = await getExpenseTypes(EXPENSE_TYPE_STATUS.ACTIVE);
 
         setExpenseTypes(response.data || []);
       } catch (error) {

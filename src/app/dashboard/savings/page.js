@@ -23,13 +23,14 @@ import {
   setSavingPlanStatus,
 } from "@/services/savingPlans.service";
 import { normalizeSavingPlan } from "@/lib/savingPlan";
+import { FILTER_ALL, SAVING_PLAN_STATUS } from "@/constants/status";
 import { isAuthenticated } from "@/lib/auth";
 
 const FILTERS = [
-  { value: "all", label: "All" },
-  { value: "active", label: "Active" },
-  { value: "completed", label: "Completed" },
-  { value: "withdrawn", label: "Withdrawn" },
+  { value: FILTER_ALL, label: "All" },
+  { value: SAVING_PLAN_STATUS.ACTIVE, label: "Active" },
+  { value: SAVING_PLAN_STATUS.COMPLETED, label: "Completed" },
+  { value: SAVING_PLAN_STATUS.WITHDRAWN, label: "Withdrawn" },
 ];
 
 export default function AllSavingPlansPage() {
@@ -39,7 +40,7 @@ export default function AllSavingPlansPage() {
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState(FILTER_ALL);
   const [addOpen, setAddOpen] = useState(false);
   const [depositPlan, setDepositPlan] = useState(null);
   const [editingPlan, setEditingPlan] = useState(null);
@@ -135,12 +136,12 @@ export default function AllSavingPlansPage() {
   }
 
   const visible =
-    filter === "all"
+    filter === FILTER_ALL
       ? plans
       : plans.filter((plan) => plan.status === filter);
 
   const activeCount = plans.filter(
-    (plan) => plan.status === "active"
+    (plan) => plan.status === SAVING_PLAN_STATUS.ACTIVE
   ).length;
 
   const totalDeposited = plans.reduce(

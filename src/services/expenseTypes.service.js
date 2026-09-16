@@ -1,8 +1,9 @@
 import api from "@/lib/axios";
 
-// `status` is one of "active" | "inactive" | "all" (the API defaults to
-// "all"). Anything that feeds a picker of usable types must pass "active",
-// because records cannot be created against a deactivated type.
+// `status` is an EXPENSE_TYPE_STATUS value or FILTER_ALL (the API defaults to
+// all). Anything that feeds a picker of usable types must pass
+// EXPENSE_TYPE_STATUS.ACTIVE, because records cannot be created against a
+// deactivated type.
 export const getExpenseTypes = async (status) => {
   const response = await api.get("/expense-types", {
     params: status ? { status } : undefined,
