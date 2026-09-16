@@ -93,27 +93,21 @@ export default function DepositModal({
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <div className="flex items-center justify-between rounded-xl border border-line bg-surface px-3 py-2.5 text-xs text-ink-muted">
-          <span className="num">
-            Deposited{" "}
-            <span className="font-bold text-emerald-fg">
-              {Number(plan.currentlyDeposited).toFixed(2)}
-            </span>
-          </span>
+        {/* Label over value in three fixed columns, so the figures never
+            wrap into each other whichever face the theme sets them in. */}
+        <div className="grid grid-cols-3 gap-3 rounded-xl border border-line bg-surface px-4 py-3">
+          <Figure
+            label="Deposited"
+            value={Number(plan.currentlyDeposited).toFixed(2)}
+            className="text-emerald-fg"
+          />
 
-          <span className="num">
-            Remaining{" "}
-            <span className="font-bold text-ink">
-              {remaining.toFixed(2)}
-            </span>
-          </span>
+          <Figure label="Remaining" value={remaining.toFixed(2)} />
 
-          <span className="num">
-            Target{" "}
-            <span className="font-bold text-ink">
-              {Number(plan.depositAmount).toFixed(2)}
-            </span>
-          </span>
+          <Figure
+            label="Target"
+            value={Number(plan.depositAmount).toFixed(2)}
+          />
         </div>
 
         <Input
@@ -130,5 +124,17 @@ export default function DepositModal({
 
       <PasswordConfirmModal {...passwordConfirm.modalProps} />
     </Modal>
+  );
+}
+
+function Figure({ label, value, className = "text-ink" }) {
+  return (
+    <div className="min-w-0">
+      <p className="text-xs text-ink-muted">{label}</p>
+
+      <p className={`num mt-0.5 truncate text-sm font-bold ${className}`}>
+        {value}
+      </p>
+    </div>
   );
 }

@@ -69,7 +69,7 @@ export default function Modal({
           className="corner-bloom pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 opacity-[0.12] blur-2xl"
         />
 
-        <div className="relative mb-4 flex items-center justify-between gap-3">
+        <div className="modal-header relative mb-4 flex items-center justify-between gap-3">
           <h2 className="truncate text-sm font-bold uppercase tracking-wider text-ink">
             {title}
           </h2>

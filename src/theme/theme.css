@@ -483,11 +483,89 @@
   box-shadow: 16px 16px 34px var(--neu-dark);
 }
 
+/* Every one-sided separator — the ones above a card's total (Profit, Total
+   Saving, Net Profit, the Spending card's Monthly) on `border-line`, and the
+   fainter dividers inside plan cards, footers and pagination on
+   `border-line-soft`. This mode zeroes `--line` along with every other border,
+   and `--line-soft` is too faint to see against a lit ground, so totals
+   floated loose under a gap and sections ran into each other.
+
+   Both come back as one engraved groove rather than a drawn line: a shade
+   darkened toward the ink on the edge, with the highlight beside it on the lit
+   side — the same pair every raised and pressed shape here is made of. Mixing
+   toward `--ink` rather than a fixed black keeps it darker than the ground in
+   the dark variant too.
+
+   A separator that is also a raised surface keeps its extrusion; only the
+   edge colour changes there, since the highlight would replace its shadow. */
+[data-theme^="phormism"] {
+  --neu-groove: color-mix(in srgb, var(--neu-dark) 70%, var(--ink));
+}
+
+[data-theme^="phormism"] .border-t.border-line,
+[data-theme^="phormism"] .border-t.border-line-soft {
+  border-top-color: var(--neu-groove);
+}
+
+[data-theme^="phormism"] .border-b.border-line,
+[data-theme^="phormism"] .border-b.border-line-soft {
+  border-bottom-color: var(--neu-groove);
+}
+
+[data-theme^="phormism"] .border-t:is(.border-line, .border-line-soft):not(.bg-surface) {
+  box-shadow: inset 0 1px 0 var(--neu-light);
+}
+
+[data-theme^="phormism"] .border-b:is(.border-line, .border-line-soft):not(.bg-surface) {
+  box-shadow: 0 1px 0 var(--neu-light);
+}
+
+/* Breathing room inside modals. A neumorphic shadow spills well past the
+   element that casts it, so the gaps the flat themes use leave every well,
+   strip and button touching its neighbour's shadow and the modal reads as
+   one congested block. Padding, the header gap, the gap between fields and
+   the label-to-control gap all open up — modals only, since that is where
+   controls are stacked this tightly. Tailwind's `space-y-*` sets
+   `margin-block-end` on every child but the last, so these match it. */
+[data-theme^="phormism"] .modal-panel {
+  padding: 1.5rem;
+}
+
+@media (min-width: 40rem) {
+  [data-theme^="phormism"] .modal-panel {
+    padding: 2rem;
+  }
+}
+
+/* `.modal-header` exists only as this hook, like `.modal-panel`. */
+[data-theme^="phormism"] .modal-header {
+  margin-bottom: 1.5rem;
+}
+
+[data-theme^="phormism"] .modal-panel .space-y-4 > :not(:last-child) {
+  margin-block-end: 1.5rem;
+}
+
+[data-theme^="phormism"] .modal-panel .space-y-1\.5 > :not(:last-child) {
+  margin-block-end: 0.625rem;
+}
+
 /* Buttons and badges. The coloured glows (`shadow-indigo-500/30` and
    friends) are replaced wholesale — a tinted halo fights the single light
    source the whole mode is built on. */
 [data-theme^="phormism"] .shadow-md,
 [data-theme^="phormism"] .shadow-lg {
+  box-shadow: var(--neu-raised-sm);
+}
+
+/* Outlined buttons — a plan card's Deposit, Edit, Delete and status choices,
+   and every other button drawn as a bordered outline with no fill. With the
+   border gone they were bare text floating on the ground, unrelated to each
+   other and not obviously pressable. They extrude like every other control
+   here, so each reads as a key and a row of them as one set. Stated before the
+   `:active` and `:disabled` rules below so pressing sinks them and a disabled
+   one still lies flat. */
+[data-theme^="phormism"] button.border {
   box-shadow: var(--neu-raised-sm);
 }
 
