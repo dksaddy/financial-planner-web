@@ -3,6 +3,10 @@ import { FiTrendingDown } from "react-icons/fi";
 import Section from "./Section";
 import Row from "./Row";
 
+// Names the working days behind a figure when the API sent them.
+const withDays = (label, days, operator) =>
+  days ? `${label} (${operator} ${days} days)` : label;
+
 export default function SpendingCard({ spending }) {
   return (
     <Section
@@ -21,13 +25,13 @@ export default function SpendingCard({ spending }) {
         </div>
 
         <Row
-          label="Weekly"
+          label={withDays("Weekly", spending.workingDaysPerWeek, "×")}
           value={spending.weekly}
           accent="amber"
         />
 
         <Row
-          label="Daily"
+          label={withDays("Daily", spending.workingDaysPerMonth, "÷")}
           value={spending.daily}
           accent="amber"
         />

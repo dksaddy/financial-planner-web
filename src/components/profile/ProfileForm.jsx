@@ -27,6 +27,8 @@ export default function ProfileForm({ profile, onSuccess }) {
       name: "",
       email: "",
       salary: "",
+      working_days_per_month: "",
+      working_days_per_week: "",
     },
   });
 
@@ -42,6 +44,14 @@ export default function ProfileForm({ profile, onSuccess }) {
       // Inputs always hand back strings, so keep the baseline a string too —
       // otherwise retyping the original salary still counts as a change.
       salary: profile.salary == null ? "" : String(profile.salary),
+      working_days_per_month:
+        profile.working_days_per_month == null
+          ? ""
+          : String(profile.working_days_per_month),
+      working_days_per_week:
+        profile.working_days_per_week == null
+          ? ""
+          : String(profile.working_days_per_week),
     });
   }, [profile, reset]);
 
@@ -91,6 +101,28 @@ export default function ProfileForm({ profile, onSuccess }) {
           register={register}
           error={errors.salary}
         />
+
+        {/* The daily budget is the monthly spending divided by the first, and
+            the weekly budget the daily one times the second. */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input
+            label="Working Days / Month"
+            name="working_days_per_month"
+            type="number"
+            placeholder="e.g. 26"
+            register={register}
+            error={errors.working_days_per_month}
+          />
+
+          <Input
+            label="Working Days / Week"
+            name="working_days_per_week"
+            type="number"
+            placeholder="e.g. 6"
+            register={register}
+            error={errors.working_days_per_week}
+          />
+        </div>
 
         <Button type="submit" loading={submitting} disabled={!isDirty || submitting}>
           Save Changes

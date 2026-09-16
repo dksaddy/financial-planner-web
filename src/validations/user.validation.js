@@ -6,19 +6,48 @@ import {
   name,
   newPassword,
 } from "./fields";
+import {
+  WORKING_DAYS_PER_MONTH_MAX,
+  WORKING_DAYS_PER_MONTH_MIN,
+  WORKING_DAYS_PER_WEEK_MAX,
+  WORKING_DAYS_PER_WEEK_MIN,
+} from "@/constants/limits";
+
+const WORKING_DAYS_PER_MONTH_RANGE = `Working days per month must be between ${WORKING_DAYS_PER_MONTH_MIN} and ${WORKING_DAYS_PER_MONTH_MAX}`;
+const WORKING_DAYS_PER_WEEK_RANGE = `Working days per week must be between ${WORKING_DAYS_PER_WEEK_MIN} and ${WORKING_DAYS_PER_WEEK_MAX}`;
 
 // The API's updateProfileSchema marks every field optional (it accepts a
-// partial patch), but the profile form always submits all three, so they are
+// partial patch), but the profile form always submits every field, so they are
 // required here.
-export const updateProfileSchema = z.object({
-  name,
+export const updateProfileSchema = z
+  .object({
+    name,
 
-  email,
+    email,
 
-  salary: z.coerce
-    .number()
-    .min(0, "Salary cannot be negative"),
-});
+    salary: z.coerce
+      .number()
+      .min(0, "Salary cannot be negative"),
+
+    working_days_per_month: z.coerce
+      .number()
+      .int("Working days per month must be a whole number")
+      .min(WORKING_DAYS_PER_MONTH_MIN, WORKING_DAYS_PER_MONTH_RANGE)
+      .max(WORKING_DAYS_PER_MONTH_MAX, WORKING_DAYS_PER_MONTH_RANGE),
+
+    working_days_per_week: z.coerce
+      .number()
+      .int("Working days per week must be a whole number")
+      .min(WORKING_DAYS_PER_WEEK_MIN, WORKING_DAYS_PER_WEEK_RANGE)
+      .max(WORKING_DAYS_PER_WEEK_MAX, WORKING_DAYS_PER_WEEK_RANGE),
+  })
+  .refine(
+    (data) => data.working_days_per_week <= data.working_days_per_month,
+    {
+      message: "Working days per week cannot exceed working days per month",
+      path: ["working_days_per_week"],
+    }
+  );
 
 // Mirrors the API's selectAvatarSchema. Nothing on the page types this — the
 // name comes from a tile the user clicked — so it is a guard against a stale

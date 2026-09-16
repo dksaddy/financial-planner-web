@@ -5,13 +5,21 @@ export const getProfile = async () => {
   return response.data;
 };
 
-export const updateProfile = async ({ name, email, salary }) => {
+export const updateProfile = async ({
+  name,
+  email,
+  salary,
+  working_days_per_month,
+  working_days_per_week,
+}) => {
   const response = await api.put("/users/profile", {
     name,
     email,
-    // The API validates salary with a strict z.number(), so the coerced
-    // form value must go out as a number, not the input's string.
+    // The API validates these with a strict z.number(), so the coerced form
+    // values must go out as numbers, not the inputs' strings.
     salary: Number(salary),
+    working_days_per_month: Number(working_days_per_month),
+    working_days_per_week: Number(working_days_per_week),
   });
 
   return response.data;
