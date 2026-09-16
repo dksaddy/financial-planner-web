@@ -91,17 +91,26 @@ never a raw palette value, so light and dark need no conditional classes. `src/t
 each card a named hue (`accent("emerald")`) with roles `grad`/`glow`/`text`/`dot`/`soft`/`line`; only
 `grad` and `glow` are theme-independent (they sit under white text on a filled chip).
 
-The visual language is a thermal receipt: Courier Prime mono throughout, 15px root font, paper-toned
-background with a fixed aurora backdrop.
+The visual language is a thermal receipt: mono type, 15px root font, paper-toned background with a
+fixed aurora backdrop.
 
 There are six themes: a surface style (`normal`, `morphism` = `phormism*`, `brutal` = `brutal*`) crossed
 with light/dark. `THEMES`, `STYLES` and `THEME_BY_AXES` in `mode.js` are the only place that mapping
 lives; the style switch steps through `STYLES` in order. Phormism and Brutal each restyle the app
 without touching components: tokens under `:root[data-theme^="…"]`, then unlayered rules in
 `theme.css` that re-map existing utilities (`shadow-card`, `shadow-lg`, `rounded-xl`, `bg-gradient-*`,
-`.edge-sheen`/`.corner-bloom`). Brutal also swaps the face through `--font-app` to Space Mono (loaded
-in `layout.js` with `preload: false`); anything that sets a font or a toast border must go through
-`--font-app` / `--toast-*` rather than naming Courier Prime or a radius directly.
+`.edge-sheen`/`.corner-bloom`).
+
+Type is the same mechanism: one face per style, each set through `--font-app` with Courier Prime as the
+last fallback. Normal is IBM Plex Mono (the receipt idea without Space Mono's weight), Brutal is Space
+Mono, Phormism is Plus Jakarta Sans — a mono has nothing to read against on a groundless, shadow-lit
+surface. Only IBM Plex Mono is preloaded, since the boot script's fallback is a Normal theme; the other
+three are loaded in `layout.js` with `preload: false`. Anything that sets a font or a toast border goes through
+`--font-app` / `--toast-*` rather than naming a family or a radius directly. Two knock-on rules live
+with the Phormism block for the same reason: `font-feature-settings: "tnum"`, since a proportional
+sans does not have the mono's tabular figures, and a halved `.tracking-wider`, which was spaced for
+a mono's wide slots. The `--text-*` scale in `@theme inline` (Tailwind's defaults × 1.14) is global and
+unchanged — all three faces have close enough x-heights not to need their own.
 
 ## Note on the README
 

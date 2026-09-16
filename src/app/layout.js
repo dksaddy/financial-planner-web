@@ -1,12 +1,17 @@
-import { Courier_Prime, Space_Mono } from "next/font/google";
+import {
+  Courier_Prime,
+  IBM_Plex_Mono,
+  Plus_Jakarta_Sans,
+  Space_Mono,
+} from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 import { THEME_BOOT_SCRIPT } from "@/theme/mode";
 
 // Courier Prime is the closest web face to the mono, slightly inked look of a
-// point-of-sale receipt printer. Every theme is set in Space Mono now, so this
-// is only the fallback behind it and is not worth preloading.
+// point-of-sale receipt printer. Nothing is set in it any more, so this is only
+// the fallback behind the two faces below and is not worth preloading.
 const receipt = Courier_Prime({
   variable: "--font-receipt",
   weight: ["400", "700"],
@@ -15,13 +20,43 @@ const receipt = Courier_Prime({
   preload: false,
 });
 
-// Space Mono — a heavy, geometric mono that keeps the tabular figures. Started
-// as the Brutal theme's face and is now the face of every theme, so it is the
-// one that gets preloaded.
+// IBM Plex Mono, the default face. Normal is the receipt theme — paper ground,
+// printed ledger — so it stays mono, but Space Mono was built to shout and a
+// dense table of amounts is not the place for it. Plex is the same idea with
+// the weight taken out: lighter strokes, narrower slots, humanist details that
+// sit warm on the paper tones.
+//
+// The face a first-time visitor sees, since the boot script falls back to the
+// OS light/dark preference and both of those are Normal, so this is the one
+// that gets preloaded.
+const paper = IBM_Plex_Mono({
+  variable: "--font-paper",
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
+// Space Mono — a heavy, geometric mono that keeps the tabular figures. Now the
+// Brutal theme's face only, which is where the shouting belongs, and the
+// fallback Phormism shows while its sans loads.
 const brutal = Space_Mono({
   variable: "--font-brutal",
   weight: ["400", "700"],
   subsets: ["latin"],
+  preload: false,
+});
+
+// Plus Jakarta Sans, for Phormism only. A mono's hard slab terminals need crisp
+// edges to read against, and neumorphism has no edges — only a soft pair of
+// shadows — so Space Mono went muddy there. This is a geometric sans with low
+// stroke contrast and rounded bowls, which is the shape the lighting suits.
+//
+// Not preloaded: only one of the three surface styles asks for it, and the
+// variable font would otherwise be downloaded for every visitor. Phormism
+// renders in Space Mono for the swap.
+const soft = Plus_Jakarta_Sans({
+  variable: "--font-soft",
+  subsets: ["latin"],
+  preload: false,
 });
 
 export const metadata = {
@@ -36,7 +71,7 @@ export default function RootLayout({ children }) {
       // The boot script writes data-theme before hydration, so the server
       // markup and the client markup differ on <html> by design.
       suppressHydrationWarning
-      className={`${receipt.variable} ${brutal.variable} h-full antialiased`}
+      className={`${receipt.variable} ${paper.variable} ${brutal.variable} ${soft.variable} h-full antialiased`}
     >
       <head>
         {/* Must run before the stylesheet paints anything, so it sits in the

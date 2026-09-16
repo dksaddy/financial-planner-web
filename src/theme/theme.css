@@ -12,11 +12,11 @@
   color-scheme: light;
 
   /* --- Type & toasts --------------------------------------------------- */
-  /* The face the whole app is set in — Space Mono with Courier Prime behind
-     it. Every surface style shares it, so text is the same face and the same
-     apparent size throughout; a style that wants its own face overrides this
-     token rather than naming a family. */
-  --font-app: var(--font-brutal), var(--font-receipt);
+  /* The default face — IBM Plex Mono with Courier Prime behind it, which is
+     Normal's. Brutal and Phormism each override this token, which is how a
+     style takes a face of its own without any component naming a family.
+     Nothing outside these token blocks should mention a font. */
+  --font-app: var(--font-paper), var(--font-receipt);
   --toast-radius: 12px;
   --toast-border-width: 1px;
 
@@ -196,6 +196,16 @@
    whether the ground is pale or dark — only the two lights differ, and each
    variant sets those below. */
 :root[data-theme^="phormism"] {
+  /* The one style with a face of its own. A mono needs a crisp edge to read
+     against and this ground has none, so the type moves to a geometric sans
+     with Space Mono behind it while the sans loads. */
+  --font-app: var(--font-soft), var(--font-brutal);
+
+  /* Space Mono's figures were tabular by construction; a proportional sans
+     defaults to figures of differing widths, which makes a column of amounts
+     wander. Inherited from <html>, so every number in the app is covered. */
+  font-feature-settings: "tnum" 1;
+
   /* Fills are absent, not tinted. What reads as a "surface" is the ground
      itself with light falling on it. */
   --surface: transparent;
@@ -521,6 +531,16 @@
   display: none;
 }
 
+/* The uppercase labels on buttons, chips and section headings carry
+   `tracking-wider`, which was set against a mono: Space Mono's glyphs already
+   sit in wide slots, and the extra letter-spacing only kept small caps from
+   looking cramped. A proportional sans sets them tighter to begin with, so the
+   same 0.05em reads as gapped-out. Halved rather than removed — these are still
+   uppercase, and uppercase always wants a little air. */
+[data-theme^="phormism"] .tracking-wider {
+  letter-spacing: 0.025em;
+}
+
 /* =========================================================================
    Brutal — neo-brutalism, the third surface style.
 
@@ -536,6 +556,10 @@
    ========================================================================= */
 
 :root[data-theme^="brutal"] {
+  /* Space Mono: the face this style was drawn around, and the only one heavy
+     enough to hold its own against 2px borders and hard offset shadows. */
+  --font-app: var(--font-brutal), var(--font-receipt);
+
   --aurora-1: transparent;
   --aurora-2: transparent;
   --aurora-3: transparent;
