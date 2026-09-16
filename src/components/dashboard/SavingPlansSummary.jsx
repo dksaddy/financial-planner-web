@@ -3,15 +3,12 @@ import { FiCheckCircle, FiTrendingUp } from "react-icons/fi";
 import Section from "./Section";
 import Row from "./Row";
 
-import { PROFIT_TAX_RATE, profitTax } from "@/lib/savingPlan";
 import { SAVING_PLAN_STATUS } from "@/constants/status";
-
-const TAX_PERCENT = `${PROFIT_TAX_RATE * 100}%`;
 
 // Totals for a group of normalized plans (see lib/savingPlan.js). Profit is
 // withdrawal minus the plan's total deposit amount, as on the plan cards. Tax
-// is charged at withdrawal and worked out plan by plan before summing, so one
-// plan's loss never reduces another plan's tax.
+// is each plan's own, worked out at its own rate before summing, so one plan's
+// loss never reduces another plan's tax.
 const summarize = (plans) => {
   const totals = plans.reduce(
     (sum, plan) => ({
@@ -19,14 +16,19 @@ const summarize = (plans) => {
       deposited: sum.deposited + plan.currentlyDeposited,
       remaining: sum.remaining + plan.remaining,
       withdrawal: sum.withdrawal + plan.withdrawalAmount,
-      tax: sum.tax + profitTax(plan.profit),
+      tax: sum.tax + plan.tax,
     }),
     { depositAmount: 0, deposited: 0, remaining: 0, withdrawal: 0, tax: 0 }
   );
 
   const profit = totals.withdrawal - totals.depositAmount;
 
-  return { ...totals, profit, netProfit: profit - totals.tax };
+  return {
+    ...totals,
+    profit,
+    inHand: totals.withdrawal - totals.tax,
+    netProfit: profit - totals.tax,
+  };
 };
 
 // Two views over every plan, ignoring the page's filter: what withdrawn plans
@@ -59,7 +61,8 @@ export default function SavingPlansSummary({ plans = [] }) {
           <Row label="Deposited" value={earned.depositAmount} accent="emerald" />
           <Row label="Withdrawn" value={earned.withdrawal} accent="violet" />
           <Row label="Profit" value={earned.profit} accent={toneOf(earned.profit)} />
-          <Row label={`Tax paid (${TAX_PERCENT})`} value={-earned.tax} accent="rose" />
+          <Row label="Tax paid" value={-earned.tax} accent="rose" />
+          <Row label="Received in hand" value={earned.inHand} accent="sky" />
 
           <Total label="Net Profit" value={earned.netProfit} />
         </div>
@@ -82,10 +85,11 @@ export default function SavingPlansSummary({ plans = [] }) {
           <Row label="Will withdraw" value={upcoming.withdrawal} accent="sky" />
           <Row label="Profit" value={upcoming.profit} accent={toneOf(upcoming.profit)} />
           <Row
-            label={`Tax on withdrawal (${TAX_PERCENT})`}
+            label="Tax on withdrawal"
             value={-upcoming.tax}
             accent="rose"
           />
+          <Row label="In hand after tax" value={upcoming.inHand} accent="sky" />
 
           <Total label="Net Profit" value={upcoming.netProfit} />
         </div>

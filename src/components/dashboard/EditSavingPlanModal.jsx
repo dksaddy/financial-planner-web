@@ -40,6 +40,7 @@ export default function EditSavingPlanModal({
       depositAmount: "",
       depositFrequency: "",
       withdrawalAmount: "",
+      taxRate: "",
     },
   });
 
@@ -54,6 +55,7 @@ export default function EditSavingPlanModal({
       depositAmount: plan.depositAmount ?? "",
       depositFrequency: plan.depositFrequency ?? "",
       withdrawalAmount: plan.withdrawalAmount ?? "",
+      taxRate: plan.taxRate ?? "",
     });
   }, [open, plan, reset]);
 
@@ -150,6 +152,16 @@ export default function EditSavingPlanModal({
           placeholder="e.g. 6649"
           register={register}
           error={errors.withdrawalAmount}
+        />
+
+        <Input
+          label="Tax Rate (%)"
+          name="taxRate"
+          type="number"
+          placeholder="e.g. 15"
+          hint="Taken from the profit"
+          register={register}
+          error={errors.taxRate}
         />
 
         {/* Deposits already made are not part of this form — the update

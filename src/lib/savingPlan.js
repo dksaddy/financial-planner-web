@@ -1,11 +1,21 @@
 import { SAVING_PLAN_STATUS } from "@/constants/status";
 
-// Tax taken from a plan's profit. Charged per plan and only on a gain, so a
-// plan that loses money pays nothing and does not offset another plan's tax.
-export const PROFIT_TAX_RATE = 0.15;
+// Mirrors `calculateProfit` in the API's utils/savingPlan.js. Tax is the plan's
+// own `taxRate` (a percent) of its profit, charged per plan and only on a gain,
+// so a plan that loses money pays nothing and does not offset another plan's
+// tax. In hand is what the user actually receives: the withdrawal less tax.
+const calculateProfit = ({ depositAmount, withdrawalAmount, taxRate }) => {
+  const profit = withdrawalAmount - depositAmount;
 
-export const profitTax = (profit) =>
-  Math.max(Number(profit) || 0, 0) * PROFIT_TAX_RATE;
+  const tax = (Math.max(profit, 0) * taxRate) / 100;
+
+  return {
+    profit: Number(profit.toFixed(2)),
+    tax: Number(tax.toFixed(2)),
+    inHand: Number((withdrawalAmount - tax).toFixed(2)),
+    netProfit: Number((profit - tax).toFixed(2)),
+  };
+};
 
 // Mirrors `assertStatusTransition` in the API's savingPlans.service.js, so
 // the card only offers moves the server will accept:
@@ -45,6 +55,8 @@ export const normalizeSavingPlan = (plan) => {
     plan.withdrawal_amount ?? plan.withdrawalAmount ?? 0
   );
 
+  const taxRate = Number(plan.tax_rate ?? plan.taxRate ?? 0);
+
   const remaining = Math.max(depositAmount - currentlyDeposited, 0);
 
   const percentage =
@@ -65,7 +77,8 @@ export const normalizeSavingPlan = (plan) => {
     ),
     currentlyDeposited,
     withdrawalAmount,
-    profit: Number((withdrawalAmount - depositAmount).toFixed(2)),
+    taxRate,
+    ...calculateProfit({ depositAmount, withdrawalAmount, taxRate }),
     remaining: Number(remaining.toFixed(2)),
     percentage: Number(percentage.toFixed(2)),
     createdAt: plan.created_at ?? plan.createdAt ?? null,

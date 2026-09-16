@@ -20,6 +20,11 @@ export default function Input({
   // so react-hook-form never sees the value change on a reveal.
   const inputType = isPassword && revealed ? "text" : type;
 
+  // A number input's native step is 1, which makes the browser refuse to
+  // submit a decimal amount or tax rate before the form's own validation ever
+  // runs. Whole-number fields are held to that by their Zod schema instead.
+  const step = type === "number" ? "any" : undefined;
+
   return (
     <div className="space-y-1.5">
       <label
@@ -33,6 +38,7 @@ export default function Input({
         <input
           id={name}
           type={inputType}
+          step={step}
           placeholder={placeholder}
           {...register(name)}
           className={`w-full rounded-xl border bg-inset px-4 py-2.5 text-sm text-ink

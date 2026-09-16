@@ -14,6 +14,7 @@ import PasswordConfirmModal, {
 
 import { createSavingPlanSchema } from "@/validations/savingPlans.validation";
 import { createSavingPlan } from "@/services/savingPlans.service";
+import { DEFAULT_TAX_RATE } from "@/constants/limits";
 
 const DEFAULT_VALUES = {
   name: "",
@@ -23,6 +24,7 @@ const DEFAULT_VALUES = {
   depositAmount: "",
   depositFrequency: "",
   withdrawalAmount: "",
+  taxRate: String(DEFAULT_TAX_RATE),
 };
 
 export default function AddSavingPlanModal({
@@ -142,6 +144,16 @@ export default function AddSavingPlanModal({
           placeholder="e.g. 6649"
           register={register}
           error={errors.withdrawalAmount}
+        />
+
+        <Input
+          label="Tax Rate (%)"
+          name="taxRate"
+          type="number"
+          placeholder="e.g. 15"
+          hint="Taken from the profit"
+          register={register}
+          error={errors.taxRate}
         />
 
         <Button type="submit">Create Plan</Button>

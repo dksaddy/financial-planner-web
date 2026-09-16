@@ -1,6 +1,9 @@
 import { z } from "zod";
 
 import { existingPassword, name } from "./fields";
+import { TAX_RATE_MAX, TAX_RATE_MIN } from "@/constants/limits";
+
+const TAX_RATE_RANGE = `Tax rate must be between ${TAX_RATE_MIN} and ${TAX_RATE_MAX}`;
 
 export const createSavingPlanSchema = z.object({
   name,
@@ -31,6 +34,11 @@ export const createSavingPlanSchema = z.object({
   withdrawalAmount: z.coerce
     .number({ invalid_type_error: "Enter a valid withdrawal amount" })
     .min(0, "Withdrawal amount can't be negative"),
+
+  taxRate: z.coerce
+    .number({ invalid_type_error: "Enter a valid tax rate" })
+    .min(TAX_RATE_MIN, TAX_RATE_RANGE)
+    .max(TAX_RATE_MAX, TAX_RATE_RANGE),
 });
 
 export const depositSavingPlanSchema = z.object({

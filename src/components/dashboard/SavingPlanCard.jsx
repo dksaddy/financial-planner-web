@@ -92,23 +92,34 @@ export default function SavingPlanCard({
           label="Withdrawal"
           value={plan.withdrawalAmount.toFixed(2)}
         />
+
+        <Stat
+          label={`Tax (${plan.taxRate}%)`}
+          value={plan.tax.toFixed(2)}
+        />
+
+        {/* What actually reaches the hand: the withdrawal less its tax. */}
+        <Stat
+          label="In Hand"
+          value={plan.inHand.toFixed(2)}
+        />
       </div>
 
-      {/* Profit footer */}
+      {/* Profit footer — after tax, since that is what the plan earns. */}
       <div className="relative mt-3.5 flex items-center justify-between border-t border-line-soft pt-3.5">
         <span className="text-[12.54px] uppercase tracking-wider text-ink-faint">
-          Projected Profit
+          Projected Net Profit
         </span>
 
         <span
           className={`num rounded-lg px-2.5 py-1 text-sm font-bold ring-1 ring-inset ${
-            plan.profit >= 0
+            plan.netProfit >= 0
               ? "bg-emerald-soft text-emerald-fg ring-emerald-line"
               : "bg-rose-soft text-rose-fg ring-rose-line"
           }`}
         >
-          {plan.profit >= 0 ? "+" : ""}
-          {plan.profit.toFixed(2)}
+          {plan.netProfit >= 0 ? "+" : ""}
+          {plan.netProfit.toFixed(2)}
         </span>
       </div>
 
