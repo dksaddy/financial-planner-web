@@ -68,8 +68,18 @@ export default function RunningWeeklyExpense({
                 className="flex flex-col gap-1.5 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 text-sm transition hover:border-cyan-line hover:bg-cyan-soft sm:flex-row sm:items-center sm:gap-3"
               >
                 <div className="flex min-w-0 items-center justify-between gap-2.5 sm:flex-1">
-                  <span className="shrink-0 text-xs font-medium text-ink-faint sm:w-24">
-                    {formatDate(record.date)}
+                  {/* Two explicit lines rather than a column narrow enough to
+                      wrap: "Sat, 12 Sept" only broke because Space Mono set it
+                      wider than `w-24`, so in a proportional face it stayed on
+                      one line and every row lost a line of height. Splitting it
+                      here keeps the same two-line date, and the same row pitch,
+                      whichever face the theme is set in. */}
+                  <span className="shrink-0 text-xs font-medium leading-tight text-ink-faint sm:w-24">
+                    {formatDateLines(record.date).map((line) => (
+                      <span key={line} className="block whitespace-nowrap">
+                        {line}
+                      </span>
+                    ))}
                   </span>
 
                   <span className="min-w-0 flex-1 truncate text-right font-medium text-ink sm:text-left">
@@ -203,4 +213,19 @@ function formatDate(date) {
   });
 
   return `${weekday}, ${dayMonth}`;
+}
+
+// "Sat, 12 Sept" as the two lines the row prints it on: the weekday and day
+// together, the month under them. Built off `formatDate` so the title
+// attribute and the chart labels keep reading the single-line form, and so a
+// value that failed to parse — which comes back as the raw string — still
+// renders as itself on one line.
+function formatDateLines(date) {
+  const formatted = formatDate(date);
+
+  const split = formatted.lastIndexOf(" ");
+
+  if (split === -1) return [formatted];
+
+  return [formatted.slice(0, split), formatted.slice(split + 1)];
 }
