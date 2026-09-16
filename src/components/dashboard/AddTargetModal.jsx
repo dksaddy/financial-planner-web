@@ -13,6 +13,7 @@ import Button from "@/components/common/Button";
 
 import { createTargetSchema } from "@/validations/targets.validation";
 import { createTarget } from "@/services/targets.service";
+import { IMAGE_ACCEPT, IMAGE_RULES, imageError } from "@/lib/image";
 
 export default function AddTargetModal({
   open,
@@ -45,6 +46,16 @@ export default function AddTargetModal({
   };
 
   const handleNewFile = (file) => {
+    // Refused here rather than by the API, which saves the upload. The
+    // current picture, if any, stays.
+    const error = file && imageError(file);
+
+    if (error) {
+      toast.error(error);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
     revokeSelection();
 
     setSelection(
@@ -134,7 +145,7 @@ export default function AddTargetModal({
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept={IMAGE_ACCEPT}
             onChange={(e) => handleNewFile(e.target.files?.[0] ?? null)}
             className="hidden"
           />
@@ -164,6 +175,10 @@ export default function AddTargetModal({
                   <FiImage size={20} strokeWidth={2} />
                   <span className="text-[11.4px] font-bold uppercase tracking-wider">
                     Add image
+                  </span>
+
+                  <span className="text-[12.54px] normal-case">
+                    {IMAGE_RULES}
                   </span>
                 </span>
               )}

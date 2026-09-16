@@ -10,17 +10,7 @@ import Button from "@/components/common/Button";
 
 import LogoutButton from "@/components/profile/LogoutButton";
 import { updateAvatar } from "@/services/user.service";
-
-// Matches the multer filter on the API — rejecting here saves a round trip
-// and gives a clearer message than the server's generic one.
-const ALLOWED_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-];
-
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB, same limit as the API.
+import { IMAGE_ACCEPT, IMAGE_RULES, imageError } from "@/lib/image";
 
 export default function AvatarCard({
   profile,
@@ -45,13 +35,12 @@ export default function AvatarCard({
   const handleFile = (selected) => {
     if (!selected) return;
 
-    if (!ALLOWED_TYPES.includes(selected.type)) {
-      toast.error("Only JPG, PNG, WEBP and GIF images are allowed.");
-      return;
-    }
+    // Refused here rather than by the API, which saves the upload.
+    const error = imageError(selected);
 
-    if (selected.size > MAX_SIZE) {
-      toast.error("Image must be 5MB or smaller.");
+    if (error) {
+      toast.error(error);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
@@ -110,7 +99,7 @@ export default function AvatarCard({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
+          accept={IMAGE_ACCEPT}
           onChange={(event) => handleFile(event.target.files?.[0] ?? null)}
           className="hidden"
         />
@@ -173,7 +162,7 @@ export default function AvatarCard({
           </div>
         ) : (
           <p className="text-center text-[12.54px] text-ink-faint">
-            JPG, PNG, WEBP or GIF · up to 5MB
+            {IMAGE_RULES}
           </p>
         )}
       </div>
