@@ -24,6 +24,7 @@ import { getTargets, updateTargetStatus } from "@/services/targets.service";
 import { getDashboard } from "@/services/dashboard.service";
 import { isAuthenticated } from "@/lib/auth";
 import { TARGET_STATUS } from "@/constants/status";
+import { HeaderChip, HeaderChips } from "@/components/common/HeaderChips";
 
 export default function AllTargetsPage() {
   const router = useRouter();
@@ -182,20 +183,13 @@ export default function AllTargetsPage() {
               All Targets
             </h1>
 
-            {/* Each stat carries its own dot instead of one leading dot and
-                "·" separators: when the line wraps on a phone the marker
-                stays with its own figure. */}
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-dot" />
-                {pending.length} pending
-              </span>
+            <HeaderChips>
+              <HeaderChip>{pending.length} Pending</HeaderChip>
 
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-dot" />
-                {completed.length} completed
-              </span>
-            </p>
+              <HeaderChip accent="fuchsia">
+                {completed.length} Completed
+              </HeaderChip>
+            </HeaderChips>
           </div>
         </div>
 

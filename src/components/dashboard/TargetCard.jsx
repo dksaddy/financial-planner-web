@@ -91,11 +91,11 @@ export default function TargetCard({
 
           <div className="flex flex-wrap items-center gap-2 pt-1.5">
             <span className="rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
-              {targets.totalPendingTargets} pending
+              {targets.totalPendingTargets} Pending
             </span>
 
             <span className="num rounded-full bg-fuchsia-soft px-2.5 py-1 text-[12.54px] font-medium text-fuchsia-fg ring-1 ring-inset ring-fuchsia-line">
-              total {Number(targets.totalTargetAmount).toFixed(2)}
+              Total {Number(targets.totalTargetAmount).toFixed(2)}
             </span>
           </div>
         </div>

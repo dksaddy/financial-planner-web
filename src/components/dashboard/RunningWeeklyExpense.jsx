@@ -5,6 +5,7 @@ import { FiActivity, FiPlus } from "react-icons/fi";
 
 import Section from "./Section";
 import AddExpenseModal from "./AddExpenseModal";
+import { signTone, signed } from "@/lib/tone";
 
 export default function RunningWeeklyExpense({
   currentWeek,
@@ -92,8 +93,12 @@ export default function RunningWeeklyExpense({
                     {record.extraSave === null ? (
                       <span className="text-ink-faint">—</span>
                     ) : (
-                      <span className="num rounded-full bg-emerald-soft px-2 py-0.5 font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
-                        {Number(record.extraSave).toFixed(2)}
+                      <span
+                        className={`num rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${signTone(
+                          record.extraSave
+                        )}`}
+                      >
+                        {signed(record.extraSave)}
                       </span>
                     )}
                   </span>
@@ -168,15 +173,19 @@ export default function RunningWeeklyExpense({
 
       <div className="mt-3.5 flex flex-wrap items-center gap-2 border-t border-line-soft pt-3">
         <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
-          {currentWeek.totalRecords} records
+          {currentWeek.totalRecords} Records
         </span>
 
         <span className="num rounded-full bg-cyan-soft px-2.5 py-1 text-[12.54px] font-medium text-cyan-fg ring-1 ring-inset ring-cyan-line">
-          total {Number(currentWeek.totalExpense).toFixed(2)}
+          Total {Number(currentWeek.totalExpense).toFixed(2)}
         </span>
 
-        <span className="num rounded-full bg-emerald-soft px-2.5 py-1 text-[12.54px] font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
-          saved {Number(currentWeek.totalExtraSave).toFixed(2)}
+        <span
+          className={`num rounded-full px-2.5 py-1 text-[12.54px] font-medium ring-1 ring-inset ${signTone(
+            currentWeek.totalExtraSave
+          )}`}
+        >
+          Saved {Number(currentWeek.totalExtraSave).toFixed(2)}
         </span>
       </div>
     </Section>

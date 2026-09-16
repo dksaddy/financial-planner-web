@@ -6,6 +6,7 @@ import { FiCalendar, FiChevronRight, FiArrowUpRight } from "react-icons/fi";
 
 import Section from "./Section";
 import Modal from "@/components/common/Modal";
+import { signTone, signed } from "@/lib/tone";
 
 const WEEK_LABELS = {
   week1: "1 Week Ago",
@@ -235,13 +236,13 @@ export default function LastFourWeeksExpense({
                   <span className="text-xs sm:w-24 sm:text-right">
                     {item.extraSave === null ? (
                       <span className="text-ink-faint">—</span>
-                    ) : Number(item.extraSave) >= 0 ? (
-                      <span className="num rounded-full bg-emerald-soft px-2 py-0.5 font-medium text-emerald-fg ring-1 ring-inset ring-emerald-line">
-                        +{Number(item.extraSave).toFixed(2)}
-                      </span>
                     ) : (
-                      <span className="num rounded-full bg-rose-soft px-2 py-0.5 font-medium text-rose-fg ring-1 ring-inset ring-rose-line">
-                        {Number(item.extraSave).toFixed(2)}
+                      <span
+                        className={`num rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${signTone(
+                          item.extraSave
+                        )}`}
+                      >
+                        {signed(item.extraSave)}
                       </span>
                     )}
                   </span>
@@ -271,11 +272,9 @@ export default function LastFourWeeksExpense({
           </span>
 
           <span
-            className={`num rounded-full px-2.5 py-1 text-[12.54px] font-medium ring-1 ring-inset ${
-              activeDailySaved >= 0
-                ? "bg-emerald-soft text-emerald-fg ring-emerald-line"
-                : "bg-rose-soft text-rose-fg ring-rose-line"
-            }`}
+            className={`num rounded-full px-2.5 py-1 text-[12.54px] font-medium ring-1 ring-inset ${signTone(
+              activeDailySaved
+            )}`}
           >
             Daily Saving {activeDailySaved.toFixed(2)}
           </span>

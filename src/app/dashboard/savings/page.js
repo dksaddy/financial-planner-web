@@ -25,6 +25,7 @@ import {
 import { normalizeSavingPlan } from "@/lib/savingPlan";
 import { FILTER_ALL, SAVING_PLAN_STATUS } from "@/constants/status";
 import { isAuthenticated } from "@/lib/auth";
+import { HeaderChip, HeaderChips } from "@/components/common/HeaderChips";
 
 const FILTERS = [
   { value: FILTER_ALL, label: "All" },
@@ -169,21 +170,15 @@ export default function AllSavingPlansPage() {
               All Saving Plans
             </h1>
 
-            {/* Each stat carries its own dot instead of one leading dot and
-                "·" separators: when the line wraps on a phone the marker
-                stays with its own figure. */}
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-dot" />
-                {activeCount} active of {plans.length}
-              </span>
+            <HeaderChips>
+              <HeaderChip>
+                {activeCount} Active of {plans.length}
+              </HeaderChip>
 
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-dot" />
-                <span className="num">{totalDeposited.toFixed(2)}</span>{" "}
-                deposited
-              </span>
-            </p>
+              <HeaderChip accent="emerald">
+                Deposited {totalDeposited.toFixed(2)}
+              </HeaderChip>
+            </HeaderChips>
           </div>
         </div>
 

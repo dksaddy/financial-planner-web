@@ -23,6 +23,8 @@ import Pagination from "@/components/common/Pagination";
 import { getExpenseRecords } from "@/services/expenseRecords.service";
 import { isAuthenticated } from "@/lib/auth";
 import { FILTER_ALL } from "@/constants/status";
+import { signTone } from "@/lib/tone";
+import { HeaderChip, HeaderChips } from "@/components/common/HeaderChips";
 
 const PAGE_SIZE = 10;
 
@@ -247,37 +249,26 @@ export default function AllExpensesPage() {
               All Expenses
             </h1>
 
-            {/* Chips rather than the dotted line the other page headers use,
-                matching RunningWeeklyExpense — the saved figure carries its
-                own colour, which a shared dot colour would fight. Every
-                figure covers the whole filtered set, not just this page. */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-muted ring-1 ring-inset ring-line">
-                {totalRecords} records
-              </span>
+            {/* Every figure covers the whole filtered set, not just this
+                page. Saved turns rose when negative: spending past the budget
+                is a real loss, not a smaller saving. */}
+            <HeaderChips>
+              <HeaderChip>{totalRecords} Records</HeaderChip>
 
-              <span className="num rounded-full bg-cyan-soft px-2.5 py-1 text-[12.54px] font-medium text-cyan-fg ring-1 ring-inset ring-cyan-line">
-                total {totalSpent.toFixed(2)}
-              </span>
+              <HeaderChip accent="cyan">
+                Total {totalSpent.toFixed(2)}
+              </HeaderChip>
 
-              {/* Rose when negative: spending past the budget across the
-                  filter is a real loss, not a smaller saving. */}
-              <span
-                className={`num rounded-full px-2.5 py-1 text-[12.54px] font-medium ring-1 ring-inset ${
-                  totalSaved < 0
-                    ? "bg-rose-soft text-rose-fg ring-rose-line"
-                    : "bg-emerald-soft text-emerald-fg ring-emerald-line"
-                }`}
-              >
-                saved {totalSaved.toFixed(2)}
-              </span>
+              <HeaderChip tone={signTone(totalSaved)}>
+                Saved {totalSaved.toFixed(2)}
+              </HeaderChip>
 
               {totalRecords > PAGE_SIZE && (
-                <span className="num rounded-full bg-surface px-2.5 py-1 text-[12.54px] font-medium text-ink-faint ring-1 ring-inset ring-line">
-                  showing {pageStart + 1}–{pageStart + pageItems.length}
-                </span>
+                <HeaderChip>
+                  Showing {pageStart + 1}–{pageStart + pageItems.length}
+                </HeaderChip>
               )}
-            </div>
+            </HeaderChips>
           </div>
         </div>
 

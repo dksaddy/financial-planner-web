@@ -26,6 +26,7 @@ import {
   setExpenseTypeStatus,
 } from "@/services/expenseTypes.service";
 import { isAuthenticated } from "@/lib/auth";
+import { HeaderChip, HeaderChips } from "@/components/common/HeaderChips";
 
 // Seed data writes `value` while the API schema validates `amount`, so
 // read both rather than rendering NaN for older rows.
@@ -153,27 +154,17 @@ export default function AllExpenseTypesPage() {
               All Expense Types
             </h1>
 
-            {/* Each stat carries its own dot instead of one leading dot and
-                "·" separators: when the line wraps on a phone the marker
-                stays with its own figure. */}
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-dot" />
-                {activeItems.length} active
-              </span>
+            <HeaderChips>
+              <HeaderChip>{activeItems.length} Active</HeaderChip>
 
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-dot" />
-                {grandTotal.toFixed(2)} total
-              </span>
+              <HeaderChip accent="amber">
+                Total {grandTotal.toFixed(2)}
+              </HeaderChip>
 
               {inactiveCount > 0 && (
-                <span className="flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-dot" />
-                  {inactiveCount} inactive
-                </span>
+                <HeaderChip>{inactiveCount} Inactive</HeaderChip>
               )}
-            </p>
+            </HeaderChips>
           </div>
         </div>
 

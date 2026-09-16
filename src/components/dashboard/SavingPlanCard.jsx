@@ -13,6 +13,7 @@ import {
   SAVING_PLAN_STATUS,
   SAVING_PLAN_STATUSES,
 } from "@/constants/status";
+import { signTone, signed } from "@/lib/tone";
 
 // The plan tile the dashboard's Savings section and the all-plans page both
 // render, so a change to a plan's presentation lands in one place. The
@@ -128,14 +129,11 @@ export default function SavingPlanCard({
         </span>
 
         <span
-          className={`num rounded-lg px-2.5 py-1 text-sm font-bold ring-1 ring-inset ${
-            plan.netProfit >= 0
-              ? "bg-emerald-soft text-emerald-fg ring-emerald-line"
-              : "bg-rose-soft text-rose-fg ring-rose-line"
-          }`}
+          className={`num rounded-lg px-2.5 py-1 text-sm font-bold ring-1 ring-inset ${signTone(
+            plan.netProfit
+          )}`}
         >
-          {plan.netProfit >= 0 ? "+" : ""}
-          {plan.netProfit.toFixed(2)}
+          {signed(plan.netProfit)}
         </span>
       </div>
 

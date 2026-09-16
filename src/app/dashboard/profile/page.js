@@ -155,7 +155,7 @@ export default function ProfilePage() {
               {memberSince && (
                 <span className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-violet-dot" />
-                  joined {memberSince}
+                  Joined {memberSince}
                 </span>
               )}
             </p>

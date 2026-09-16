@@ -55,7 +55,7 @@ export default function SavingPlansSummary({ plans = [] }) {
         title="Earned"
         icon={FiCheckCircle}
         accent="violet"
-        actions={<Chip>{withdrawnPlans.length} withdrawn</Chip>}
+        actions={<Chip>{withdrawnPlans.length} Withdrawn</Chip>}
       >
         <div className="space-y-1">
           <Row label="Deposited" value={earned.depositAmount} accent="emerald" />
@@ -74,8 +74,8 @@ export default function SavingPlansSummary({ plans = [] }) {
         accent="emerald"
         actions={
           <Chip>
-            {upcomingPlans.length - completedCount} active · {completedCount}{" "}
-            completed
+            {upcomingPlans.length - completedCount} Active · {completedCount}{" "}
+            Completed
           </Chip>
         }
       >
