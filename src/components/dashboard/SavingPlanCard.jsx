@@ -1,4 +1,12 @@
-import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
+"use client";
+
+import { useState } from "react";
+import {
+  FiChevronDown,
+  FiEdit2,
+  FiPlus,
+  FiTrash2,
+} from "react-icons/fi";
 
 import { canChangeStatus } from "@/lib/savingPlan";
 import {
@@ -17,6 +25,14 @@ export default function SavingPlanCard({
   onStatusChange,
   statusPending = false,
 }) {
+  // The actions (deposit, edit, delete, status) start hidden so a page of
+  // plans reads as figures first; each card opens its own.
+  const [actionsOpen, setActionsOpen] = useState(false);
+
+  const hasActions = Boolean(
+    onDeposit || onEdit || onDelete || onStatusChange
+  );
+
   return (
     <div className="group/plan relative overflow-hidden rounded-xl border border-line-soft bg-inset px-6 py-4 transition-[background-color,border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-line-strong hover:bg-surface hover:shadow-card">
       <span
@@ -123,81 +139,104 @@ export default function SavingPlanCard({
         </span>
       </div>
 
-      {/* Deposits are only accepted on active plans, so the button follows
-          the same rule the API enforces. */}
-      {onDeposit && plan.status === SAVING_PLAN_STATUS.ACTIVE && (
+      {hasActions && (
         <button
           type="button"
-          onClick={() => onDeposit(plan)}
-          className="group/btn relative mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-emerald-line hover:bg-emerald-soft hover:text-emerald-fg"
+          onClick={() => setActionsOpen((open) => !open)}
+          aria-expanded={actionsOpen}
+          className="relative mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[11.4px] font-bold uppercase tracking-wider text-ink-faint transition hover:bg-surface-hover hover:text-ink"
         >
-          <FiPlus
-            size={12}
+          {actionsOpen ? "Hide actions" : "Show actions"}
+
+          <FiChevronDown
+            size={13}
             strokeWidth={2.6}
-            className="transition-transform group-hover/btn:rotate-90"
+            className={`transition-transform duration-300 ${
+              actionsOpen ? "rotate-180" : ""
+            }`}
           />
-          Deposit
         </button>
       )}
 
-      {(onEdit || onDelete) && (
-        <div className="relative mt-2 flex items-center gap-3">
-          {onEdit && (
+      {actionsOpen && (
+        <div className="fade-in">
+          {/* Deposits are only accepted on active plans, so the button follows
+              the same rule the API enforces. */}
+          {onDeposit && plan.status === SAVING_PLAN_STATUS.ACTIVE && (
             <button
               type="button"
-              onClick={() => onEdit(plan)}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
+              onClick={() => onDeposit(plan)}
+              className="group/btn relative mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-emerald-line hover:bg-emerald-soft hover:text-emerald-fg"
             >
-              <FiEdit2 size={12} />
-              Edit
+              <FiPlus
+                size={12}
+                strokeWidth={2.6}
+                className="transition-transform group-hover/btn:rotate-90"
+              />
+              Deposit
             </button>
           )}
 
-          {onDelete && (
-            <button
-              type="button"
-              onClick={() => onDelete(plan)}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-rose-line hover:bg-rose-soft hover:text-rose-fg"
-            >
-              <FiTrash2 size={12} />
-              Delete
-            </button>
-          )}
-        </div>
-      )}
-
-      {onStatusChange && (
-        <div className="relative mt-3 border-t border-line-soft pt-3">
-          <p className="mb-2 text-[11.4px] uppercase tracking-wider text-ink-faint">
-            Status
-          </p>
-
-          <div className="flex items-center gap-2">
-            {SAVING_PLAN_STATUSES.map((status) => {
-              const isCurrent = plan.status === status;
-
-              return (
+          {(onEdit || onDelete) && (
+            <div className="relative mt-2 flex items-center gap-3">
+              {onEdit && (
                 <button
-                  key={status}
                   type="button"
-                  disabled={
-                    isCurrent ||
-                    statusPending ||
-                    !canChangeStatus(plan, status)
-                  }
-                  onClick={() => onStatusChange(plan, status)}
-                  aria-pressed={isCurrent}
-                  className={`flex-1 rounded-lg border px-2 py-1.5 text-[11.4px] font-bold uppercase tracking-wider transition disabled:cursor-not-allowed ${
-                    isCurrent
-                      ? `${statusStyles(status)} border-transparent opacity-100`
-                      : "border-line text-ink-faint hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:opacity-50"
-                  }`}
+                  onClick={() => onEdit(plan)}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-line-strong hover:bg-surface-hover hover:text-ink"
                 >
-                  {status}
+                  <FiEdit2 size={12} />
+                  Edit
                 </button>
-              );
-            })}
-          </div>
+              )}
+
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={() => onDelete(plan)}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-line px-3 py-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-rose-line hover:bg-rose-soft hover:text-rose-fg"
+                >
+                  <FiTrash2 size={12} />
+                  Delete
+                </button>
+              )}
+            </div>
+          )}
+
+          {onStatusChange && (
+            <div className="relative mt-3 border-t border-line-soft pt-3">
+              <p className="mb-2 text-[11.4px] uppercase tracking-wider text-ink-faint">
+                Status
+              </p>
+
+              <div className="flex items-center gap-2">
+                {SAVING_PLAN_STATUSES.map((status) => {
+                  const isCurrent = plan.status === status;
+
+                  return (
+                    <button
+                      key={status}
+                      type="button"
+                      disabled={
+                        isCurrent ||
+                        statusPending ||
+                        !canChangeStatus(plan, status)
+                      }
+                      onClick={() => onStatusChange(plan, status)}
+                      aria-pressed={isCurrent}
+                      className={`flex-1 rounded-lg border px-2 py-1.5 text-[11.4px] font-bold uppercase tracking-wider transition disabled:cursor-not-allowed ${
+                        isCurrent
+                          ? `${statusStyles(status)} border-transparent opacity-100`
+                          : "border-line text-ink-faint hover:border-line-strong hover:bg-surface-hover hover:text-ink disabled:opacity-50"
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

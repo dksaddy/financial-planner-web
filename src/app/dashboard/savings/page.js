@@ -270,7 +270,9 @@ export default function AllSavingPlansPage() {
                 : `No ${filter} saving plans.`}
             </p>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,30rem),1fr))] gap-5">
+            // `items-start`: a grid row stretches every card to its tallest,
+            // so opening one card's actions would grow its neighbour too.
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,30rem),1fr))] items-start gap-5">
               {visible.map((plan) => (
                 <SavingPlanCard
                   key={plan.id}
