@@ -1,10 +1,9 @@
 import { z } from "zod";
 
+import { existingPassword, name } from "./fields";
+
 export const createSavingPlanSchema = z.object({
-  name: z
-    .string()
-    .min(3, "Name must be at least 3 characters")
-    .max(100, "Name cannot exceed 100 characters"),
+  name,
 
   amount: z.coerce
     .number({ invalid_type_error: "Enter a valid amount" })
@@ -49,5 +48,5 @@ export const depositSavingPlanSchema = z.object({
 // forms in two separate modals, and validating each on its own is what lets
 // the confirmation reopen with an error without disturbing the plan form.
 export const confirmPasswordSchema = z.object({
-  password: z.string().min(1, "Password is required"),
+  password: existingPassword,
 });

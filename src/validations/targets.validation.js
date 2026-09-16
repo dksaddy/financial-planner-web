@@ -1,10 +1,9 @@
 import { z } from "zod";
 
+import { name } from "./fields";
+
 export const createTargetSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name cannot exceed 100 characters"),
+  name,
 
   target_amount: z.coerce
     .number({ invalid_type_error: "Enter a valid amount" })
@@ -12,10 +11,7 @@ export const createTargetSchema = z.object({
 });
 
 export const updateTargetSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name cannot exceed 100 characters"),
+  name,
 
   target_amount: z.coerce
     .number({ invalid_type_error: "Enter a valid amount" })

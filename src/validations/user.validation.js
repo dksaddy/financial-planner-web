@@ -1,18 +1,19 @@
 import { z } from "zod";
 
+import {
+  email,
+  existingPassword,
+  name,
+  newPassword,
+} from "./fields";
+
 // The API's updateProfileSchema marks every field optional (it accepts a
 // partial patch), but the profile form always submits all three, so they are
 // required here.
 export const updateProfileSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name cannot exceed 100 characters"),
+  name,
 
-  email: z
-    .string()
-    .email("Invalid email address"),
+  email,
 
   salary: z.coerce
     .number()
@@ -32,23 +33,21 @@ export const selectAvatarSchema = z.object({
         !value.includes("/") &&
         !value.includes("\\") &&
         !value.includes(".."),
-      { message: "Invalid photo" }
+      { message: "Invalid image" }
     ),
 });
 
 export const changePasswordSchema = z
   .object({
-    oldPassword: z
-      .string()
-      .min(8, "Old password must be at least 8 characters"),
+    // Re-typed, so presence only; the API's bcrypt check is the verdict. The
+    // confirmation only has to match the new one.
+    oldPassword: existingPassword,
 
-    newPassword: z
-      .string()
-      .min(8, "New password must be at least 8 characters"),
+    newPassword,
 
     confirmPassword: z
       .string()
-      .min(8, "Confirm password must be at least 8 characters"),
+      .min(1, "Confirm password is required"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",

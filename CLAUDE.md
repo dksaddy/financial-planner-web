@@ -74,6 +74,11 @@ endpoints use snake_case (`expense_type_id`, `target_amount`). The one deliberat
 schemas use `z.coerce.number()` because form inputs yield strings, while the API uses strict
 `z.number()`. Changing a field on either side requires changing both schemas.
 
+The shared pieces mirror the API file for file: `src/constants/limits.js` (name and password lengths),
+`src/validations/fields.js` (`name`, `email`, `newPassword`, `existingPassword` — a re-typed password
+is checked for presence only) and `src/constants/status.js` (every status value plus `FILTER_ALL`).
+Compare statuses against those constants, never a typed string.
+
 Forms use `react-hook-form` + `zodResolver`. Modals reset their form and refetch their dropdown data on
 every open, so stale options never persist between openings.
 

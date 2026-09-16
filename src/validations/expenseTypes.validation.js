@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { name } from "./fields";
+
 // A number input hands back a string, and the edit form resets with the
 // numbers the API returned, so both arrive here. `z.coerce.number()` is not
 // enough on its own: it turns "" into 0, so a blank Amount used to sail
@@ -36,10 +38,7 @@ const categorySchema = z.object({
 });
 
 export const createExpenseTypeSchema = z.object({
-  name: z
-    .string()
-    .min(3, "Name must be at least 3 characters")
-    .max(100, "Name cannot exceed 100 characters"),
+  name,
 
   categories: z
     .array(categorySchema)
