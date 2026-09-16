@@ -8,7 +8,6 @@ import { FiCamera, FiUser, FiX } from "react-icons/fi";
 import Section from "@/components/dashboard/Section";
 import Button from "@/components/common/Button";
 
-import { isLocalPreview } from "@/lib/image";
 import LogoutButton from "@/components/profile/LogoutButton";
 import { updateAvatar } from "@/services/user.service";
 
@@ -128,7 +127,6 @@ export default function AvatarCard({
               alt={profile?.name || "Profile photo"}
               fill
               sizes="128px"
-              //unoptimized={isLocalPreview(displayed)}
               className="object-cover"
               unoptimized // preserves gif animation
             />
