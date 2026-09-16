@@ -136,13 +136,14 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Row 2 */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+        {/* Row 2 — 30 / 40 / 30, which a 12-column grid cannot divide
+            evenly, hence ten columns here. */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-10">
           <div className="reveal lg:col-span-3" style={stagger(3)}>
             <SpendingCard spending={spending} />
           </div>
 
-          <div className="reveal lg:col-span-6" style={stagger(4)}>
+          <div className="reveal lg:col-span-4" style={stagger(4)}>
             <ProgressCard
               saving={saving}
               spending={spending}

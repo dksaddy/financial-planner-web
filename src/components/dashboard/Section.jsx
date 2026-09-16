@@ -14,9 +14,13 @@ export default function Section({
 }) {
   const tone = resolveAccent(accent);
 
+  // `h-full` lets a card fill the grid cell it sits in, so cards sharing a
+  // dashboard row end level with the tallest one instead of each stopping at
+  // its own content. Outside a stretched cell it resolves to auto and does
+  // nothing.
   return (
     <section
-      className={`group relative flex flex-col overflow-hidden rounded-2xl
+      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl
       border border-line bg-surface p-5 shadow-card
       transition-colors duration-300
       hover:border-line-strong hover:bg-surface-hover
