@@ -39,3 +39,15 @@ export const depositSavingPlanSchema = z.object({
     .number({ invalid_type_error: "Enter a valid amount" })
     .positive("Amount must be greater than 0"),
 });
+
+// Mirrors the API's `confirmationPassword`: presence only. The password being
+// re-typed is an existing one, so the register schema's rules do not apply —
+// and the only verdict that counts is the API's, which answers 403.
+//
+// The password is not part of the schemas above even though it travels in the
+// same request body: the plan form and the confirmation are two separate
+// forms in two separate modals, and validating each on its own is what lets
+// the confirmation reopen with an error without disturbing the plan form.
+export const confirmPasswordSchema = z.object({
+  password: z.string().min(1, "Password is required"),
+});

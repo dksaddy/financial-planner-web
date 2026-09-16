@@ -14,6 +14,9 @@ import AddSavingPlanModal from "@/components/dashboard/AddSavingPlanModal";
 import EditSavingPlanModal from "@/components/dashboard/EditSavingPlanModal";
 import DeleteSavingPlanDialog from "@/components/dashboard/DeleteSavingPlanDialog";
 import DepositModal from "@/components/dashboard/DepositModal";
+import PasswordConfirmModal, {
+  usePasswordConfirm,
+} from "@/components/common/PasswordConfirmModal";
 
 import {
   getSavingPlans,
@@ -31,6 +34,8 @@ const FILTERS = [
 
 export default function AllSavingPlansPage() {
   const router = useRouter();
+
+  const passwordConfirm = usePasswordConfirm();
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,22 +73,34 @@ export default function AllSavingPlansPage() {
     if (data) setPlans(data);
   }, [loadPlans]);
 
-  const changeStatus = async (plan, status) => {
-    try {
-      setStatusPendingId(plan.id);
+  const changeStatus = (plan, status) => {
+    passwordConfirm.confirm({
+      title: "Confirm Status Change",
+      description: `Enter your account password to mark ${plan.name} as ${status}.`,
+      confirmLabel: "Confirm",
+      errorFallback: "Failed to change plan status",
 
-      const response = await setSavingPlanStatus(plan.id, status);
+      action: async (password) => {
+        try {
+          setStatusPendingId(plan.id);
 
-      toast.success(response.message);
+          const response = await setSavingPlanStatus(
+            plan.id,
+            status,
+            password
+          );
 
-      await fetchPlans();
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to change plan status"
-      );
-    } finally {
-      setStatusPendingId(null);
-    }
+          toast.success(response.message);
+
+          await fetchPlans();
+        } finally {
+          // No catch: the confirmation modal reports the failure and decides
+          // whether to stay open for a retry. This only has to put the card
+          // back either way.
+          setStatusPendingId(null);
+        }
+      },
+    });
   };
 
   useEffect(() => {
@@ -197,6 +214,10 @@ export default function AllSavingPlansPage() {
         plan={depositPlan}
         onSuccess={fetchPlans}
       />
+
+      {/* Only the status control is confirmed from this page — the four modals
+          above each carry their own, since their action starts inside them. */}
+      <PasswordConfirmModal {...passwordConfirm.modalProps} />
 
       <div className="reveal mb-4" style={{ animationDelay: "35ms" }}>
         <SavingPlansSummary plans={plans} />

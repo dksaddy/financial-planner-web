@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -8,6 +8,9 @@ import toast from "react-hot-toast";
 import Modal from "@/components/common/Modal";
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
+import PasswordConfirmModal, {
+  usePasswordConfirm,
+} from "@/components/common/PasswordConfirmModal";
 
 import { createSavingPlanSchema } from "@/validations/savingPlans.validation";
 import { updateSavingPlan } from "@/services/savingPlans.service";
@@ -18,7 +21,7 @@ export default function EditSavingPlanModal({
   plan,
   onSuccess,
 }) {
-  const [submitting, setSubmitting] = useState(false);
+  const passwordConfirm = usePasswordConfirm();
 
   const {
     register,
@@ -56,24 +59,27 @@ export default function EditSavingPlanModal({
 
   if (!plan) return null;
 
-  const onSubmit = async (data) => {
-    try {
-      setSubmitting(true);
+  const onSubmit = (data) => {
+    passwordConfirm.confirm({
+      title: "Confirm Changes",
+      description: `Enter your account password to save your changes to ${plan?.name}.`,
+      confirmLabel: "Save",
+      errorFallback: "Failed to update saving plan",
 
-      const response = await updateSavingPlan(plan.id, data);
+      action: async (password) => {
+        const response = await updateSavingPlan(
+          plan.id,
+          data,
+          password
+        );
 
-      toast.success(response.message);
+        toast.success(response.message);
 
-      onSuccess?.();
+        onSuccess?.();
 
-      onClose();
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to update saving plan"
-      );
-    } finally {
-      setSubmitting(false);
-    }
+        onClose();
+      },
+    });
   };
 
   return (
@@ -153,10 +159,12 @@ export default function EditSavingPlanModal({
           as it is
         </p>
 
-        <Button type="submit" loading={submitting}>
+        <Button type="submit">
           Save Changes
         </Button>
       </form>
+
+      <PasswordConfirmModal {...passwordConfirm.modalProps} />
     </Modal>
   );
 }

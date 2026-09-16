@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -8,6 +8,9 @@ import toast from "react-hot-toast";
 import Modal from "@/components/common/Modal";
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
+import PasswordConfirmModal, {
+  usePasswordConfirm,
+} from "@/components/common/PasswordConfirmModal";
 
 import { depositSavingPlanSchema } from "@/validations/savingPlans.validation";
 import { depositToSavingPlan } from "@/services/savingPlans.service";
@@ -18,7 +21,7 @@ export default function DepositModal({
   onSuccess,
   plan,
 }) {
-  const [submitting, setSubmitting] = useState(false);
+  const passwordConfirm = usePasswordConfirm();
 
   const {
     register,
@@ -53,27 +56,31 @@ export default function DepositModal({
       return;
     }
 
-    try {
-      setSubmitting(true);
-
-      const response = await depositToSavingPlan(
-        plan.id,
+    // Hands off to the password modal, which runs this once the password is
+    // confirmed and keeps itself open if the API rejects it. Errors are its
+    // job from here, which is why there is no try/catch around the call.
+    passwordConfirm.confirm({
+      title: "Confirm Deposit",
+      description: `Enter your account password to add ${Number(
         data.amount
-      );
+      ).toFixed(2)} to ${plan.name}.`,
+      confirmLabel: "Deposit",
+      errorFallback: "Failed to add deposit",
 
-      toast.success(response.message);
+      action: async (password) => {
+        const response = await depositToSavingPlan(
+          plan.id,
+          data.amount,
+          password
+        );
 
-      onSuccess?.();
+        toast.success(response.message);
 
-      onClose();
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to add deposit"
-      );
-    } finally {
-      setSubmitting(false);
-    }
+        onSuccess?.();
+
+        onClose();
+      },
+    });
   };
 
   return (
@@ -118,13 +125,10 @@ export default function DepositModal({
           error={errors.amount}
         />
 
-        <Button
-          type="submit"
-          loading={submitting}
-        >
-          Add Deposit
-        </Button>
+        <Button type="submit">Add Deposit</Button>
       </form>
+
+      <PasswordConfirmModal {...passwordConfirm.modalProps} />
     </Modal>
   );
 }

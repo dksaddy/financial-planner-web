@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
 
 import Modal from "@/components/common/Modal";
-import Spinner from "@/components/common/Spinner";
+import PasswordConfirmModal, {
+  usePasswordConfirm,
+} from "@/components/common/PasswordConfirmModal";
 
 import { deleteSavingPlan } from "@/services/savingPlans.service";
 
@@ -15,26 +16,25 @@ export default function DeleteSavingPlanDialog({
   plan,
   onSuccess,
 }) {
-  const [submitting, setSubmitting] = useState(false);
+  const passwordConfirm = usePasswordConfirm();
 
-  const handleDelete = async () => {
-    try {
-      setSubmitting(true);
+  const handleDelete = () => {
+    passwordConfirm.confirm({
+      title: "Confirm Deletion",
+      description: `Enter your account password to delete ${plan?.name}. This can't be undone.`,
+      confirmLabel: "Delete",
+      errorFallback: "Failed to delete saving plan",
 
-      const response = await deleteSavingPlan(plan.id);
+      action: async (password) => {
+        const response = await deleteSavingPlan(plan.id, password);
 
-      toast.success(response.message);
+        toast.success(response.message);
 
-      onSuccess?.();
+        onSuccess?.();
 
-      onClose();
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to delete saving plan"
-      );
-    } finally {
-      setSubmitting(false);
-    }
+        onClose();
+      },
+    });
   };
 
   return (
@@ -67,14 +67,15 @@ export default function DeleteSavingPlanDialog({
 
           <button
             type="button"
-            disabled={submitting}
             onClick={handleDelete}
             className="flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-rose-500 to-red-500 px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-rose-500/30 transition hover:brightness-110 hover:shadow-rose-500/50 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:active:scale-100"
           >
-            {submitting ? <Spinner /> : "Delete"}
+            Delete
           </button>
         </div>
       </div>
+
+      <PasswordConfirmModal {...passwordConfirm.modalProps} />
     </Modal>
   );
 }

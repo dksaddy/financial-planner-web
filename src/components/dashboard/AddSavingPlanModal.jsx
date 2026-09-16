@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -8,6 +8,9 @@ import toast from "react-hot-toast";
 import Modal from "@/components/common/Modal";
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
+import PasswordConfirmModal, {
+  usePasswordConfirm,
+} from "@/components/common/PasswordConfirmModal";
 
 import { createSavingPlanSchema } from "@/validations/savingPlans.validation";
 import { createSavingPlan } from "@/services/savingPlans.service";
@@ -27,7 +30,7 @@ export default function AddSavingPlanModal({
   onClose,
   onSuccess,
 }) {
-  const [submitting, setSubmitting] = useState(false);
+  const passwordConfirm = usePasswordConfirm();
 
   const {
     register,
@@ -45,25 +48,23 @@ export default function AddSavingPlanModal({
     reset(DEFAULT_VALUES);
   }, [open, reset]);
 
-  const onSubmit = async (data) => {
-    try {
-      setSubmitting(true);
+  const onSubmit = (data) => {
+    passwordConfirm.confirm({
+      title: "Confirm New Plan",
+      description: `Enter your account password to create ${data.name}.`,
+      confirmLabel: "Create",
+      errorFallback: "Failed to create saving plan",
 
-      const response = await createSavingPlan(data);
+      action: async (password) => {
+        const response = await createSavingPlan(data, password);
 
-      toast.success(response.message);
+        toast.success(response.message);
 
-      onSuccess?.();
+        onSuccess?.();
 
-      onClose();
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to create saving plan"
-      );
-    } finally {
-      setSubmitting(false);
-    }
+        onClose();
+      },
+    });
   };
 
   return (
@@ -143,13 +144,10 @@ export default function AddSavingPlanModal({
           error={errors.withdrawalAmount}
         />
 
-        <Button
-          type="submit"
-          loading={submitting}
-        >
-          Create Plan
-        </Button>
+        <Button type="submit">Create Plan</Button>
       </form>
+
+      <PasswordConfirmModal {...passwordConfirm.modalProps} />
     </Modal>
   );
 }
