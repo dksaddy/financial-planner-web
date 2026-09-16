@@ -5,22 +5,23 @@ import { Toaster } from "react-hot-toast";
 import { THEME_BOOT_SCRIPT } from "@/theme/mode";
 
 // Courier Prime is the closest web face to the mono, slightly inked look of a
-// point-of-sale receipt printer, and it ships a real bold for the figures.
+// point-of-sale receipt printer. Every theme is set in Space Mono now, so this
+// is only the fallback behind it and is not worth preloading.
 const receipt = Courier_Prime({
   variable: "--font-receipt",
   weight: ["400", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
+  preload: false,
 });
 
-// Space Mono is the Brutal theme's face — a heavy, geometric mono that keeps
-// the tabular figures. Not preloaded: only the Brutal themes use it, so the
-// other themes never pay for the download.
+// Space Mono — a heavy, geometric mono that keeps the tabular figures. Started
+// as the Brutal theme's face and is now the face of every theme, so it is the
+// one that gets preloaded.
 const brutal = Space_Mono({
   variable: "--font-brutal",
   weight: ["400", "700"],
   subsets: ["latin"],
-  preload: false,
 });
 
 export const metadata = {

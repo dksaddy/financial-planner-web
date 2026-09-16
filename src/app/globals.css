@@ -5,8 +5,6 @@ html {
   /* Receipts are printed a touch smaller than screen UI; the mono face runs
      wide, so drop the root size to keep dense tables on one line. */
   font-size: 15px;
-  /* Set on the root so it inherits into form controls and the toaster. */
-  font-size-adjust: var(--font-size-adjust);
 }
 
 body {
