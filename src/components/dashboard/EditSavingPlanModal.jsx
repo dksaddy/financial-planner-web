@@ -27,6 +27,7 @@ export default function EditSavingPlanModal({
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm({
     // `PUT /saving-plans/:id` validates against the create schema — every
@@ -62,6 +63,22 @@ export default function EditSavingPlanModal({
   if (!plan) return null;
 
   const onSubmit = (data) => {
+    // The API refuses a total under what is already in the plan. Checked here
+    // before the password is asked for, against the figure this plan carries;
+    // the API repeats it against the stored one.
+    if (
+      Math.round(Number(data.depositAmount) * 100) <
+      Math.round(Number(plan.currentlyDeposited) * 100)
+    ) {
+      setError("depositAmount", {
+        message: `Cannot be less than the ${Number(
+          plan.currentlyDeposited
+        ).toFixed(2)} already deposited`,
+      });
+
+      return;
+    }
+
     passwordConfirm.confirm({
       title: "Confirm Changes",
       description: `Enter your account password to save your changes to ${plan?.name}.`,
@@ -165,7 +182,9 @@ export default function EditSavingPlanModal({
         />
 
         {/* Deposits already made are not part of this form — the update
-            endpoint leaves currently_deposited untouched. */}
+            endpoint leaves currently_deposited untouched. It does move the
+            status: a total the deposits already fill completes the plan, and
+            raising a full plan's total reopens it. */}
         <p className="num text-center text-[12.54px] text-ink-faint">
           {Number(plan.currentlyDeposited).toFixed(2)} already deposited stays
           as it is
