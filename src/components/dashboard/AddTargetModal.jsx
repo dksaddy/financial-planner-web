@@ -13,7 +13,12 @@ import Button from "@/components/common/Button";
 
 import { createTargetSchema } from "@/validations/targets.validation";
 import { createTarget } from "@/services/targets.service";
-import { IMAGE_ACCEPT, IMAGE_RULES, imageError } from "@/lib/image";
+import {
+  IMAGE_ACCEPT,
+  TARGET_IMAGE_RULES,
+  imageError,
+} from "@/lib/image";
+import { TARGET_IMAGE_MAX_MB } from "@/constants/limits";
 
 export default function AddTargetModal({
   open,
@@ -48,7 +53,7 @@ export default function AddTargetModal({
   const handleNewFile = (file) => {
     // Refused here rather than by the API, which saves the upload. The
     // current picture, if any, stays.
-    const error = file && imageError(file);
+    const error = file && imageError(file, TARGET_IMAGE_MAX_MB);
 
     if (error) {
       toast.error(error);
@@ -178,7 +183,7 @@ export default function AddTargetModal({
                   </span>
 
                   <span className="text-[12.54px] normal-case">
-                    {IMAGE_RULES}
+                    {TARGET_IMAGE_RULES}
                   </span>
                 </span>
               )}

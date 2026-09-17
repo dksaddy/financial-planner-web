@@ -22,12 +22,19 @@ export const TAX_RATE_MIN = 0;
 export const TAX_RATE_MAX = 100;
 export const DEFAULT_TAX_RATE = 15;
 
-// What a picture (a target image, an avatar) may be — the API's
-// `constants/limits.js` holds the same two.
+// What a picture may be — the API's `constants/limits.js` holds the same.
 export const IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/gif",
 ];
-export const IMAGE_MAX_MB = 5;
+
+// Size is per upload, not one figure for both: each picker names the limit its
+// own route enforces.
+export const TARGET_IMAGE_MAX_MB = 2;
+
+// Profile pictures. The album is capped too, so a full one needs a photo
+// deleted before another can be uploaded.
+export const AVATAR_MAX = 3;
+export const AVATAR_MAX_MB = 3;

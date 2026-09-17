@@ -10,7 +10,8 @@ import Button from "@/components/common/Button";
 
 import LogoutButton from "@/components/profile/LogoutButton";
 import { updateAvatar } from "@/services/user.service";
-import { IMAGE_ACCEPT, IMAGE_RULES, imageError } from "@/lib/image";
+import { IMAGE_ACCEPT, AVATAR_RULES, imageError } from "@/lib/image";
+import { AVATAR_MAX_MB } from "@/constants/limits";
 
 export default function AvatarCard({
   profile,
@@ -36,7 +37,7 @@ export default function AvatarCard({
     if (!selected) return;
 
     // Refused here rather than by the API, which saves the upload.
-    const error = imageError(selected);
+    const error = imageError(selected, AVATAR_MAX_MB);
 
     if (error) {
       toast.error(error);
@@ -162,7 +163,7 @@ export default function AvatarCard({
           </div>
         ) : (
           <p className="text-center text-[12.54px] text-ink-faint">
-            {IMAGE_RULES}
+            {AVATAR_RULES}
           </p>
         )}
       </div>
