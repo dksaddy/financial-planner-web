@@ -815,6 +815,15 @@
   border-radius: 0;
 }
 
+/* Pills square off too — the month tabs, status badges and figure chips.
+   `rounded-full` itself is left alone, because it also draws the donut
+   charts, the avatar and the status dots, which are circles by meaning, not
+   style. What tells the two apart is the horizontal padding: a pill is a
+   rounded-full box around a line of text, a circle has none. */
+[data-theme^="brutal"] .rounded-full[class*="px-"] {
+  border-radius: 0;
+}
+
 /* Full borders thicken; the one-sided `border-t` separators inside cards
    stay hairlines, or every card would read as a stack of boxes. */
 [data-theme^="brutal"] .border {
