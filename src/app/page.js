@@ -5,13 +5,14 @@ import LandingNav from "@/components/landing/LandingNav";
 import Hero from "@/components/landing/Hero";
 import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
+import HouseRules from "@/components/landing/HouseRules";
 import Benefits from "@/components/landing/Benefits";
 import CallToAction from "@/components/landing/CallToAction";
 
 export const metadata = {
   title: "Financial Planner — plan the month, spend the day",
   description:
-    "Turn one salary figure into a daily budget: saving plans, reusable expense types, logged spending, targets funded by whatever you do not spend.",
+    "Turn one salary into a daily budget over the days you actually work: saving plans, reusable expense types, logged spending, targets funded by whatever you do not spend.",
 };
 
 export default function LandingPage() {
@@ -25,6 +26,9 @@ export default function LandingPage() {
         <Features />
 
         <HowItWorks />
+
+        {/* The steps, then the rules that bound them, then what it buys you. */}
+        <HouseRules />
 
         <Benefits />
 

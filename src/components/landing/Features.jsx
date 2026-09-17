@@ -15,7 +15,7 @@ const FEATURES = [
     icon: FiPieChart,
     accent: "indigo",
     title: "Saving Plans",
-    body: "Run weekly and monthly plans side by side. Deposit into any plan and watch the balance climb without touching a spreadsheet.",
+    body: "Run weekly and monthly plans side by side. Each carries its own tax rate and shows what it makes both before and after it — no spreadsheet, no guessing at the payout.",
   },
   {
     icon: FiRepeat,
@@ -33,7 +33,7 @@ const FEATURES = [
     icon: FiTarget,
     accent: "fuchsia",
     title: "Targets",
-    body: "Name the thing you are saving for, give it a price and a picture, and let your unspent budget fund it instead of quietly disappearing.",
+    body: "Name the thing you are saving for, give it a price and a picture of up to 2MB, and let your unspent budget fund it instead of quietly disappearing.",
   },
   {
     icon: FiTrendingUp,

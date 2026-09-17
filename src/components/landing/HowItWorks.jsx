@@ -3,26 +3,31 @@ import SectionHeading from "@/components/landing/SectionHeading";
 const STEPS = [
   {
     number: "01",
-    title: "Set your salary",
-    body: "Register, open your profile and enter what lands each month. That single number is the input for every figure the app draws.",
+    title: "Set your salary and your days",
+    body: "Register, open your profile and enter what lands each month, then the days you actually spend on — 26 a month and 6 a week to begin with. The daily figure is what is left after savings, divided by those days.",
   },
   {
     number: "02",
     title: "Carve out savings",
-    body: "Add a weekly plan, a monthly plan, or both. What they hold is set aside first — the rest becomes the money you are free to spend.",
+    body: "Add a weekly plan, a monthly plan, or both. What they hold is set aside first, and each plan taxes its own profit at its own rate — 15% until you change it.",
   },
   {
     number: "03",
     title: "Describe your spending",
-    body: "Create expense types with their categories once. They are the templates every record is logged against, so nothing is typed twice.",
+    body: "Create expense types with their categories once. They are the templates every record is logged against, and a type's total is fixed at creation so old records never shift under you.",
   },
   {
     number: "04",
     title: "Log as you go",
-    body: "Add each expense against its type. The dashboard recalculates the day, the week and the last four weeks the moment you save.",
+    body: "One record a day, and a week holds as many as your working days — never a day ahead of today. The dashboard recalculates the day, the week and the last four weeks the moment you save.",
   },
   {
     number: "05",
+    title: "Deposit as you save",
+    body: "Pay into a plan whenever the money is there; your password confirms every move. The plan completes itself when the last deposit fills it, and withdrawing it is the final step.",
+  },
+  {
+    number: "06",
     title: "Point the surplus somewhere",
     body: "Create a target for what you are working toward. Whatever you did not spend accumulates against it until it is paid off.",
   },
@@ -36,7 +41,7 @@ export default function HowItWorks() {
     >
       <SectionHeading
         eyebrow="How to use it"
-        title="Five steps, then it runs itself"
+        title="Six steps, then it runs itself"
         description="The setup takes one sitting. After that the only recurring job is logging what you spend."
       />
 

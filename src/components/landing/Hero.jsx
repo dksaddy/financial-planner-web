@@ -68,7 +68,7 @@ export default function Hero() {
 
           <dl className="mt-10 grid grid-cols-3 gap-4 border-t border-line-soft pt-6">
             {[
-              { value: "26", label: "Working days budgeted" },
+              { value: "26", label: "Working days a month" },
               { value: "6", label: "Spending days a week" },
               { value: "1", label: "Dashboard for all of it" },
             ].map((stat) => (
@@ -83,6 +83,14 @@ export default function Hero() {
               </div>
             ))}
           </dl>
+
+          {/* The first two are the figures a new account starts on, not fixed
+              ones — said here rather than in each label, which would wrap to
+              four lines in a three-column grid on a phone. */}
+          <p className="mt-3 text-[12.54px] text-ink-faint">
+            The first two are where a new account starts. Set your own on your
+            profile and every figure follows.
+          </p>
         </div>
 
         <div

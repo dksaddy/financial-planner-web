@@ -24,8 +24,8 @@ const BENEFITS = [
     body: "Records are kept, never quietly deleted — types are deactivated instead, so last quarter still adds up.",
   },
   {
-    title: "One screen, day or night",
-    body: "Every card in one view, in a light or dark theme that follows your system and remembers what you picked.",
+    title: "One screen, six ways",
+    body: "Every card in one view, in whichever of three looks you prefer — Normal, Morphism or Brutal — each in light and dark, following your system until you pick for yourself.",
   },
 ];
 
