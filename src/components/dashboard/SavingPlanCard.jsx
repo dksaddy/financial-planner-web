@@ -90,7 +90,7 @@ export default function SavingPlanCard({
         />
 
         <Stat
-          label="Total Deposit Amount"
+          label="Total Deposit"
           value={plan.depositAmount.toFixed(2)}
         />
 
