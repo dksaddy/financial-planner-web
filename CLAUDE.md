@@ -70,17 +70,27 @@ catch block. Add any new endpoint with expected-401 semantics to that `AUTH_ENDP
 
 `src/validations/*.validation.js` mirrors the API's Zod schemas field-for-field, including the
 camelCase field names the saving-plan endpoints use (`depositAmount`, `withdrawalAmount`) while other
-endpoints use snake_case (`expense_type_id`, `target_amount`). The one deliberate difference: the web
-schemas use `z.coerce.number()` because form inputs yield strings, while the API uses strict
-`z.number()`. Changing a field on either side requires changing both schemas.
+endpoints use snake_case (`expense_type_id`, `target_amount`). The deliberate differences are two: the
+web schemas use `z.coerce.number()` because form inputs yield strings, while the API uses strict
+`z.number()`; and an expense record's date is refused from tomorrow on by the API but from today on
+here, because a date is only ever sent from the user's own clock and the API cannot know what zone it
+is in. Changing a field on either side requires changing both schemas.
 
-The shared pieces mirror the API file for file: `src/constants/limits.js` (name and password lengths),
-`src/validations/fields.js` (`name`, `email`, `newPassword`, `existingPassword` — a re-typed password
-is checked for presence only) and `src/constants/status.js` (every status value plus `FILTER_ALL`).
-Compare statuses against those constants, never a typed string.
+The shared pieces mirror the API file for file: `src/constants/limits.js` (name and password lengths,
+and what a picture may be — `TARGET_IMAGE_MAX_MB`, `AVATAR_MAX_MB` and `AVATAR_MAX`, each enforced by
+its own route), `src/validations/fields.js` (`name`, `email`, `newPassword`, `existingPassword` — a
+re-typed password is checked for presence only) and `src/constants/status.js` (every status value plus
+`FILTER_ALL`). Compare statuses against those constants, never a typed string.
 
 Forms use `react-hook-form` + `zodResolver`. Modals reset their form and refetch their dropdown data on
 every open, so stale options never persist between openings.
+
+Some API rules cannot be checked here, because they need data the page does not hold — how many photos
+an album has, how many records a week already carries. Those stay the API's to enforce and are stated
+rather than duplicated: `src/lib/image.js` prints the size and type rules under each picker,
+`src/lib/expenseRecord.js` prints the weekly record limit under the date field, and `AvatarCard`
+disables its picker once the album reports itself full. A rule stated here that the API does not
+actually enforce is worse than no rule, so state only what it does.
 
 ## Theming
 
