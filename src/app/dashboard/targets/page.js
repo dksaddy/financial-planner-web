@@ -314,9 +314,21 @@ export default function AllTargetsPage() {
                         </div>
                       </div>
 
+                      {/* The API refuses a completion the Extra Save cannot
+                          pay for, so the button is disabled before it could be
+                          refused. The API still checks — this figure can be
+                          stale — and its message is toasted if it does. */}
                       <button
                         type="button"
-                        disabled={statusUpdatingId === target.id}
+                        disabled={
+                          statusUpdatingId === target.id ||
+                          targetAmount > availableSaving
+                        }
+                        title={
+                          targetAmount > availableSaving
+                            ? `Needs ${targetAmount.toFixed(2)} Extra Save, ${Math.max(availableSaving, 0).toFixed(2)} available`
+                            : undefined
+                        }
                         onClick={() => handleToggleStatus(target)}
                         className="order-2 flex h-7 shrink-0 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[12.54px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60 sm:order-3"
                         aria-label={`Mark ${target.name} as completed`}

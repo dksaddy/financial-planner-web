@@ -23,10 +23,30 @@ export const createTarget = async ({
   return response.data;
 };
 
-export const updateTarget = async (id, { name, target_amount }) => {
+// A new picture has to travel as multipart; everything else stays JSON.
+// `removeImage` drops the current picture — the API refuses it alongside a new
+// one, so a caller sends one or the other.
+export const updateTarget = async (
+  id,
+  { name, target_amount, image = null, removeImage = false }
+) => {
+  if (image) {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("target_amount", target_amount);
+    formData.append("image", image);
+
+    const response = await api.put(`/target/${id}`, formData, {
+      headers: { "Content-Type": undefined },
+    });
+
+    return response.data;
+  }
+
   const response = await api.put(`/target/${id}`, {
     name,
     target_amount,
+    ...(removeImage && { remove_image: true }),
   });
 
   return response.data;
