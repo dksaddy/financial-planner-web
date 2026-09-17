@@ -259,8 +259,12 @@ export default function AllTargetsPage() {
                       isExiting ? "target-exit-complete" : ""
                     } ${isEntering ? "target-enter-pending" : ""}`}
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                    {/* Wraps rather than squeezing: the name keeps a floor of
+                        9rem, so on a phone the amount and the edit and delete
+                        buttons drop to their own line instead of truncating
+                        the name to nothing. */}
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                      <div className="flex min-w-[9rem] flex-1 items-center gap-3">
                         {target.image_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -279,46 +283,53 @@ export default function AllTargetsPage() {
                         </span>
                       </div>
 
-                      <div className="flex shrink-0 items-center gap-2.5">
-                        <span className="num text-base font-bold text-fuchsia-fg">
+                      {/* Phone: the status button rides the name's line at the top
+                          right, and the amount (with edit and delete, where there are
+                          any) takes the line below, left and right. From `sm` up this
+                          group dissolves into the row (`contents`), so everything sits
+                          on one line: amount, status, then edit and delete. */}
+                      <div className="order-3 flex basis-full items-center justify-between gap-2.5 sm:contents">
+                        <span className="num text-base font-bold text-fuchsia-fg sm:order-2">
                           {targetAmount.toFixed(2)}
                         </span>
 
-                        <button
-                          type="button"
-                          disabled={statusUpdatingId === target.id}
-                          onClick={() => handleToggleStatus(target)}
-                          className="flex h-7 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[12.54px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                          aria-label={`Mark ${target.name} as completed`}
-                        >
-                          {statusUpdatingId === target.id ? (
-                            <Spinner size={12} />
-                          ) : (
-                            <>
-                              <FiCheckCircle size={12} />
-                              Complete
-                            </>
-                          )}
-                        </button>
+                        <div className="flex items-center gap-2.5 sm:order-4">
+                          <button
+                            type="button"
+                            onClick={() => setEditTarget(target)}
+                            className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-surface-hover hover:text-ink"
+                            aria-label={`Edit ${target.name}`}
+                          >
+                            <FiEdit2 size={13} />
+                          </button>
 
-                        <button
-                          type="button"
-                          onClick={() => setEditTarget(target)}
-                          className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-surface-hover hover:text-ink"
-                          aria-label={`Edit ${target.name}`}
-                        >
-                          <FiEdit2 size={13} />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setDeleteTarget(target)}
-                          className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-rose-soft hover:text-rose-fg"
-                          aria-label={`Delete ${target.name}`}
-                        >
-                          <FiTrash2 size={13} />
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteTarget(target)}
+                            className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint transition hover:bg-rose-soft hover:text-rose-fg"
+                            aria-label={`Delete ${target.name}`}
+                          >
+                            <FiTrash2 size={13} />
+                          </button>
+                        </div>
                       </div>
+
+                      <button
+                        type="button"
+                        disabled={statusUpdatingId === target.id}
+                        onClick={() => handleToggleStatus(target)}
+                        className="order-2 flex h-7 shrink-0 items-center gap-1 rounded-lg bg-emerald-soft px-2 text-[12.54px] font-bold uppercase tracking-wider text-emerald-fg ring-1 ring-inset ring-emerald-line transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60 sm:order-3"
+                        aria-label={`Mark ${target.name} as completed`}
+                      >
+                        {statusUpdatingId === target.id ? (
+                          <Spinner size={12} />
+                        ) : (
+                          <>
+                            <FiCheckCircle size={12} />
+                            Complete
+                          </>
+                        )}
+                      </button>
                     </div>
 
                     <div className="mt-2 flex items-center gap-2">
@@ -355,11 +366,12 @@ export default function AllTargetsPage() {
                 return (
                   <div
                     key={target.id}
-                    className={`target-row flex items-center justify-between gap-3 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 ${
+                    className={`target-row flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 ${
                       isExiting ? "target-exit-pending" : ""
                     } ${isEntering ? "target-enter-complete" : ""}`}
                   >
-                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                    {/* Same wrapping as a pending row. */}
+                    <div className="flex min-w-[9rem] flex-1 items-center gap-3">
                       {target.image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -378,28 +390,33 @@ export default function AllTargetsPage() {
                       </span>
                     </div>
 
-                    <div className="flex shrink-0 items-center gap-2.5">
-                      <span className="num text-base font-bold text-emerald-fg">
+                    {/* Phone: the status button rides the name's line at the top
+                        right, and the amount (with edit and delete, where there are
+                        any) takes the line below, left and right. From `sm` up this
+                        group dissolves into the row (`contents`), so everything sits
+                        on one line: amount, status, then edit and delete. */}
+                    <div className="order-3 flex basis-full items-center justify-between gap-2.5 sm:contents">
+                      <span className="num text-base font-bold text-emerald-fg sm:order-2">
                         {Number(target.target_amount).toFixed(2)}
                       </span>
-
-                      <button
-                        type="button"
-                        disabled={statusUpdatingId === target.id}
-                        onClick={() => handleToggleStatus(target)}
-                        className="flex h-7 items-center gap-1 rounded-lg bg-inset px-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
-                        aria-label={`Mark ${target.name} as pending`}
-                      >
-                        {statusUpdatingId === target.id ? (
-                          <Spinner size={12} />
-                        ) : (
-                          <>
-                            <FiRotateCcw size={12} />
-                            Pending
-                          </>
-                        )}
-                      </button>
                     </div>
+
+                    <button
+                      type="button"
+                      disabled={statusUpdatingId === target.id}
+                      onClick={() => handleToggleStatus(target)}
+                      className="order-2 flex h-7 shrink-0 items-center gap-1 rounded-lg bg-inset px-2 text-[12.54px] font-bold uppercase tracking-wider text-ink-muted ring-1 ring-inset ring-line transition hover:border-line-strong hover:text-ink disabled:cursor-not-allowed disabled:opacity-60 sm:order-3"
+                      aria-label={`Mark ${target.name} as pending`}
+                    >
+                      {statusUpdatingId === target.id ? (
+                        <Spinner size={12} />
+                      ) : (
+                        <>
+                          <FiRotateCcw size={12} />
+                          Pending
+                        </>
+                      )}
+                    </button>
                   </div>
                 );
               })}
