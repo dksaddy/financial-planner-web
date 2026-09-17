@@ -15,7 +15,7 @@ import {
   deleteAvatarImage,
 } from "@/services/user.service";
 
-export default function AvatarAlbum({ profile, onSuccess }) {
+export default function AvatarAlbum({ profile, onSuccess, onCount }) {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(null);
@@ -34,7 +34,16 @@ export default function AvatarAlbum({ profile, onSuccess }) {
 
     getAvatarAlbum()
       .then((response) => {
-        if (active) setPhotos(response.data ?? []);
+        if (!active) return;
+
+        const album = response.data ?? [];
+
+        setPhotos(album);
+
+        // The album is the only thing that knows how full it is, and the
+        // upload card has to know before it offers a file picker the API
+        // would refuse. Reported from here rather than fetched twice.
+        onCount?.(album.length);
       })
       .catch((error) => {
         if (active) {
@@ -52,7 +61,7 @@ export default function AvatarAlbum({ profile, onSuccess }) {
     return () => {
       active = false;
     };
-  }, [reloadToken, profile?.avatar_url]);
+  }, [reloadToken, profile?.avatar_url, onCount]);
 
   // No confirm step: picking a different photo is reversible in one click, and
   // the old one stays in the album either way.

@@ -23,6 +23,9 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
+  // Written by the album, read by the upload card above it — null until the
+  // album has loaded, so the card does not call itself full before it knows.
+  const [photoCount, setPhotoCount] = useState(null);
 
   // Fetches and reports failures, but never touches React state — that is
   // left to the caller. Keeping the commit out of here is what lets the mount
@@ -181,9 +184,14 @@ export default function ProfilePage() {
             onSuccess={fetchProfile}
             onLogout={handleLogout}
             loggingOut={loggingOut}
+            photoCount={photoCount}
           />
 
-          <AvatarAlbum profile={profile} onSuccess={fetchProfile} />
+          <AvatarAlbum
+            profile={profile}
+            onSuccess={fetchProfile}
+            onCount={setPhotoCount}
+          />
         </div>
 
         <div

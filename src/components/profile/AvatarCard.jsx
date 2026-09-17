@@ -11,14 +11,19 @@ import Button from "@/components/common/Button";
 import LogoutButton from "@/components/profile/LogoutButton";
 import { updateAvatar } from "@/services/user.service";
 import { IMAGE_ACCEPT, AVATAR_RULES, imageError } from "@/lib/image";
-import { AVATAR_MAX_MB } from "@/constants/limits";
+import { AVATAR_MAX, AVATAR_MAX_MB } from "@/constants/limits";
 
 export default function AvatarCard({
   profile,
   onSuccess,
   onLogout,
   loggingOut,
+  // How many photos the album already holds, or null while it is still
+  // loading. The API refuses an upload past the cap either way; knowing the
+  // count here is what lets the picker say so before a file is chosen.
+  photoCount = null,
 }) {
+  const full = photoCount !== null && photoCount >= AVATAR_MAX;
   // File and its object URL move together in one state value, so the URL is
   // minted and revoked in the handlers rather than in an effect.
   const [selection, setSelection] = useState(null);
@@ -108,7 +113,8 @@ export default function AvatarCard({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="group relative h-32 w-32 shrink-0 overflow-hidden rounded-full border border-line bg-inset text-ink-faint transition hover:border-line-strong"
+          disabled={full}
+          className="group relative h-32 w-32 shrink-0 overflow-hidden rounded-full border border-line bg-inset text-ink-faint transition hover:border-line-strong disabled:cursor-not-allowed"
           aria-label="Change profile photo"
         >
           {displayed ? (
@@ -126,13 +132,15 @@ export default function AvatarCard({
             </span>
           )}
 
-          <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-scrim text-white opacity-0 transition group-hover:opacity-100">
-            <FiCamera size={18} strokeWidth={2.2} />
+          {!full && (
+            <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-scrim text-white opacity-0 transition group-hover:opacity-100">
+              <FiCamera size={18} strokeWidth={2.2} />
 
-            <span className="text-[11.4px] font-bold uppercase tracking-wider">
-              Change
+              <span className="text-[11.4px] font-bold uppercase tracking-wider">
+                Change
+              </span>
             </span>
-          </span>
+          )}
         </button>
 
         <div className="text-center">
@@ -161,6 +169,13 @@ export default function AvatarCard({
               Cancel
             </button>
           </div>
+        ) : full ? (
+          // Nothing to upload with until a photo goes: the album is the cap,
+          // and the API refuses a fourth file.
+          <p className="text-center text-[12.54px] text-amber-fg">
+            {AVATAR_MAX} of {AVATAR_MAX} photos kept. Delete one below before
+            uploading another.
+          </p>
         ) : (
           <p className="text-center text-[12.54px] text-ink-faint">
             {AVATAR_RULES}
