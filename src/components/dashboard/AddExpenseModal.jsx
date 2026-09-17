@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
 import { EXPENSE_TYPE_STATUS } from "@/constants/status";
+import { weeklyRecordRule } from "@/lib/expenseRecord";
 
 import {
   createExpenseRecordSchema,
@@ -24,6 +25,8 @@ export default function AddExpenseModal({
   const [submitting, setSubmitting] = useState(false);
   const [expenseTypes, setExpenseTypes] = useState([]);
   const [loadingTypes, setLoadingTypes] = useState(false);
+
+  const weeklyRule = weeklyRecordRule();
 
   const {
     register,
@@ -163,10 +166,14 @@ export default function AddExpenseModal({
             }`}
           />
 
-          {errors.date && (
+          {errors.date ? (
             <p className="text-xs text-rose-fg">
               {errors.date.message}
             </p>
+          ) : (
+            weeklyRule && (
+              <p className="text-xs text-ink-faint">{weeklyRule}</p>
+            )
           )}
         </div>
 
