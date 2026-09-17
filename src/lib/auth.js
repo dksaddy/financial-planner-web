@@ -65,3 +65,9 @@ export const logout = () => {
   removeToken();
   removeUser();
 };
+
+// A session handed back by login, register or a password change.
+export const saveSession = ({ token, user }) => {
+  setToken(token);
+  setUser(user);
+};

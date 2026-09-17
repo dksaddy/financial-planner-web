@@ -12,6 +12,7 @@ import Button from "@/components/common/Button";
 
 import { changePasswordSchema } from "@/validations/user.validation";
 import { changePassword } from "@/services/user.service";
+import { saveSession } from "@/lib/auth";
 
 const EMPTY = {
   oldPassword: "",
@@ -38,10 +39,13 @@ export default function PasswordForm() {
 
       const response = await changePassword(data);
 
+      // The change ends every session opened before it, this one included, and
+      // answers with a new one — stored straight away so the next request is
+      // not a 401 that signs the user out.
+      saveSession(response.data);
+
       toast.success(response.message);
 
-      // The current token stays valid — the API does not revoke it on a
-      // password change — so only the form is cleared, not the session.
       reset(EMPTY);
     } catch (error) {
       toast.error(

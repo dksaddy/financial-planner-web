@@ -69,6 +69,10 @@ itself for the expired-token path. `getUser()` drops a cookie that does not pars
 `src/lib/timeZone.js` sends the browser's IANA zone on register and syncs it (`syncTimeZone`) whenever the
 dashboard or profile page loads the profile — the API reads "today" and "this week" in that zone.
 
+A password change ends every session on the API, including the current one, and answers with a new
+`{ token, user }`: `PasswordForm` stores it with `saveSession` before anything else runs. A wrong old
+password is a 403, so it never trips the 401 auto-logout.
+
 `src/lib/axios.js` attaches the bearer token per request and auto-logs-out on any 401 **except** from
 `/auth/login` and `/auth/register`, where a 401 means bad credentials and must reach the page's own
 catch block. Add any new endpoint with expected-401 semantics to that `AUTH_ENDPOINTS` list.

@@ -81,4 +81,8 @@ export const changePasswordSchema = z
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
+  })
+  .refine((data) => data.newPassword !== data.oldPassword, {
+    message: "New password must be different from the current password",
+    path: ["newPassword"],
   });
