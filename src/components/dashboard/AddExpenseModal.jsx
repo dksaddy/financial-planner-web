@@ -9,22 +9,12 @@ import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
 import { EXPENSE_TYPE_STATUS } from "@/constants/status";
 
-import { createExpenseRecordSchema } from "@/validations/expenseRecords.validation";
+import {
+  createExpenseRecordSchema,
+  todayDateString,
+} from "@/validations/expenseRecords.validation";
 import { createExpenseRecord } from "@/services/expenseRecords.service";
 import { getExpenseTypes } from "@/services/expenseTypes.service";
-
-// `toISOString()` converts to UTC before slicing, which reports
-// "yesterday" for part of the day whenever the browser's local
-// timezone is ahead of UTC (e.g. Asia/Dhaka, +6, for the first ~6
-// hours after local midnight). Build the string from local
-// year/month/day instead so "today" always matches the user's clock.
-const todayDateString = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
 
 export default function AddExpenseModal({
   open,
@@ -162,6 +152,9 @@ export default function AddExpenseModal({
           <input
             id="date"
             type="date"
+            // Stops the picker offering a day that the schema and the API
+            // would both refuse.
+            max={todayDateString()}
             {...register("date")}
             className={`w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-ink outline-none transition ${
               errors.date

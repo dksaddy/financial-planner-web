@@ -9,7 +9,10 @@ import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
 import { EXPENSE_TYPE_STATUS } from "@/constants/status";
 
-import { createExpenseRecordSchema } from "@/validations/expenseRecords.validation";
+import {
+  createExpenseRecordSchema,
+  todayDateString,
+} from "@/validations/expenseRecords.validation";
 import { updateExpenseRecord } from "@/services/expenseRecords.service";
 import {
   getExpenseTypes,
