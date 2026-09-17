@@ -64,6 +64,8 @@ Token and user JSON live in cookies via `js-cookie` (`src/lib/auth.js`), 7 days,
 presence only, the web cannot verify a JWT — and every protected page still checks `isAuthenticated()`
 itself for the expired-token path. `getUser()` drops a cookie that does not parse instead of throwing.
 
+`src/app/error.js`, `global-error.js`, `loading.js` and `not-found.js` are the app-wide boundaries.
+
 `src/lib/axios.js` attaches the bearer token per request and auto-logs-out on any 401 **except** from
 `/auth/login` and `/auth/register`, where a 401 means bad credentials and must reach the page's own
 catch block. Add any new endpoint with expected-401 semantics to that `AUTH_ENDPOINTS` list.
