@@ -59,8 +59,10 @@ page ("use client") → src/services/*.service.js → src/lib/axios.js → API
 ## Auth
 
 Token and user JSON live in cookies via `js-cookie` (`src/lib/auth.js`), 7 days, `sameSite: strict`.
-They are readable by JS by design — there is no middleware and no server-side route protection; every
-protected page checks `isAuthenticated()` itself and `router.replace("/login")`.
+They are readable by JS by design. `src/proxy.js`
+(Next 16's renamed middleware) redirects `/dashboard/**` to `/login` when the `token` cookie is missing —
+presence only, the web cannot verify a JWT — and every protected page still checks `isAuthenticated()`
+itself for the expired-token path.
 
 `src/lib/axios.js` attaches the bearer token per request and auto-logs-out on any 401 **except** from
 `/auth/login` and `/auth/register`, where a 401 means bad credentials and must reach the page's own
