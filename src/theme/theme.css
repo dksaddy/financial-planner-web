@@ -811,7 +811,14 @@
 [data-theme^="brutal"] .rounded-lg,
 [data-theme^="brutal"] .rounded-xl,
 [data-theme^="brutal"] .rounded-2xl,
-[data-theme^="brutal"] .rounded-r-xl {
+[data-theme^="brutal"] .rounded-r-xl,
+/* The corner chip's three own corners plus the card corner it fills — listed
+   one by one because none of them is the plain `rounded-*` the rules above
+   catch, and a chip left round on a squared-off card is the one shape in the
+   theme that would not have squared. */
+[data-theme^="brutal"] .rounded-l-full,
+[data-theme^="brutal"] .rounded-br-xl,
+[data-theme^="brutal"] .rounded-tr-2xl {
   border-radius: 0;
 }
 

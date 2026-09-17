@@ -115,11 +115,34 @@ export default function SavingPlanCard({
           value={plan.tax.toFixed(2)}
         />
 
-        {/* What actually reaches the hand: the withdrawal less its tax. */}
-        <Stat
-          label="In Hand"
-          value={plan.inHand.toFixed(2)}
-        />
+        {/* What actually reaches the hand: the withdrawal less its tax. The
+            cell is the chip's anchor as well as a stat, which is what puts the
+            chip on the line between the last two rows rather than at a figure
+            measured from the block's edge. */}
+        <div className="relative min-w-0">
+          <Stat
+            label="In Hand"
+            value={plan.inHand.toFixed(2)}
+          />
+
+          {/* Profit before tax — withdrawal less total deposit, which the Tax
+              stat beside it is charged on; the footer carries the same figure
+              after that tax.
+
+              It runs off the card's right edge: `-right-6` is the card's
+              `px-6`, so the chip clears the padding, and its right side is
+              square because the card's `overflow-hidden` cuts it there. Half
+              the row gap up, then back half its own height, centres it on the
+              line between the two rows. */}
+          <span
+            title="Profit before tax"
+            className={`num absolute -right-6 -top-1.5 flex h-8 -translate-y-1/2 items-center rounded-l-full px-3 text-sm font-bold ring-1 ring-inset ${signTone(
+              plan.profit
+            )}`}
+          >
+            {plan.profit.toFixed(2)}
+          </span>
+        </div>
       </div>
 
       {/* Profit footer — after tax, since that is what the plan earns. */}
