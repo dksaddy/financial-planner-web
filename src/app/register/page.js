@@ -15,6 +15,7 @@ import { registerSchema } from "@/validations/auth.validation";
 import { register as registerUser } from "@/services/auth.service";
 import { useIsAuthenticated } from "@/lib/useIsAuthenticated";
 import { setToken, setUser } from "@/lib/auth";
+import { browserTimeZone } from "@/lib/timeZone";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -48,7 +49,11 @@ export default function RegisterPage() {
 
       // Registration answers with the same session as a login, so the new
       // user lands on the dashboard without signing in again.
-      const response = await registerUser(data);
+      const response = await registerUser({
+        ...data,
+        // So the account's "today" is the user's from the first record.
+        time_zone: browserTimeZone() ?? undefined,
+      });
 
       setToken(response.data.token);
       setUser(response.data.user);

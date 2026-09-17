@@ -66,6 +66,9 @@ itself for the expired-token path. `getUser()` drops a cookie that does not pars
 
 `src/app/error.js`, `global-error.js`, `loading.js` and `not-found.js` are the app-wide boundaries.
 
+`src/lib/timeZone.js` sends the browser's IANA zone on register and syncs it (`syncTimeZone`) whenever the
+dashboard or profile page loads the profile — the API reads "today" and "this week" in that zone.
+
 `src/lib/axios.js` attaches the bearer token per request and auto-logs-out on any 401 **except** from
 `/auth/login` and `/auth/register`, where a 401 means bad credentials and must reach the page's own
 catch block. Add any new endpoint with expected-401 semantics to that `AUTH_ENDPOINTS` list.
@@ -76,9 +79,9 @@ catch block. Add any new endpoint with expected-401 semantics to that `AUTH_ENDP
 camelCase field names the saving-plan endpoints use (`depositAmount`, `withdrawalAmount`) while other
 endpoints use snake_case (`expense_type_id`, `target_amount`). The deliberate differences are two: the
 web schemas use `z.coerce.number()` because form inputs yield strings, while the API uses strict
-`z.number()`; and an expense record's date is refused from tomorrow on by the API but from today on
-here, because a date is only ever sent from the user's own clock and the API cannot know what zone it
-is in. Changing a field on either side requires changing both schemas.
+`z.number()`; and an expense record's date is refused after today by both, but against different clocks —
+here the browser's, on the API the user's stored `time_zone`, which `syncTimeZone` keeps equal to it.
+Changing a field on either side requires changing both schemas.
 
 The shared pieces mirror the API file for file: `src/constants/limits.js` (name and password lengths,
 and what a picture may be — `TARGET_IMAGE_MAX_MB`, `AVATAR_MAX_MB` and `AVATAR_MAX`, each enforced by

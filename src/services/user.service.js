@@ -25,6 +25,12 @@ export const updateProfile = async ({
   return response.data;
 };
 
+// A partial update of the zone alone — the API accepts any subset of fields.
+export const updateTimeZone = async (time_zone) => {
+  const response = await api.put("/users/profile", { time_zone });
+  return response.data;
+};
+
 export const updateAvatar = async (file) => {
   const formData = new FormData();
   formData.append("avatar", file);

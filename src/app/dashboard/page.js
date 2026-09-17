@@ -21,6 +21,7 @@ import Spinner from "@/components/common/Spinner";
 import { getDashboard } from "@/services/dashboard.service";
 import { getProfile } from "@/services/user.service";
 import { isAuthenticated, getUser, setUser as cacheUser } from "@/lib/auth";
+import { syncTimeZone } from "@/lib/timeZone";
 
 // Cards fade up in reading order rather than all at once.
 const stagger = (index) => ({ animationDelay: `${index * 70}ms` });
@@ -69,11 +70,12 @@ export default function DashboardPage() {
     let active = true;
 
     getProfile()
-      .then((response) => {
+      .then((response) => syncTimeZone(response.data))
+      .then((profile) => {
         if (!active) return;
 
-        setUser(response.data);
-        cacheUser(response.data);
+        setUser(profile);
+        cacheUser(profile);
       })
       .catch(() => {
         // The cached user is enough to render the header; a genuinely dead

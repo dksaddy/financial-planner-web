@@ -16,6 +16,7 @@ import PasswordForm from "@/components/profile/PasswordForm";
 import { getProfile } from "@/services/user.service";
 import { logout as logoutApi } from "@/services/auth.service";
 import { isAuthenticated, setUser, logout as clearAuth } from "@/lib/auth";
+import { syncTimeZone } from "@/lib/timeZone";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -36,9 +37,11 @@ export default function ProfilePage() {
     try {
       const response = await getProfile();
 
-      setUser(response.data);
+      const profile = await syncTimeZone(response.data);
 
-      return response.data;
+      setUser(profile);
+
+      return profile;
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to load profile"
