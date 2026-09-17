@@ -4,6 +4,32 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { IoClose } from "react-icons/io5";
 
+// Modals nest — DepositModal renders PasswordConfirmModal inside itself — so
+// each one saving and restoring document.body.style.overflow on its own does
+// not work: the inner modal saves the "hidden" the outer one set, and whoever
+// unmounts last writes that back, leaving the page unscrollable. Counting open
+// modals instead means the style is only touched on the first lock and the
+// last release.
+let lockCount = 0;
+let overflowBeforeLock = "";
+
+function lockScroll() {
+  if (lockCount === 0) {
+    overflowBeforeLock = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+  }
+
+  lockCount += 1;
+}
+
+function releaseScroll() {
+  lockCount = Math.max(0, lockCount - 1);
+
+  if (lockCount === 0) {
+    document.body.style.overflow = overflowBeforeLock;
+  }
+}
+
 const SIZES = {
   md: "max-w-md",
   lg: "max-w-2xl",
@@ -28,12 +54,11 @@ export default function Modal({
 
     document.addEventListener("keydown", handleKeyDown);
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    lockScroll();
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousOverflow;
+      releaseScroll();
     };
   }, [open, onClose]);
 
