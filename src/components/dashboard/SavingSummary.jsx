@@ -2,6 +2,7 @@ import { FiTrendingUp } from "react-icons/fi";
 
 import Section from "./Section";
 import Row from "./Row";
+import SaturdayCountdown from "./Saturdaycountdown";
 
 import { signTone } from "@/lib/tone";
 
@@ -37,28 +38,35 @@ export default function SavingSummary({ saving }) {
         </span>
       }
     >
-      <div className="space-y-1">
-        <Row
-          label="Total Deposit"
-          value={saving.totalDeposit}
-          accent="emerald"
-        />
-
-        <Row
-          label="Total Withdrawal"
-          value={saving.totalWithdrawal}
-          accent="rose"
-        />
-
-        {/* Before tax — the chip in the header is the same figure once each
-            plan's own tax has been taken off it. */}
-        <div className="mt-2 border-t border-line pt-2">
+      <div className="flex h-full flex-col">
+        <div className="space-y-1">
           <Row
-            label="Profit"
-            value={saving.profit}
-            accent={Number(saving.profit) < 0 ? "rose" : "emerald"}
-            emphasis
+            label="Total Deposit"
+            value={saving.totalDeposit}
+            accent="emerald"
           />
+
+          <Row
+            label="Total Withdrawal"
+            value={saving.totalWithdrawal}
+            accent="rose"
+          />
+
+          {/* Before tax — the chip in the header is the same figure once each
+              plan's own tax has been taken off it. */}
+          <div className="mt-2 border-t border-line pt-2">
+            <Row
+              label="Profit"
+              value={saving.profit}
+              accent={Number(saving.profit) < 0 ? "rose" : "emerald"}
+              emphasis
+            />
+          </div>
+        </div>
+
+        {/* Takes the card's leftover height and centres the donut in it. */}
+        <div className="flex flex-1 items-center justify-center pt-6">
+          <SaturdayCountdown />
         </div>
       </div>
     </Section>
