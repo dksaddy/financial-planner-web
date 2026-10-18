@@ -47,16 +47,24 @@ export default function TargetCard({
             return (
               <div
                 key={target.id}
-                className="rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 transition hover:border-fuchsia-line hover:bg-fuchsia-soft"
+                className="[contain:paint] rounded-xl border border-line-soft bg-inset px-3.5 py-2.5 transition-colors hover:border-fuchsia-line hover:bg-fuchsia-soft"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 flex-1 items-center gap-3">
                     {target.image_url ? (
+                      // Target icons are animated GIFs. Own compositing layer +
+                      // async decode + fixed size, so a frame change repaints
+                      // 44x44px instead of invalidating the whole card (that
+                      // was the flicker / blank patch on phones).
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={target.image_url}
                         alt={target.name}
-                        className="h-11 w-11 shrink-0 rounded-lg object-cover ring-1 ring-line"
+                        width={44}
+                        height={44}
+                        decoding="async"
+                        loading="lazy"
+                        className="h-11 w-11 shrink-0 rounded-lg object-cover ring-1 ring-line [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform"
                       />
                     ) : (
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-fuchsia-soft text-fuchsia-fg ring-1 ring-line">

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 import { saturdaysUntil } from "@/lib/Saturdays";
 
-const UP_MS = 3000; // 1 -> N sweep
-const HOLD_MS = 4500; // rest on N
-const DOWN_MS = 500; // quick rewind to 1 (hold + rewind = the 5s pause)
+const UP_MS = 3000; // 1 -> N
+const HOLD_MS = 2000; // pause on N
+const DOWN_MS = 3000; // N -> 1, then straight into the next cycle
 
 const SIZE = 140;
 const STROKE = 12;
